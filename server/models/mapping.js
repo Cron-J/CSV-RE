@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: []
     },
     
-    delimeter: DataTypes.INTEGER
+    delimeter: DataTypes.JSON
   });
 
   return mapping;

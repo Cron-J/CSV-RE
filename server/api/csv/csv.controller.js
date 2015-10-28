@@ -14,10 +14,19 @@ exports.index =  function(req,res){
   res.status(200).json(obj);
 };
 
+exports.getMappingList = function(req,res){
+  models.mapping.find().then(function(result){
+    console.log('==Result==', result);
+  }).catch(function(error){
+    console.log("==Error==", error);
+  });
+}
+
 /*
   API to create the Mapping.
 */
 exports.create =  function(req,res){
+
   models.mapping.create({
     attributeId: req.body.attributeId,
     tenantId: req.body.tenantId,
@@ -25,7 +34,7 @@ exports.create =  function(req,res){
     mappingInfo: req.body.mappingInfo,
     delimeter: req.body.delimeter
   }).then(function(result){
-    res.status(200).json();        
+    res.status(200).json(result);        
   }).catch(function(error){
     res.status(500).json(error);
   });
@@ -33,7 +42,6 @@ exports.create =  function(req,res){
 
 
 exports.uploadFileData = function(req, res) {
-  console.log("=====upload file======", req.body);
   var data = req.body.file;
 
   if (data.length === undefined) {

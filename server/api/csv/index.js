@@ -5,6 +5,7 @@ var express = require('express'),
     router = express.Router();
 
 router.get('/', controller.index);
+router.get('/getMappingList', controller.getMappingList);
 router.post('/', controller.create);
 router.post('/uploadfile', controller.uploadFileData);
 module.exports = router;

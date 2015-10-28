@@ -89,7 +89,7 @@ export default createReducer(initialState, {
   },
   [types.HANDLECUSTOMHEADER](state, action) {
     const { data } = action.payload;
-    console.log("=====Custom Header=====",data);
+    console.log("=====Custom Header=====",data.customHeader);
     return {
       ...state,
       customHeader: data.customHeader

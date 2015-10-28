@@ -7,8 +7,19 @@ export function handleChanges(data) {
 }
 
 export function handleMappedChnages(data) {
-	return {type: types.HANDLEMAPPEDCHNAGES, payload: { data }};
+  return {type: types.HANDLEMAPPEDCHNAGES, payload: { data }};
 }
+
+export function saveMappedData(data) {
+  console.log("mapped data 1", data);
+  return {
+    types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
+    payload: {
+      response: api.saveMappedData(data).then(response => response)
+    }
+  };
+}
+
 export function attributeList() {
   return {
     types: [types.HANDLEATTRIBUTELIST, types.HANDLEATTRIBUTELISTSUCCESS, types.HANDLEATTRIBUTELISTERROR],

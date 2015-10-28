@@ -16,7 +16,8 @@ export default createReducer(initialState, {
       attributeList: {},
       pickedTable: 'Select',
       mappedData: [],
-      mappedFields: []
+      mappedFields: [],
+      selectedTable: ''
     };
   },
   [types.HANDLEATTRIBUTELISTSUCCESS](state, action) {
@@ -514,7 +515,6 @@ export default createReducer(initialState, {
     for(let k in tst){
       tables[k] = [];
     }
-    console.log("reducerssssssss", tables);
     let properties = tst['product'];
     return {
       ...state,
@@ -524,6 +524,7 @@ export default createReducer(initialState, {
       pickedTable: 'Select',
       mappedData: [],
       mappedFields: [],
+      selectedTable: ''
     };
   },
   [types.HANDLEATTRIBUTELISTCHANGES](state, action) {
@@ -535,7 +536,8 @@ export default createReducer(initialState, {
       attributeList: data.attributeList,
       pickedTable: data.pickedTable,
       mappedData: data.mappedData,
-      mappedFields: data.mappedFields
+      mappedFields: data.mappedFields,
+      selectedTable: data.selectedTable
     }
   },
   [types.HANDLEMAPPEDCHNAGES](state, action) {
@@ -547,7 +549,8 @@ export default createReducer(initialState, {
       attributeList: data.attributeList,
       pickedTable: data.pickedTable,
       mappedData: data.mappedData,
-      mappedFields: data.mappedFields
+      mappedFields: data.mappedFields,
+      selectedTable: data.selectedTable
     }
   }
 });

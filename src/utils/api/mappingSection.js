@@ -15,6 +15,16 @@ const utils = {
     });
   },
 
+  saveMappedData: (data) => {
+    console.log("mapping data to save", data);
+    return request({
+      url: "http://localhost:4000/api/csv",
+      method: 'POST',
+      json: true,
+      body: data
+    });
+  }
+
 };
 
 export default utils;
