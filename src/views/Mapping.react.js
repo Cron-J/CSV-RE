@@ -2,7 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import * as MappingActions from 'actions/mappingPage/MappingActions';
 import { connect } from 'react-redux';
-
+//import Growl from 'react-growl';
+//import 'react-notifications/lib/notifications.css';
+//import Notifications from 'react-notifications';
 class Mapping extends Component {
   constructor(props) {
     super(props);
@@ -20,54 +22,86 @@ class Mapping extends Component {
     this.mappedData = [];
     this.selectedTab = '';
     this.mappingName = '';
+    //this.growler= null;
 
   }
   componentWillMount() {
     this.actions.attributeList();
+                        
   }
   
   componentDidMount() {
-    this.headers = this.props.attributesectionsearch.headers.split(',');
-  }
-  
+    this.headers = this.props.attributesectionsearch.headers.split(','); 
+}
+
+/*renderError(){
+        const child=[];
+        let notifications = [
+        {
+          id: 1,
+          title: 'Title',
+          message: 'Message'
+        },
+        {
+          id: 2,
+          title: 'Title',
+          message: 'Message'
+        }
+      ];
+
+      let handleRequestHide = (notification) => {
+        notifications = notifications.filter(n => n.id !== notification.id);
+      };
+
+      child.push(<div><Notifications notifications={notifications} onRequestHide={handleRequestHide}/></div>);
+      return child;
+}*/
+
   mapping(e) {
     e.preventDefault();
-    let propertyname;
-    let mappedField = {};
-    for(let index in this.props.mappingsection.attributeList){
-      if(this.selectedTab === index){
-        for(let idx in this.props.mappingsection.attributeList[index]){
-          if(this.props.mappingsection.attributeList[index][idx].field === this.propertySelect){
-            this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
-            mappedField = {
-              "userFieldName": this.headSelect,
-              "transformations": [],
-              "field": this.props.mappingsection.attributeList[index][idx].field,
-              "defaultValue": this.defaultValue,
-              "index": this.props.mappingsection.attributeList[index][idx].index,
-              "instance": this.props.mappingsection.attributeList[index][idx].instance,
-              "isRequired": this.props.mappingsection.attributeList[index][idx].isRequired,
-              "rowId": this.mappedData.length++
-            };
+    this.defaultValue="";
+    if(this.headSelect===''||this.propertySelect===''||this.selectedTab===''){
+      alert("select three column");
+    }
+    else{
+                      
+          let propertyname;
+          let mappedField = {};
+          for(let index in this.props.mappingsection.attributeList){
+            if(this.selectedTab === index){
+              for(let idx in this.props.mappingsection.attributeList[index]){
+                if(this.props.mappingsection.attributeList[index][idx].field === this.propertySelect){
+                  this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
+                  mappedField = {
+                    "userFieldName": this.headSelect,
+                    "transformations": [],
+                    "field": this.props.mappingsection.attributeList[index][idx].field,
+                    "defaultValue": this.defaultValue,
+                    "index": this.props.mappingsection.attributeList[index][idx].index,
+                    "instance": this.props.mappingsection.attributeList[index][idx].instance,
+                    "isRequired": this.props.mappingsection.attributeList[index][idx].isRequired,
+                    "rowId": this.mappedData.length++
+                  };
+                }
+              }
+            }
           }
-        }
-      }
-    }
-    if(this.props.mappingsection.pickedTable === 'product'){
-      propertyname = this.props.mappingsection.pickedTable+'.'+this.propertySelect;
-    }else{
-      propertyname = 'product.'+this.props.mappingsection.pickedTable+'.'+this.propertySelect;
-    }
-    if(this.defaultValue.length>0){
-      this.headSelect = this.defaultValue;
-    }
-    this.mappedFields.push({column:this.headSelect,propertydec: this.propertySelect, propertyname: propertyname});
-    this.mappedData.push(mappedField);
-    this.props.mappingsection.selectedTable = this.selectedTab;
-    this.props.mappingsection.mappedData = this.mappedData;
-    this.props.mappingsection.mappedFields = this.mappedFields;
-    this.actions.handleMappedChnages(this.props.mappingsection);
+          if(this.props.mappingsection.pickedTable === 'product'){
+            propertyname = this.props.mappingsection.pickedTable+'.'+this.propertySelect;
+          }else{
+            propertyname = 'product.'+this.props.mappingsection.pickedTable+'.'+this.propertySelect;
+          }
+          if(this.defaultValue.length>0){
+            this.headSelect = this.defaultValue;
+          }
+          this.mappedFields.push({column:this.headSelect,propertydec: this.propertySelect, propertyname: propertyname});
+          this.mappedData.push(mappedField);
+          this.props.mappingsection.selectedTable = this.selectedTab;
+          this.props.mappingsection.mappedData = this.mappedData;
+          this.props.mappingsection.mappedFields = this.mappedFields;
+          this.actions.handleMappedChnages(this.props.mappingsection);
   }
+}
   
   toAddDefaultName(e) {
     $('.edit-icon').addClass('hide');
@@ -116,40 +150,42 @@ class Mapping extends Component {
     this.props.mappingsection.pickedTable = e.target.text;
     this.setState({});
   }
-
   mapAttribute(e) {
-    e.preventDefault();
-    for(let table in this.props.mappingsection.tables){
-      if(table === 'attributeValues'){
-        this.props.mappingsection.tables[table].push('attributeValues');
-      }
+    if(this.headSelect=="")
+     alert("select column");
+    else{ 
+         e.preventDefault();
+        for(let table in this.props.mappingsection.tables){
+          if(table === 'attributeValues'){
+            this.props.mappingsection.tables[table].push('attributeValues');
+          }
+        }
+        this.props.mappingsection.mappedData.push({
+                  "userFieldName": this.headSelect,
+                  "transformations": [],
+                  "field": 'value',
+                  "defaultValue": this.defaultValue,
+                  "index": '',
+                  "instance": '',
+                  "isRequired": true,
+                  "rowId": this.mappedData.length++
+                });
+        this.props.mappingsection.mappedData.push({
+                  "userFieldName": '"'+this.headSelect+'"',
+                  "transformations": [],
+                  "field": 'value',
+                  "defaultValue": this.defaultValue,
+                  "index": '',
+                  "instance": '',
+                  "isRequired": true,
+                  "rowId": this.mappedData.length++
+                });
+        this.mappedFields.push({column:this.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
+        this.mappedFields.push({column:'"'+this.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
+        this.props.mappingsection.mappedFields = this.mappedFields;
+        this.actions.handleChanges(this.props.mappingsection);
     }
-    this.props.mappingsection.mappedData.push({
-              "userFieldName": this.headSelect,
-              "transformations": [],
-              "field": 'value',
-              "defaultValue": this.defaultValue,
-              "index": '',
-              "instance": '',
-              "isRequired": true,
-              "rowId": this.mappedData.length++
-            });
-    this.props.mappingsection.mappedData.push({
-              "userFieldName": '"'+this.headSelect+'"',
-              "transformations": [],
-              "field": 'value',
-              "defaultValue": this.defaultValue,
-              "index": '',
-              "instance": '',
-              "isRequired": true,
-              "rowId": this.mappedData.length++
-            });
-    this.mappedFields.push({column:this.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
-    this.mappedFields.push({column:'"'+this.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
-    this.props.mappingsection.mappedFields = this.mappedFields;
-    this.actions.handleChanges(this.props.mappingsection);
-  }
-
+}
   removeRow(index) {
     this.props.mappingsection.mappedFields.splice(index,1);
     console.log('Mapped Fields',this.props.mappingsection.mappedFields);
@@ -169,8 +205,10 @@ class Mapping extends Component {
   renderChild1() {
     const child = [];
     let tb = this.props.mappingsection.tables;
+    console.log("--tb---");
     console.log(tb);
     for(let key in tb){
+      console.log("in loop");
       let ch = [];
       if(tb[key].length){
         for (let i = 0; i < tb[key].length; i++) {
@@ -188,6 +226,7 @@ class Mapping extends Component {
 
   selectHead(e) {
     this.headSelect = e.currentTarget.value;
+    console.log(this.headSelect);
   }
 
   selectProperty(e) {
@@ -209,6 +248,8 @@ class Mapping extends Component {
       headers = this.props.attributesectionsearch.customHeader;
     }
     const attributesList = [];
+    console.log("--header--");
+    console.log(headers);
     for(let index in headers){
       attributesList.push(<option  onClick={this.selectHead.bind(this)} value={headers[index]}>{headers[index]}</option>);
     }
@@ -258,6 +299,10 @@ class Mapping extends Component {
   }
   
   saveMappingStep(e) {
+    if(this.mappingName===""){
+      alert("select mapping Name");
+    }
+    else{
     let finalData = {'delimeter': {includeHeader: true, delimeterFormat: ",", dateFormat: "dd-MM-yyyy", numberFormat: "#,###.##"},
       'fileName': "example.csv1445947979733",
       'mappingInfo': this.props.mappingsection.mappedData,
@@ -267,10 +312,12 @@ class Mapping extends Component {
     }
     this.actions.saveMappedData(finalData);
   }
+}
   render() {    
     return (
-	    <div className="container">  
-	      <div className="upload-container">
+	    <div className="container">
+      
+        <div className="upload-container">
           <legend>Mapping</legend>
         </div>
         <form className="form-horizontal" role="form" name="mapForm">
@@ -311,10 +358,8 @@ class Mapping extends Component {
                 <a className="btn btn-default" onClick={this.mapAttribute.bind(this)}>Auto Add Attribute <span className="glyphicon glyphicon-chevron-right"></span></a>
              </div>
           </div>
-          <div className="col-md-
-             <br/>4">
-             <select className="mapping-select" id="SelectId"  name="classesList" size="20">
-                  
+          <div className="col-md-4">
+             <select className="mapping-select" id="SelectId"  name="classesList" size="20">         
                 {this.renderChild1()}
              </select>
           </div>
@@ -392,6 +437,7 @@ class Mapping extends Component {
           <hr />
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.actions.redirectPreview}>Back</button>
+            <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Save Mapping</button>
           </div>
         </div>

@@ -42,7 +42,7 @@ exports.create =  function(req,res){
 
 
 exports.uploadFileData = function(req, res) {
-  var data = req.body.file;
+  var data = req.body;
 
   if (data.length === undefined) {
       res.json('Please Upload the file');

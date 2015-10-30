@@ -16,7 +16,7 @@ class Preview extends Component {
     this.checkboxSelected=true;
     this.includeHeader = true;
     this.noHeader = false;
-    this.dFormat="";
+    this.dFormat="MM/dd/yyyy";
     this.noFormat="#,###.##";
     this.checkedState=true;
     this.actions = bindActionCreators(PreviewActions, dispatch);
@@ -24,15 +24,15 @@ class Preview extends Component {
 
   componentWillMount() {
     //this.actions.previewFile();
+    console.log("state==="+this.state.size);
     this.dateFormat(this,'MM/dd/yyyy');
   }
   componentDidMount(){
-    console.log("component did mount", this.props.attributesectionsearch);
+    
   }
 
   resetPreviewSetting(e) {
-    this.delimiter = "";
-    this.noFormat = "";
+    console.log('data');
     this.dFormat = "";
     this.setState({});
   }
@@ -53,8 +53,7 @@ class Preview extends Component {
       this.customHeader = [];
       this.noHeader = false;
       this.includeHeader = true;
-      this.props.attributesectionsearch.customHeader = [];
-      this.actions.handleCustomHeader(this.props.attributesectionsearch);
+      this.setState({});
     }
   }
   changeDateFormat(list,format) {
@@ -117,8 +116,8 @@ class Preview extends Component {
     }
   }
  dateFormatt(e){
-    this.dFormat=e.target.value;
-    this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
+   this.dFormat=e.target.value;
+     this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
     let rowOne = this.splitter(this.props.attributesectionsearch.rowOne, this.delimiter);
     let rowTwo = this.splitter(this.props.attributesectionsearch.rowTwo, this.delimiter);
     this.row1 = this.changeDateFormat(rowOne);
@@ -126,6 +125,7 @@ class Preview extends Component {
     this.setState({});
  }
   dateFormat(e){
+   //console.log("00"+e.target.value);
     this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
     let rowOne = this.splitter(this.props.attributesectionsearch.rowOne, this.delimiter);
     let rowTwo = this.splitter(this.props.attributesectionsearch.rowTwo, this.delimiter);
@@ -143,6 +143,7 @@ class Preview extends Component {
     this.setState({});
   }
   delimiterFormat(e){
+    console.log('Delimiter Format', e.target.value);
     this.delimiter = e.target.value;
     this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
     this.row1 = this.splitter(this.props.attributesectionsearch.rowOne, this.delimiter);
@@ -195,10 +196,11 @@ class Preview extends Component {
     return list;
   }
   thirdStep(e){
-    if(this.datFormat==""||this.noFormat==""||this.deliFormat==""){
-      /*no selected*/
-      //location.path('/mapping');
-       alert('error');
+    if(this.dFormat==""||this.noFormat==""||this.delimiter==""){
+        /*no selected*/
+       //location.path('/mapping');
+      alert('error');
+       
 
     }
     else{
@@ -267,6 +269,11 @@ class Preview extends Component {
                         <option value='dd-MM-yyyy'>dd-MM-yyyy</option>
                         <option value='MM/dd/yyyy'>MM/dd/yyyy</option>
                       </select>
+                      { this.dFormat==""&&
+                        <div>
+                        <label className="errorMessage">Date Required</label>
+                       </div>
+                    }
                     </div>
                     </div>
                     <div className="form-group">
@@ -279,7 +286,14 @@ class Preview extends Component {
                           <option value="#.###,##">#.###,##</option>
                           <option value="#,##">#,##</option>
                         </select>
-                      </div>
+                      
+                       { this.noFormat==""&&
+                        <div>
+                        <label className="errorMessage">Number Format Required</label>
+                       </div>
+                      }
+
+                    </div>
                     </div>
                     <div className="form-group">
                       <label className="col-sm-4 control-label">Delimiter Format</label>
@@ -290,7 +304,14 @@ class Preview extends Component {
                           <option value=";">Semicolon(;)</option>
                           <option value="|">Pipe(|)</option>
                         </select>
-                      </div>
+                      
+                       { this.delimiter==""&&
+                        <div>
+                        <label className="errorMessage">Delimeter Required</label>
+                       </div>
+                        }
+                     
+                    </div>
                     </div>
                 </div>
                 <div className="row btn-margin">
@@ -333,7 +354,8 @@ class Preview extends Component {
                 </tbody>
               </table>
               <div className="btn-set button-container pull-right">
-                <button className="btn btn-primary" onClick={this.actions.redirectHome}>Back</button>
+                  <Link to="/"> <button className="btn btn-primary" onClick={this.actions.redirectHome}>Back</button></Link>
+                  <span> </span>
                   <button className="btn btn-primary" onClick={this.thirdStep.bind(this)}>Next</button>                
               </div>
             </div>
@@ -346,7 +368,6 @@ class Preview extends Component {
 
 function mapStateToProps(state) { 
   const { attributesectionsearch } = state;
-  console.log('attributesearch--->', attributesectionsearch);
   return {
     attributesectionsearch
   };
