@@ -61,8 +61,10 @@ class Header extends Component {
           <form className="navbar-form navbar-right" role="search">
             <div className="form-group">
               <input type="text" className="form-control" placeholder="Search" />
+              <span> </span>
+              <button type="submit" className="btn btn-default"><span className="glyphicon glyphicon-search"></span></button>
             </div>
-            <sup><button type="submit" className="btn btn-default"><span className="glyphicon glyphicon-search"></span></button></sup>
+            <div></div>
           </form>
         </div>
       </div>
