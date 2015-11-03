@@ -696,9 +696,11 @@ h2 {
     position: relative;
     left:60px;
     top:10px;
-    background: #F8F8F8;
+   background: #F8F8F8;
     border: 5px dashed #DDD;
-    padding: 100px 54px;
+    width: 1000px;
+    height: 330px;
+        padding: 100px 54px;
     text-align: center;
  
     
@@ -719,9 +721,4 @@ h2 {
     text-align: center;
     margin: 2em 0;
     font-size: 20px;
-}
-.imageDisplay{
-
-    height: 30%;
-    width: 30px;
 }

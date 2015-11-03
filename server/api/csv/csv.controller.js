@@ -8,6 +8,20 @@ var models = require('../../models'),
 /*
   API to get the list of attribute.
 */
+exports.uploadCSV = function(req,res){
+    // This block is only relevant to users
+    // interested in custom parameters - you
+    // can delete/ignore it as you wish
+    if (req.body) {
+        var upload_path = 'uploads/'+req.files[0].filename;
+        fs.readFile(upload_path, 'utf8', function(err, data) {
+            if (err) {
+                return console.log(err);
+            }
+            res.json(csvJSON(data, req.files[0].filename));
+        });
+    }
+};
 exports.index =  function(req,res){
   var str = '{"product": {"tenantId": {"index": true,"isRequired": true,"instance": "String","type" : 0},"productId": {"index": {"unique": true,"background": true},"isRequired": true,"instance": "String"},"attributeValues": {"attributes": {"variantId": {"index": null,"instance": "String"},"classificationId": {"variantId": {"index": null,"instance": "String"},"classificationId": {"index": null,"isRequired": true,"instance": "String"}}},"attributeSec": {"index": null,"isRequired": true,"instance": "String"}}}}';
   var obj = JSON.parse(str);
@@ -40,7 +54,7 @@ exports.create =  function(req,res){
   });
 };
 
-
+// Deprecated
 exports.uploadFileData = function(req, res) {
   var data = req.body;
 
@@ -75,6 +89,5 @@ function csvJSON(csv, fileName) {
         result.rowOne = lines[1].split("\r")[0]
     if(lines[2])
         result.rowTwo = lines[2].split("\r")[0]
-
-    return JSON.stringify(result); //JSON
+    return result; //JSON
 }

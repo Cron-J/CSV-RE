@@ -64,11 +64,11 @@ const webpackConfig = {
       }
     ]
   },
-  eslint : {
-    configFile  : paths.project('.eslintrc'),
-    failOnError : globals.__PROD__,
-    emitWarning : globals.__DEV__
-  }
+  //eslint : {
+  //  configFile  : paths.project('.eslintrc'),
+  //  failOnError : globals.__PROD__,
+  //  emitWarning : globals.__DEV__
+  //}
 };
 
 // ----------------------------------
@@ -134,7 +134,7 @@ if (
   webpackConfig.module.preLoaders = [
     {
       test : /\.(js|jsx)$/,
-      loaders : ['eslint-loader'],
+      loaders : [], //'eslint-loader'
       include : paths.project(config.get('dir_src'))
     }
   ];
