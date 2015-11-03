@@ -7,12 +7,12 @@ import * as PreviewActions from 'actions/previewPage/PreviewActions';
 export default class Navigation extends React.Component {
   constructor () {
     super();
-    this.activeTabClassName="tab1";
+    this.activeTabClassName="active";
+    this.actions = bindActionCreators(PreviewActions);
   }
-  /*UploadClick(e){
-    alert("come");
-    this.actions.redirectHome();
-  }*/
+ previewClicked(){
+     this.actions.redirectPreview();
+ }
   render () {
     return (
 
@@ -21,10 +21,10 @@ export default class Navigation extends React.Component {
         <div brand={<Link to="/"></Link>}>
         <div className="container">
           <div className="btn-group btn-group-justified btn-group-wizard">
-              <Link to="/" className="btn btn-wizard" active={(this.activeTabClassName === "tab1") ? "active" : ""}>
+              <Link to="/" className={"btn btn-wizard" >
                 <span  className="badge">1</span>Upload
               </Link>
-              <span className="btn btn-wizard">
+              <span className={"btn btn-wizard "+ this.activeTabClassName} onClick={this.previewClicked.bind(this)}>
                 <span className="badge">2</span>Preview
               </span>
               <Link to="/mapping" className="btn btn-wizard">

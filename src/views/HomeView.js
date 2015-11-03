@@ -11,7 +11,6 @@ class Home extends Component {
 
     constructor(props) {
         super(props);
-        console.log('props in home',this.props);
         var { homesection,dispatch } = this.props;
         console.log(homesection);
         this.state=homesection;
@@ -116,7 +115,7 @@ class Home extends Component {
               <div className="row">
                   <div className="col-md-10"  onDragLeave={this.onDragLeave.bind(this)} onDragOver={this.onfileOver.bind(this)}>
                       <Dropzone className="dropzoneContainer" onDrop={this.onDrop.bind(this)} >
-                          <div>
+                          <div className="dropzoneMessage">
                           Click here to choose .CSV file <b>or</b> Drop .CSV file here
                           </div>
                       </Dropzone>
