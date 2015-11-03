@@ -419,7 +419,7 @@ td.indent-1 {
 }
 
 .dropdown-menu.dropdown-menu-wide {
-    width: 750px;
+    width: auto;
 }
 
 .dropdown-menu.dropdown-menu-wide > li.wide {
@@ -694,13 +694,12 @@ h2 {
 }
 .dropzoneContainer{
     position: relative;
-    left:60px;
     top:10px;
    background: #F8F8F8;
     border: 5px dashed #DDD;
-    width: 1000px;
-    height: 330px;
-        padding: 100px 54px;
+    width: auto;
+    height: auto;
+    padding: 100px 54px;
     text-align: center;
  
     

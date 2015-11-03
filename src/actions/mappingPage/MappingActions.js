@@ -34,7 +34,7 @@ export function redirectPreview(data) {
     type: types.RESETSEARCH,
     meta: {
       transition: () => ({
-        path: '/preview',
+        path: '/preview'
       })
     }
   };
