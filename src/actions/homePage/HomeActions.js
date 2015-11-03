@@ -2,11 +2,11 @@ import * as types from 'constants/ActionTypes';
 import api from 'utils/api/attributeSection';
 
 export function handleChanges(data) {
-  return { type: types.HANDLESEARCHATTRIBUTE, payload: { data } };
+  return { type: types.HANDLESEARCHATTRIBUTE, payload: data };
 }
 
 export function selectedFile(data) {
-  return { type: types.HANDLESELECTEDFILE, payload: { data } };
+  return { type: types.HANDLESELECTEDFILE, payload: data };
 }
 
 export function redirectPreview(data) {
@@ -14,7 +14,7 @@ export function redirectPreview(data) {
     type: types.RESETSEARCH,
     meta: {
       transition: () => ({
-        path: '/preview',
+        path: '/preview'
       })
     }
   };
