@@ -34,7 +34,10 @@ class Home extends Component {
     }
 
 
-    onDrop(files) {
+    onDrop(files,e) {
+      if(e.target.className==="dropzoneContainer")
+          e.target.style.border='5px dashed #DDD';
+      console.log(e.target);
          this.style={'border.dashed': 'green'}
         this.uploadedFile=files;
         console.log("homesection");
@@ -87,8 +90,12 @@ class Home extends Component {
 
     }
     onfileOver(e){
-      this.style={ 'border': '5px dashed green'};
-        console.log("I am in onFileOver");
+        if(e.target.className==="dropzoneContainer")
+          e.target.style.border='5px dashed green';
+    }
+    onDragLeave(e){
+       if(e.target.className==="dropzoneContainer")
+          e.target.style.border='5px dashed #DDD';
     }
 
     updateView(viewprops){
@@ -107,9 +114,9 @@ class Home extends Component {
         return (
             <div className="container">
               <div className="row">
-                  <div className="col-md-10" onDragOver={this.onfileOver.bind(this)}>
-                      <Dropzone className="dropzoneContainer"  onDrop={this.onDrop.bind(this)} >
-                          <div className="dropzoneMessage">
+                  <div className="col-md-10"  onDragLeave={this.onDragLeave.bind(this)} onDragOver={this.onfileOver.bind(this)}>
+                      <Dropzone className="dropzoneContainer" onDrop={this.onDrop.bind(this)} >
+                          <div>
                           Click here to choose .CSV file <b>or</b> Drop .CSV file here
                           </div>
                       </Dropzone>
