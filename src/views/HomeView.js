@@ -13,11 +13,21 @@ class Home extends Component {
         super(props);
         console.log('props in home',this.props);
         var { homesection,dispatch } = this.props;
+        console.log(homesection);
         this.state=homesection;
-        this.message = "";
-        this.size="";
-        this.name="";
-        this.type="";
+        if(this.props.homesection.fileSelected==true){
+          this.message=this.props.homesection.properties.message;
+          this.size=this.props.homesection.properties.size;
+          this.type=this.props.homesection.properties.type;
+        }
+        else
+        {
+          this.message = "";
+          this.size="";
+          this.name="";
+          this.type="";
+        }
+        this.style;
         this.uploadedFile;
         this.actions = bindActionCreators(PreviewActions, dispatch);
         this.homeSectionActions = bindActionCreators(homeActions,dispatch);
@@ -25,7 +35,9 @@ class Home extends Component {
 
 
     onDrop(files) {
+         this.style={'border.dashed': 'green'}
         this.uploadedFile=files;
+        console.log("homesection");
         console.log(this.props.homesection);
         var extention ="";
         extention= files[0].name.split('.').pop();
@@ -74,9 +86,11 @@ class Home extends Component {
         this.actions.redirectPreview();
 
     }
-    onDragover(files){
-        alert("dragover!!!");
+    onfileOver(e){
+      this.style={ 'border': '5px dashed green'};
+        console.log("I am in onFileOver");
     }
+
     updateView(viewprops){
         if(viewprops){
             this.size = viewprops.size;
@@ -93,8 +107,8 @@ class Home extends Component {
         return (
             <div className="container">
               <div className="row">
-                  <div className="col-md-10">
-                      <Dropzone className="dropzoneContainer" onDragover={this.onDragover.bind(this)} onDrop={this.onDrop.bind(this)} >
+                  <div className="col-md-10" onDragOver={this.onfileOver.bind(this)}>
+                      <Dropzone className="dropzoneContainer"  onDrop={this.onDrop.bind(this)} >
                           <div className="dropzoneMessage">
                           Click here to choose .CSV file <b>or</b> Drop .CSV file here
                           </div>
@@ -113,7 +127,7 @@ class Home extends Component {
 
           this.message==='uploaded file:' &&
           <div className="displayMessage">
-              <b>{this.state.message}</b>{this.state.name}-{this.state.size}-{this.state.type}
+              <b>{this.message}</b>{this.name}-{this.size}-{this.type}
           </div>
 
               }
