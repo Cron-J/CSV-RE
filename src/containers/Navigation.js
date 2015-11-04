@@ -1,5 +1,6 @@
 import React       from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 import Header from '../views/Header.react';
 import { bindActionCreators } from 'redux';
@@ -10,8 +11,8 @@ export default class Navigation extends React.Component {
     super(props);
     var { homesection,dispatch } = this.props
     this.actions = bindActionCreators(PreviewActions,dispatch);
-      console.log("Navigation");
-  console.log(this);
+
+
   }
   render () {
     return (
@@ -40,3 +41,16 @@ export default class Navigation extends React.Component {
     );
   }
 }
+function mapStateToProps(state) {
+    return {
+        state
+    };
+}
+
+Navigation.propTypes = {
+    mappingsection: React.PropTypes.object,
+    dispatch: React.PropTypes.func.isRequired,
+    attributesectionsearch: React.PropTypes.object
+};
+
+export default connect(mapStateToProps)(Navigation);

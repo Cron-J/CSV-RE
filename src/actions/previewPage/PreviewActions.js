@@ -15,12 +15,13 @@ export function previewFile() {
   };
 }
 
-export function redirectMapping() {
+export function redirectMapping(data) {
   return {
-    type: types.RESETSEARCH,
+    type: types.PREVIEWTOMAPPING,
+    payload : data,
     meta: {
       transition: () => ({
-        path: '/mapping',
+        path: '/mapping'
       })
     }
   };

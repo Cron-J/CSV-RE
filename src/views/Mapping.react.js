@@ -22,8 +22,13 @@ class Mapping extends Component {
     this.mappedData = [];
     this.selectedTab = '';
     this.mappingName = '';
+    if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
+        this.headers = this.props.homesection.filedata.headers.split(',');
+    }else{
+        console.log('no headers found. possiblity that file is not uploaded');
+        this.actions.redirectPreview();
+    }
     //this.growler= null;
-
   }
   componentWillMount() {
     this.actions.attributeList();
@@ -31,8 +36,11 @@ class Mapping extends Component {
   }
   
   componentDidMount() {
-    this.headers = this.props.attributesectionsearch.headers.split(','); 
-}
+  }
+  componentWillRecieveProps(nextProps){
+      console.log(nextProps);
+      //this.mappingName
+  }
 
 /*renderError(){
         const child=[];
@@ -131,6 +139,8 @@ class Mapping extends Component {
       }
     }
     this.actions.handleChanges(this.props.mappingsection);
+    e.preventDefault();
+    e.stopImmediatePropagation();
   }
   selectedProperty(e) {
     e.preventDefault();
@@ -212,13 +222,13 @@ class Mapping extends Component {
       let ch = [];
       if(tb[key].length){
         for (let i = 0; i < tb[key].length; i++) {
-          ch.push(<option onClick={this.selectedTable.bind(this)} value={tb[key][i]}>{tb[key][i]}</option>);
+          ch.push(<option key={key} onClick={this.selectedTable.bind(this)} value={tb[key][i]}>{tb[key][i]}</option>);
         }
       } 
       if(key === 'product'){
-        child.push(<option onClick={this.selectedTable.bind(this)} value={key}>{key}</option>);
+        child.push(<option key={key} onClick={this.selectedTable.bind(this)} value={key}>{key}</option>);
       }else{
-        child.push(<optgroup label={key}>{ch}</optgroup>);
+        child.push(<optgroup key={key} label={key}>{ch}</optgroup>);
       }
     }
     return child;
@@ -251,7 +261,7 @@ class Mapping extends Component {
     console.log("--header--");
     console.log(headers);
     for(let index in headers){
-      attributesList.push(<option  onClick={this.selectHead.bind(this)} value={headers[index]}>{headers[index]}</option>);
+      attributesList.push(<option key={index} onClick={this.selectHead.bind(this)} value={headers[index]}>{headers[index]}</option>);
     }
     return attributesList;
   }
@@ -261,11 +271,11 @@ class Mapping extends Component {
     const props = this.props.mappingsection.properties;
     for(let index in props){
       if(props[index].mapped){
-        propertiesList.push(<option  className="green-color" onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
+        propertiesList.push(<option key={index}  className="green-color" onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
       }else if(props[index].isRequired){
-        propertiesList.push(<option  className="required-color" onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
+        propertiesList.push(<option key={index} className="required-color" onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
       }else{
-        propertiesList.push(<option onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
+        propertiesList.push(<option key={index} onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
       }
     }
     return propertiesList;
@@ -300,15 +310,22 @@ class Mapping extends Component {
   
   saveMappingStep(e) {
     if(this.mappingName===""){
-      alert("select mapping Name");
+      this.setState({mappingName:undefined});
     }
     else{
-    let finalData = {'delimeter': {includeHeader: true, delimeterFormat: ",", dateFormat: "dd-MM-yyyy", numberFormat: "#,###.##"},
+        for(let i=0;i<this.props.mappingsection.mappedData.length;i++){
+            let mapped = this.props.mappingsection.mappedData[i];
+            if(mapped === undefined){
+                this.props.mappingsection.mappedData.splice(i,1);
+            }
+        }
+    let finalData = {
+      'delimeter': {includeHeader: true, delimeterFormat: ",", dateFormat: "dd-MM-yyyy", numberFormat: "#,###.##"},
       'fileName': "example.csv1445947979733",
       'mappingInfo': this.props.mappingsection.mappedData,
-      'mappingName': this.mappingName,
       'tenantId': 'tnt1',
-      'attributeId': 'attr1'
+      'attributeId': 'attr1',
+      'mappingName': this.mappingName
     }
     this.actions.saveMappedData(finalData);
   }
@@ -322,10 +339,12 @@ class Mapping extends Component {
         </div>
         <form className="form-horizontal" role="form" name="mapForm">
           <div className="form-group">
-            <label for="x" className="col-sm-2 control-label">Mapping Name</label>
+            <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
             <div className="col-sm-3">
               <input name="jobId" className="form-control" onChange={this.mappingNameHandler.bind(this)} placeholder="Choose Mapping Name" id="mapName" type="text" ng-model="map.name" required ng-disabled="edit" />
-              <span  id="error" ng-show="form-mapForm.$invalid && submitted">please enter mapping name</span>
+            { this.mappingName === undefined &&
+            <span  id="error">please enter mapping name</span>
+                }
             </div>
           </div>
         </form>
@@ -411,14 +430,14 @@ class Mapping extends Component {
         </div>
         <div className="button-container">
           {
-            this.props.mappingsection.mappedData.length === 0 &&
+          this.props.mappingsection.mappedData && this.props.mappingsection.mappedData.length === 0 &&
             <div ng-show="tableData.length == 0">
               No mapped details
             </div>
           }
           
           {
-            this.props.mappingsection.mappedFields.length > 0 &&
+            this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 &&
             <div ng-show="tableData.length > 0">
               <table className="table" cellspacing="0">
                 <thead>
@@ -447,9 +466,9 @@ class Mapping extends Component {
 }
 
 function mapStateToProps(state) {
-  const { mappingsection, attributesectionsearch } = state;
+  const { mappingsection, attributesectionsearch, homesection } = state;
   return {
-    mappingsection, attributesectionsearch
+    mappingsection, attributesectionsearch, homesection
   };
 }
 

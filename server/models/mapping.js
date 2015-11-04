@@ -18,13 +18,15 @@ module.exports = function(sequelize, DataTypes) {
     fileName: {
       type: DataTypes.STRING
     },
-    
     mappingInfo: {
       type: DataTypes.ARRAY(DataTypes.JSON), 
       defaultValue: []
     },
     
-    delimeter: DataTypes.JSON
+    delimeter: DataTypes.JSON,
+    mappingName: {
+      type: DataTypes.STRING
+    }
   });
 
   return mapping;

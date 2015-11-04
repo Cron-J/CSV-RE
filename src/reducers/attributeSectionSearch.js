@@ -14,13 +14,23 @@ const initialState = {
   recordCount: '',
   // hide/show table
   showSearchResult: 'hidden',
-  fileName: 'example.csv1443526192857',
-  headers: 'productId,product,quantity,price,date',
-  rowOne: 'P1,pen,18880,599990,12-05-12',
-  rowTwo: 'P2,pencil, 5, 15, 12-10-10',
+  noFormat : '#,###.##',
+  dFormat : 'MM/dd/yyyy',
+  delimiter : ',',
+  noHeader : false,
   customHeader:[]
 };
 export default createReducer(initialState, {
+  [types.PREVIEWTOMAPPING](state, action) {
+    const response = action.payload;
+    return {
+        ...state,
+        delimiter : response[0],
+        dFormat : response[1],
+        noFormat : response[2],
+        noHeader : response[3]
+      }
+    },
   [types.HANDLESEARCH](state, action) {
     const { data } = action.payload;
     return {
@@ -31,10 +41,6 @@ export default createReducer(initialState, {
     return {
       ...state,
       attributeSectionId: '',
-      fileName: 'example.csv1443526192857',
-      headers: 'productId,product,quantity,price,date',
-      rowOne: 'P1,pen,100000,50,09/09/2009',
-      rowTwo: 'P2,pencil, 555555, 15,09/09/2009',
       name: '',
       description: '',
       finaldata: [],
