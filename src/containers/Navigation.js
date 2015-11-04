@@ -11,10 +11,11 @@ export default class Navigation extends React.Component {
     super(props);
     var { homesection,dispatch } = this.props
     this.actions = bindActionCreators(PreviewActions,dispatch);
-
+    this.path="";
 
   }
   render () {
+      this.path=this.props.routedto.props.route.path;
     return (
 
       <div>
@@ -22,16 +23,16 @@ export default class Navigation extends React.Component {
         <div brand={<Link to="/"></Link>}>
         <div className="container">
           <div className="btn-group btn-group-justified btn-group-wizard">
-              <Link to="/" className="btn btn-wizard" >
+              <Link to="/" className={this.path==='/' ? "btn btn-wizard active" : 'btn btn-wizard'}  >
                 <span  className="badge">1</span>Upload
               </Link>
-              <span className="btn btn-wizard">
+              <span className={this.path==='/preview' ? "btn btn-wizard active" : 'btn btn-wizard'}>
                 <span className="badge">2</span>Preview
               </span>
-              <Link to="/mapping" className="btn btn-wizard">
+              <Link to="/mapping" className={this.path==='/mapping' ? "btn btn-wizard active" : 'btn btn-wizard'}>
                 <span className="badge">3</span>Map
               </Link>
-              <Link to="/" className="btn btn-wizard">
+              <Link to="/" className={this.path==='/import' ? "btn btn-wizard active" : 'btn btn-wizard'}>
                 <span className="badge">4</span>Import
               </Link>
           </div>
