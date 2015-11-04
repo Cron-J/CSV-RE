@@ -6,7 +6,17 @@ const initialState = {
   tables: [],
   properties: [],
   mappingData: {},
-  mappingState : {}
+  headers : [],
+  headSelect : '',
+  propertySelect : '',
+  defaultValue : '',
+  selectedHeaders : [],
+  selectedTables : [],
+  selectedProperties : [],
+  mappedFields : [],
+  mappedData : [],
+  selectedTab : '',
+  mappingName : ''
 };
 
 
@@ -523,7 +533,7 @@ export default createReducer(initialState, {
       }
     };
     fn('',product);
-    
+
     let tables = {};
     for(let k in tst){
       tables[k] = [];
@@ -567,11 +577,17 @@ export default createReducer(initialState, {
     }
   },
   [types.SAVEMAPPEDDATA](state,action) {
-    const {data} = action.payload;
+    const data = action.payload;
     return {
-        ...state,
-        mappingData: data
+        ...state
     }
+  },
+  [types.SAVEMAPPEDDATASUCCESS](state,action) {
+      const {response} = action.payload;
+      return {
+          ...state,
+          mappingData: response
+      }
   },
   [types.HANDLEMAPPEDINFOSUCCESS](state, action) {
     const { response } = action.payload;
