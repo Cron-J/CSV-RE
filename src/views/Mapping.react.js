@@ -11,6 +11,8 @@ class Mapping extends Component {
     const { mappingsection, dispatch } = this.props;
     this.state = mappingsection;
     this.actions = bindActionCreators(MappingActions, dispatch);
+    console.log("mappingsection");
+    console.log(mappingsection);
     this.headers = [];
     this.headSelect = '';
     this.propertySelect = '';
@@ -28,7 +30,6 @@ class Mapping extends Component {
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
     }
-    //this.growler= null;
   }
   componentWillMount() {
     this.actions.attributeList();
@@ -39,35 +40,14 @@ class Mapping extends Component {
   }
   componentWillRecieveProps(nextProps){
       console.log(nextProps);
+      console.log("dfaultvaluve");
       //this.mappingName
   }
 
-/*renderError(){
-        const child=[];
-        let notifications = [
-        {
-          id: 1,
-          title: 'Title',
-          message: 'Message'
-        },
-        {
-          id: 2,
-          title: 'Title',
-          message: 'Message'
-        }
-      ];
 
-      let handleRequestHide = (notification) => {
-        notifications = notifications.filter(n => n.id !== notification.id);
-      };
-
-      child.push(<div><Notifications notifications={notifications} onRequestHide={handleRequestHide}/></div>);
-      return child;
-}*/
 
   mapping(e) {
     e.preventDefault();
-    this.defaultValue="";
     if(this.headSelect===''||this.propertySelect===''||this.selectedTab===''){
       alert("select three column");
     }
@@ -101,13 +81,18 @@ class Mapping extends Component {
           }
           if(this.defaultValue.length>0){
             this.headSelect = this.defaultValue;
+            console.log("target",e.target);
           }
+
           this.mappedFields.push({column:this.headSelect,propertydec: this.propertySelect, propertyname: propertyname});
           this.mappedData.push(mappedField);
           this.props.mappingsection.selectedTable = this.selectedTab;
           this.props.mappingsection.mappedData = this.mappedData;
           this.props.mappingsection.mappedFields = this.mappedFields;
           this.actions.handleMappedChnages(this.props.mappingsection);
+          this.setState({
+            defaultValue:''
+          })
   }
 }
   
@@ -140,13 +125,14 @@ class Mapping extends Component {
     }
     this.actions.handleChanges(this.props.mappingsection);
     e.preventDefault();
-    e.stopImmediatePropagation();
+    //e.stopImmediatePropagation();
   }
   selectedProperty(e) {
     e.preventDefault();
   } 
   
   enteredDefaultVal(e) {
+    console.log(e.currentTarget.value);
     if(e.currentTarget.value.length>0)
       $('.default-value').addClass('active');
     else
@@ -161,6 +147,7 @@ class Mapping extends Component {
     this.setState({});
   }
   mapAttribute(e) {
+    console.log(this.props);
     if(this.headSelect=="")
      alert("select column");
     else{ 
@@ -180,16 +167,7 @@ class Mapping extends Component {
                   "isRequired": true,
                   "rowId": this.mappedData.length++
                 });
-        this.props.mappingsection.mappedData.push({
-                  "userFieldName": '"'+this.headSelect+'"',
-                  "transformations": [],
-                  "field": 'value',
-                  "defaultValue": this.defaultValue,
-                  "index": '',
-                  "instance": '',
-                  "isRequired": true,
-                  "rowId": this.mappedData.length++
-                });
+       
         this.mappedFields.push({column:this.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
         this.mappedFields.push({column:'"'+this.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
         this.props.mappingsection.mappedFields = this.mappedFields;

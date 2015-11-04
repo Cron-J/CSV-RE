@@ -6,6 +6,21 @@ const initialState = {
   tables: [],
   properties: []
 };
+
+export default createReducer(initialState, {
+    [types.HANDLESELECTEDDEFAULTVALUE](state, action) {
+        console.log('handle selected default value reducer',action.payload);
+        const data = action.payload.response;
+        return {
+        ...state,
+            properties : action.payload.properties,
+            defaultValue:data
+        }
+    }
+});
+
+
+
 export default createReducer(initialState, {
   [types.HANDLEATTRIBUTELIST](state, action) {
     const { response } = action.payload;

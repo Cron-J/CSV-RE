@@ -29,6 +29,10 @@ export function attributeList() {
   };
 }
 
+export function selectedDefaultValue(data) {
+  return { type: types.HANDLESELECTEDDEFAULTVALUE, payload: { data } };
+}
+
 export function redirectPreview(data) {
   return  {
     type: types.RESETSEARCH,

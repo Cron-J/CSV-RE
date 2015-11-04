@@ -12,7 +12,7 @@ class Home extends Component {
     constructor(props) {
         super(props);
         var { homesection,dispatch } = this.props;
-        console.log(homesection);
+        console.log("homesection",homesection);
         this.state=homesection;
         if(this.props.homesection.fileSelected==true){
           this.message=this.props.homesection.properties.message;
@@ -30,8 +30,7 @@ class Home extends Component {
         this.uploadedFile;
         this.actions = bindActionCreators(PreviewActions, dispatch);
         this.homeSectionActions = bindActionCreators(homeActions,dispatch);
-        console.log("url");
-        console.log(this.props);
+        console.log("akki",this.homeSectionActions);
     }
 
 
@@ -47,7 +46,7 @@ class Home extends Component {
         extention= files[0].name.split('.').pop();
         extention=extention.toLowerCase();
 
-        if(extention=="csv"){
+        if(extention==="csv"){
             this.message="uploaded file:";
             this.size=" size:"+files[0].size+"B";
             this.name=" name:"+files[0].name;
@@ -123,22 +122,20 @@ class Home extends Component {
                       </Dropzone>
                   </div>
               </div>
-          {
-
-          this.message==='please select csv file' &&
-          <div className="errorMessage">
-                {this.message}
-          </div>
+          { 
+            this.message==='please select csv file' &&
+            <div className="errorMessage">
+              error
+            </div>
               }
 
           {
+            this.message==='uploaded file:' &&
+            <div className="displayMessage">
+                <b>{this.message}</b>{this.name}-{this.size}-{this.type}
+            </div>
 
-          this.message==='uploaded file:' &&
-          <div className="displayMessage">
-              <b>{this.message}</b>{this.name}-{this.size}-{this.type}
-          </div>
-
-              }
+          }
         
          
          { this.message==='uploaded file:' &&
