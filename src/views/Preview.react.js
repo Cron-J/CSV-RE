@@ -6,34 +6,46 @@ import { connect } from 'react-redux';
 class Preview extends Component {
   constructor(props) {
     super(props);
-    const { attributesectionsearch, dispatch } = this.props;
-    this.state = attributesectionsearch;
-    this.delimiter = ',';
+    const { state, dispatch } = this.props;
+    this.uploadpage = state.homesection;
+    this.previewPage = state.attributesectionsearch;
+    this.actions = bindActionCreators(PreviewActions, dispatch);
+    if(this.uploadpage.fileSelected && this.uploadpage.filedata && this.uploadpage.filedata.fileName){
+        let filedata = this.uploadpage.filedata;
+        this.state = filedata;
+        this.state.customHeader = this.previewPage.customHeader;
+
+    }
+    this.delimiter = this.previewPage.delimiter;
     this.headers = [];
-    this.customHeader = [];
+    this.customHeader = this.previewPage.customHeader;
     this.row1 = [];
     this.row2 = [];
-    this.checkboxSelected=true;
+    this.checkboxSelected = true;
     this.includeHeader = true;
-    this.noHeader = false;
-    this.dFormat="MM/dd/yyyy";
-    this.noFormat="#,###.##";
-    this.checkedState=true;
-    this.actions = bindActionCreators(PreviewActions, dispatch);
+    this.noHeader = this.previewPage.noHeader;
+    this.dFormat = this.previewPage.dFormat;
+    this.noFormat = this.previewPage.noFormat;
+    this.checkedState = true;
   }
 
   componentWillMount() {
-    //this.actions.previewFile();
-    console.log("state==="+this.state.size);
-    this.dateFormat(this,'MM/dd/yyyy');
+      let uploadpage = this.uploadpage;
+      if(!(uploadpage.fileSelected && uploadpage.filedata && uploadpage.filedata.fileName)){
+          console.log('No File selected redirecting to home');
+          this.actions.redirectHome();
+      }
+      else{
+          this.dateFormat(this,'MM/dd/yyyy');
+      }
   }
   componentDidMount(){
     
   }
-
   resetPreviewSetting(e) {
     console.log('data');
     this.dFormat = "";
+    this.noFormat = "";
     this.setState({});
   }
 
@@ -46,8 +58,8 @@ class Preview extends Component {
       for(let c=1; c<=this.row1.length; c++){
         this.customHeader.push('Column'+c);
       }
-      this.props.attributesectionsearch.customHeader = this.customHeader;
-      this.actions.handleCustomHeader(this.props.attributesectionsearch);
+      this.state.customHeader = this.customHeader;
+      this.actions.handleCustomHeader(this.state);
     }
     else{
       this.customHeader = [];
@@ -117,37 +129,43 @@ class Preview extends Component {
   }
  dateFormatt(e){
    this.dFormat=e.target.value;
-     this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
-    let rowOne = this.splitter(this.props.attributesectionsearch.rowOne, this.delimiter);
-    let rowTwo = this.splitter(this.props.attributesectionsearch.rowTwo, this.delimiter);
+     this.headers = this.splitter(this.state.headers, this.delimiter);
+    let rowOne = this.splitter(this.state.rowOne, this.delimiter);
+    let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
     this.row1 = this.changeDateFormat(rowOne);
     this.row2 = this.changeDateFormat(rowTwo);
+    this.numberFormat(this.noFormat);
     this.setState({});
  }
   dateFormat(e){
    //console.log("00"+e.target.value);
-    this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
-    let rowOne = this.splitter(this.props.attributesectionsearch.rowOne, this.delimiter);
-    let rowTwo = this.splitter(this.props.attributesectionsearch.rowTwo, this.delimiter);
+    this.headers = this.splitter(this.state.headers, this.delimiter);
+    let rowOne = this.splitter(this.state.rowOne, this.delimiter);
+    let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
     this.row1 = this.changeDateFormat(rowOne);
     this.row2 = this.changeDateFormat(rowTwo);
+    this.numberFormat(this.noFormat);
     this.setState({});
   }
   numberFormat(e){
-    this.noFormat=e.target.value;
-    this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
-    let rowOne = this.splitter(this.props.attributesectionsearch.rowOne, this.delimiter);
-    let rowTwo = this.splitter(this.props.attributesectionsearch.rowTwo, this.delimiter);
-    this.row1 = this.changeNumberFormat(rowOne, e.target.value);
-    this.row2 = this.changeNumberFormat(rowTwo, e.target.value);
+    if(typeof e === 'string'){
+        this.noFormat = e;
+    }else{
+        this.noFormat=e.target.value;
+    }
+    this.headers = this.splitter(this.state.headers, this.delimiter);
+    let rowOne = this.splitter(this.state.rowOne, this.delimiter);
+    let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
+    this.row1 = this.changeNumberFormat(rowOne, this.noFormat);
+    this.row2 = this.changeNumberFormat(rowTwo, e.noFormat);
     this.setState({});
   }
   delimiterFormat(e){
     console.log('Delimiter Format', e.target.value);
     this.delimiter = e.target.value;
-    this.headers = this.splitter(this.props.attributesectionsearch.headers, this.delimiter);
-    this.row1 = this.splitter(this.props.attributesectionsearch.rowOne, this.delimiter);
-    this.row2 = this.splitter(this.props.attributesectionsearch.rowTwo, this.delimiter);
+    this.headers = this.splitter(this.state.headers, this.delimiter);
+    this.row1 = this.splitter(this.state.rowOne, this.delimiter);
+    this.row2 = this.splitter(this.state.rowTwo, this.delimiter);
     this.setState({});
   }
   splitter(data, splittype) {
@@ -199,17 +217,12 @@ class Preview extends Component {
     if(this.dFormat==""||this.noFormat==""||this.delimiter==""){
         /*no selected*/
        //location.path('/mapping');
-      alert('error');
-       
-
+      console.log('please correct the settings to procced');
     }
     else{
-      console.log("else");
      /*redirect to mapping*/
      // window.location.href = '/mapping';
-     this.actions.redirectMapping();
-      
-      
+     this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
     }
     //location.path('/mapping');
   }
@@ -219,15 +232,14 @@ class Preview extends Component {
   }
 
   reloadStep(e){
-    
     console.log("reload="+e.datePattern+" "+e.numberPattern);
   }
 
   render() {
    // console.log(this.headers);
     //console.log(this.row1);
-   // console.log(this.row2);
-   
+   // console.log(this.row2);\
+
     let CHeader = this.customHeader.map(function(head){
         return <th>{head}</th>;
     });
@@ -366,10 +378,9 @@ class Preview extends Component {
   }
 }
 
-function mapStateToProps(state) { 
-  const { attributesectionsearch } = state;
+function mapStateToProps(state) {
   return {
-    attributesectionsearch
+    state
   };
 }
 

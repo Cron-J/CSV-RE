@@ -15,7 +15,7 @@ export default class CoreLayout extends React.Component {
     return (
       <div className='page-container'>
         <div>
-          <Navigation />
+          <Navigation routedto={this.props.children}/>
         </div>
         <div className='view-container'>
           {this.props.children}

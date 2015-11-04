@@ -1,12 +1,13 @@
 import React       from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 import Header from '../views/Header.react';
 import { bindActionCreators } from 'redux';
 import * as PreviewActions from 'actions/previewPage/PreviewActions';
 export default class Navigation extends React.Component {
-  constructor () {
-    super();
+  constructor (props) {
+    super(props);
     this.activeTabClassName="tab1";
   }
   /*UploadClick(e){
@@ -40,3 +41,16 @@ export default class Navigation extends React.Component {
     );
   }
 }
+function mapStateToProps(state) {
+    return {
+        state
+    };
+}
+
+Navigation.propTypes = {
+    mappingsection: React.PropTypes.object,
+    dispatch: React.PropTypes.func.isRequired,
+    attributesectionsearch: React.PropTypes.object
+};
+
+export default connect(mapStateToProps)(Navigation);

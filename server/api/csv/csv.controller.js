@@ -40,13 +40,14 @@ exports.getMappingList = function(req,res){
   API to create the Mapping.
 */
 exports.create =  function(req,res){
-
+    console.log(req.body);
   models.mapping.create({
     attributeId: req.body.attributeId,
     tenantId: req.body.tenantId,
     fileName: req.body.fileName,
     mappingInfo: req.body.mappingInfo,
-    delimeter: req.body.delimeter
+    delimeter: req.body.delimeter,
+    mappingName : req.body.mappingName
   }).then(function(result){
     res.status(200).json(result);        
   }).catch(function(error){
