@@ -21,7 +21,7 @@ const initialState = {
   customHeader:[]
 };
 export default createReducer(initialState, {
-  [types.PREVIEWTOMAPPING](state, action) {
+  [types.STOREPREVIEW](state, action) {
     const response = action.payload;
     return {
         ...state,

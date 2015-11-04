@@ -5,9 +5,21 @@ import { createReducer } from 'redux-create-reducer';
 const initialState = {
   tables: [],
   properties: [],
-  mappingData: {}
+  mappingData: {},
+  mappingState : {}
 };
+
+
 export default createReducer(initialState, {
+  [types.HANDLESELECTEDDEFAULTVALUE](state, action) {
+      console.log('handle selected default value reducer',action.payload);
+      const data = action.payload.response;
+      return {
+      ...state,
+          properties : action.payload.properties,
+          defaultValue:data
+      }
+  },
   [types.HANDLEATTRIBUTELIST](state, action) {
     const { response } = action.payload;
     return {

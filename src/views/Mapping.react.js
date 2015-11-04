@@ -44,7 +44,6 @@ class Mapping extends Component {
 
   mapping(e) {
     e.preventDefault();
-    this.defaultValue="";
     if(this.headSelect===''||this.propertySelect===''||this.selectedTab===''){
       alert("select three column");
     }
@@ -84,6 +83,9 @@ class Mapping extends Component {
           this.props.mappingsection.mappedData = this.mappedData;
           this.props.mappingsection.mappedFields = this.mappedFields;
           this.actions.handleMappedChnages(this.props.mappingsection);
+          this.setState({
+            defaultValue:''
+          })
   }
 }
   
@@ -156,16 +158,7 @@ class Mapping extends Component {
                   "isRequired": true,
                   "rowId": this.mappedData.length++
                 });
-        this.props.mappingsection.mappedData.push({
-                  "userFieldName": '"'+this.headSelect+'"',
-                  "transformations": [],
-                  "field": 'value',
-                  "defaultValue": this.defaultValue,
-                  "index": '',
-                  "instance": '',
-                  "isRequired": true,
-                  "rowId": this.mappedData.length++
-                });
+       
         this.mappedFields.push({column:this.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
         this.mappedFields.push({column:'"'+this.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
         this.props.mappingsection.mappedFields = this.mappedFields;
