@@ -3,16 +3,16 @@ import { Link } from 'react-router';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 import Header from '../views/Header.react';
 import { bindActionCreators } from 'redux';
+import * as homeActions from 'actions/homePage/HomeActions'
 import * as PreviewActions from 'actions/previewPage/PreviewActions';
 export default class Navigation extends React.Component {
-  constructor () {
-    super();
-    this.activeTabClassName="active";
-    this.actions = bindActionCreators(PreviewActions);
+  constructor (props) {
+    super(props);
+    var { homesection,dispatch } = this.props
+    this.actions = bindActionCreators(PreviewActions,dispatch);
+      console.log("Navigation");
+  console.log(this);
   }
- previewClicked(){
-     this.actions.redirectPreview();
- }
   render () {
     return (
 
@@ -21,10 +21,10 @@ export default class Navigation extends React.Component {
         <div brand={<Link to="/"></Link>}>
         <div className="container">
           <div className="btn-group btn-group-justified btn-group-wizard">
-              <Link to="/" className={"btn btn-wizard" >
+              <Link to="/" className="btn btn-wizard" >
                 <span  className="badge">1</span>Upload
               </Link>
-              <span className={"btn btn-wizard "+ this.activeTabClassName} onClick={this.previewClicked.bind(this)}>
+              <span className="btn btn-wizard">
                 <span className="badge">2</span>Preview
               </span>
               <Link to="/mapping" className="btn btn-wizard">

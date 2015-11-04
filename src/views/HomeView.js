@@ -30,6 +30,8 @@ class Home extends Component {
         this.uploadedFile;
         this.actions = bindActionCreators(PreviewActions, dispatch);
         this.homeSectionActions = bindActionCreators(homeActions,dispatch);
+        console.log("url");
+        console.log(this.props);
     }
 
 
