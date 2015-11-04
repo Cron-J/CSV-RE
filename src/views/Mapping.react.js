@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 class Mapping extends Component {
   constructor(props) {
     super(props);
-    const { mappingsection, dispatch } = this.props;
+    const { mappingsection, homesection, dispatch } = this.props;
     this.state = mappingsection;
     this.actions = bindActionCreators(MappingActions, dispatch);
     this.headers = [];
@@ -42,29 +42,6 @@ class Mapping extends Component {
       //this.mappingName
   }
 
-/*renderError(){
-        const child=[];
-        let notifications = [
-        {
-          id: 1,
-          title: 'Title',
-          message: 'Message'
-        },
-        {
-          id: 2,
-          title: 'Title',
-          message: 'Message'
-        }
-      ];
-
-      let handleRequestHide = (notification) => {
-        notifications = notifications.filter(n => n.id !== notification.id);
-      };
-
-      child.push(<div><Notifications notifications={notifications} onRequestHide={handleRequestHide}/></div>);
-      return child;
-}*/
-
   mapping(e) {
     e.preventDefault();
     this.defaultValue="";
@@ -72,7 +49,6 @@ class Mapping extends Component {
       alert("select three column");
     }
     else{
-                      
           let propertyname;
           let mappedField = {};
           for(let index in this.props.mappingsection.attributeList){
@@ -328,6 +304,7 @@ class Mapping extends Component {
       'mappingName': this.mappingName
     }
     this.actions.saveMappedData(finalData);
+    this.actions.redirectImport();
   }
 }
   render() {    
@@ -457,7 +434,7 @@ class Mapping extends Component {
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.actions.redirectPreview}>Back</button>
             <span> </span>
-            <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Save Mapping</button>
+            <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Next</button>
           </div>
         </div>
 	    </div>

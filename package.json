@@ -23,7 +23,7 @@
     "async": "^1.4.2",
     "babel": "^5.8.23",
     "body-parser": "^1.14.0",
-    "csvtojson": "^0.4.3",
+    "csvtojson": "^0.4.5",
     "currency-codes": "^1.1.2",
     "express": "^4.13.3",
     "fs": "0.0.2",

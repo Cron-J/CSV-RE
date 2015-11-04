@@ -4,7 +4,8 @@ import { createReducer } from 'redux-create-reducer';
 
 const initialState = {
   tables: [],
-  properties: []
+  properties: [],
+  mappingData: {}
 };
 export default createReducer(initialState, {
   [types.HANDLEATTRIBUTELIST](state, action) {
@@ -551,6 +552,21 @@ export default createReducer(initialState, {
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
       selectedTable: data.selectedTable
+    }
+  },
+  [types.SAVEMAPPEDDATA](state,action) {
+    const {data} = action.payload;
+    return {
+        ...state,
+        mappingData: data
+    }
+  },
+  [types.HANDLEMAPPEDINFOSUCCESS](state, action) {
+    const { response } = action.payload;
+    return {
+    ...state,
+        mappingInfo: response,
+        mappingDataPreview: true
     }
   }
 });
