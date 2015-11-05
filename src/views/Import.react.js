@@ -1,29 +1,72 @@
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router';
+import { bindActionCreators } from 'redux';
+import * as PreviewActions from 'actions/previewPage/PreviewActions';
 class ImportFile extends Component {
 
     constructor(props) {
         super(props);
+        var { importsection,mappingsection,dispatch } = this.props;
+        this.state=importsection;
+        this.actions = bindActionCreators(PreviewActions, dispatch);
+        console.log(this.props);
+        this.importJson=[
+                    {
+                        "product":"pen",
+                        "ProductId":100,
+                        "price":100
+                    },
+                    {
+                        "product":"pencile",
+                        "ProductId":101,
+                        "price":101
+                    },
+                    {
+                        "product":"ink",
+                        "ProductId":102,
+                        "price":102
+                    }
+
+            ];
+           this.stringJSon=JSON.stringify(this.importJson,null,4); 
+           console.log(this.parseJson(this.stringJSon));
+    	
     }
-    render{
+    parseJson(json){
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        return '' + match + '';
+    });
+    }
+    render(){
+        var data=this.parseJson(this.stringJSon);
     	return(
-    		<div className="row">
-				<div className="upload-container">
-      				<legend>Json Preview</legend>
-  				</div>
-  				<div className="col-lg-6">
-				    <div className="row">
-				    	
-				      <div ng-hide="mappedJson"><i className="fa fa-spinner fa-pulse"></i> Processing Json</div>
-				    	<div className="well" ng-show="mappedJson">
-				    	 <json-formatter open="7" json="mappedJson"></json-formatter>
-				    	</div>
-				    	</div>
-				 	</div>
-				 	<div className="col-lg-3 col-lg-offset-9 btn-set button-container">
-							<button className="btn btn-primary pull-right"  onClick="isBackToThirdStep()">Back</button>
-				    <!-- <download-json-file data="{{downloadedData}}"></download-json-file> -->
-				    
-				    <div className="btn btn-primary pull-right" onClick={this.importJson()} >Import</a>
-					</div>
-				</div>
-    		)
+    		<div className="container">
+            <p>This is Import View</p>
+            <div className="row">
+            <div className="col-mad-6">
+                <div className="panel panel-default">
+                    <div className="panel-body">{data}</div>
+                    </div>
+                </div>
+             </div>
+             
+            <div>
+                 <Link to="/"> <button className="btn btn-primary" onClick={this.actions.redirectMapping}>Back</button></Link>
+            </div>
+            </div>
+    		);
     }
+}
+function mapStateToProps(state) {
+    var { importsection } = state;
+    return {
+        importsection
+    };
+}
+
+ImportFile.propTypes = {
+    dispatch: React.PropTypes.func.isRequired
+};
+export default connect(mapStateToProps)(ImportFile);
