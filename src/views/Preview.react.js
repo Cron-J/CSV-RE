@@ -33,7 +33,7 @@ class Preview extends Component {
       let uploadpage = this.uploadpage;
       if(!(uploadpage.fileSelected && uploadpage.filedata && uploadpage.filedata.fileName)){
           console.log('No File selected redirecting to home');
-          this.actions.redirectHome();
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
       }
       else{
           this.dateFormat(this,'MM/dd/yyyy');
@@ -228,7 +228,14 @@ class Preview extends Component {
   }
 
   firstStep(){
-     
+      if(this.dFormat==""||this.noFormat==""||this.delimiter==""){
+          /*no selected*/
+          //location.path('/mapping');
+          console.log('please correct the settings to procced');
+      }
+      else {
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
+      }
   }
 
   reloadStep(e){
@@ -366,7 +373,7 @@ class Preview extends Component {
                 </tbody>
               </table>
               <div className="btn-set button-container pull-right">
-                  <Link to="/"> <button className="btn btn-primary" onClick={this.actions.redirectHome}>Back</button></Link>
+                  <Link to="/"> <button className="btn btn-primary" onClick={this.firstStep.bind(this)}>Back</button></Link>
                   <span> </span>
                   <button className="btn btn-primary" onClick={this.thirdStep.bind(this)}>Next</button>                
               </div>

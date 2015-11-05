@@ -7,8 +7,10 @@ class ImportFile extends Component {
 
     constructor(props) {
         super(props);
-        var { importsection,mappingsection,dispatch } = this.props;
+         const { importsection,mappingsection, homesection, dispatch } = this.props;
         this.state=importsection;
+
+        this.jsonpreview = mappingsection.mappingData;
         this.actions = bindActionCreators(PreviewActions, dispatch);
         console.log(this.props);
         this.importJson=[
@@ -32,6 +34,13 @@ class ImportFile extends Component {
            this.stringJSon=JSON.stringify(this.importJson,null,4); 
            console.log(this.parseJson(this.stringJSon));
     	
+    }
+    componentWillReceiveProps(nextProps){
+        this.props = nextProps;
+        let mappingsection = this.props.mappingsection;
+        if(mappingsection && mappingsection.mappingData){
+            this.jsonpreview = mappingsection.mappingData;
+        }
     }
     parseJson(json){
         json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -67,6 +76,9 @@ function mapStateToProps(state) {
 }
 
 ImportFile.propTypes = {
+    mappingsection: React.PropTypes.object,
     dispatch: React.PropTypes.func.isRequired
 };
 export default connect(mapStateToProps)(ImportFile);
+
+

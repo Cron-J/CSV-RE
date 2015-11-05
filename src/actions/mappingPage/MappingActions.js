@@ -19,7 +19,14 @@ export function saveMappedData(data) {
     }
   };
 }
-
+export function mappinginfo(data) {
+  return {
+    types: [types.HANDLEMAPPEDINFO, types.HANDLEMAPPEDINFOSUCCESS, types.HANDLEMAPPEDINFOERROR],
+    payload: {
+      response: api.getMappingList().then(response => response)
+    }
+  };
+}
 export function attributeList() {
   return {
     types: [types.HANDLEATTRIBUTELIST, types.HANDLEATTRIBUTELISTSUCCESS, types.HANDLEATTRIBUTELISTERROR],
@@ -43,4 +50,15 @@ export function redirectPreview(data) {
     }
   };
 }
+export function redirectImport(data) {
+  return  {
+    type: types.RESETSEARCH,
+    meta: {
+      transition: () => ({
+        path: '/import'
+      })
+    }
+  };
+}
+
 

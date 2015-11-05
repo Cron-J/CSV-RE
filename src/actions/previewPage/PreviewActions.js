@@ -17,7 +17,7 @@ export function previewFile() {
 
 export function redirectMapping(data) {
   return {
-    type: types.PREVIEWTOMAPPING,
+    type: types.STOREPREVIEW,
     payload : data,
     meta: {
       transition: () => ({
@@ -32,7 +32,7 @@ export function redirectPreview(data) {
     type: types.RESETSEARCH,
     meta: {
       transition: () => ({
-        path: '/preview',
+        path: '/preview'
       })
     }
   };
@@ -40,10 +40,11 @@ export function redirectPreview(data) {
 
 export function redirectHome(data) {
   return  {
-    type: types.RESETSEARCH,
+    type: types.STOREPREVIEW,
+    payload : data,
     meta: {
       transition: () => ({
-        path: '/',
+        path: '/'
       })
     }
   };

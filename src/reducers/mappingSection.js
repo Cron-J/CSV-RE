@@ -4,24 +4,32 @@ import { createReducer } from 'redux-create-reducer';
 
 const initialState = {
   tables: [],
-  properties: []
+  properties: [],
+  mappingData: {},
+  headers : [],
+  headSelect : '',
+  propertySelect : '',
+  defaultValue : '',
+  selectedHeaders : [],
+  selectedTables : [],
+  selectedProperties : [],
+  mappedFields : [],
+  mappedData : [],
+  selectedTab : '',
+  mappingName : ''
 };
 
-export default createReducer(initialState, {
-    [types.HANDLESELECTEDDEFAULTVALUE](state, action) {
-        console.log('handle selected default value reducer',action.payload);
-        const data = action.payload.response;
-        return {
-        ...state,
-            properties : action.payload.properties,
-            defaultValue:data
-        }
-    }
-});
-
-
 
 export default createReducer(initialState, {
+  [types.HANDLESELECTEDDEFAULTVALUE](state, action) {
+      console.log('handle selected default value reducer',action.payload);
+      const data = action.payload.response;
+      return {
+      ...state,
+          properties : action.payload.properties,
+          defaultValue:data
+      }
+  },
   [types.HANDLEATTRIBUTELIST](state, action) {
     const { response } = action.payload;
     return {
@@ -525,7 +533,7 @@ export default createReducer(initialState, {
       }
     };
     fn('',product);
-    
+
     let tables = {};
     for(let k in tst){
       tables[k] = [];
@@ -566,6 +574,27 @@ export default createReducer(initialState, {
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
       selectedTable: data.selectedTable
+    }
+  },
+  [types.SAVEMAPPEDDATA](state,action) {
+    const data = action.payload;
+    return {
+        ...state
+    }
+  },
+  [types.SAVEMAPPEDDATASUCCESS](state,action) {
+      const {response} = action.payload;
+      return {
+          ...state,
+          mappingData: response
+      }
+  },
+  [types.HANDLEMAPPEDINFOSUCCESS](state, action) {
+    const { response } = action.payload;
+    return {
+    ...state,
+        mappingInfo: response,
+        mappingDataPreview: true
     }
   }
 });
