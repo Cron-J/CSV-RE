@@ -22,6 +22,7 @@ export default class Navigation extends React.Component {
         <Header />
         <div brand={<Link to="/"></Link>}>
         <div className="container">
+        
           <div className="btn-group btn-group-justified btn-group-wizard">
               <Link to="/" className={this.path==='/' ? "btn btn-wizard active" : 'btn btn-wizard'}  >
                 <span  className="badge">1</span>Upload

@@ -29,7 +29,7 @@ class ImportView extends Component {
             ];
         this.stringJSon=JSON.stringify(this.jsonpreview,null,4); 
         this.actions = bindActionCreators(PreviewActions, dispatch);
-        console.log("json",this.parseJson(this.stringJSon));
+        console.log("json",this.stringJSon.length);
     }
 
     importJson() {
@@ -52,10 +52,7 @@ class ImportView extends Component {
             this.jsonpreview = mappingsection.mappingData;
         }
     }
-    render() {
-        var data=[];
-       
-        console.log("--json--",data);
+    render() {     
         return (
             <div className="container">
                 <div className="row">
@@ -67,8 +64,11 @@ class ImportView extends Component {
                             <div ng-hide="mappedJson">
                                 <i className="fa fa-spinner fa-pulse"></i>
                             Processing Json</div>
-                           <div>
-                                {this.parseJson(this.stringJSon)}
+                           <div className="panel panel-default">
+                           <div className="panel-body">
+                                {this.stringJSon}
+                           </div>
+                         
                            </div>
                         </div>
                     </div>
@@ -81,8 +81,8 @@ class ImportView extends Component {
             </div>
         )
     }
-}
 
+}
 function mapStateToProps(state) {
     const { mappingsection, attributesectionsearch, homesection } = state;
     return {

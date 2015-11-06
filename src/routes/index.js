@@ -5,6 +5,7 @@ import HomeView    from 'views/HomeView';
 import PreviewPage from 'views/Preview.react';
 import MappingView from 'views/Mapping.react';
 import ImportFileView from 'views/Import.react';
+import EditMappingView from 'views/EditMapping';
 
 export default (
     <Route component={CoreLayout}>
@@ -12,6 +13,6 @@ export default (
         <Route name='preview' path='/preview' component={PreviewPage} />
         <Route name='mapping' path='/mapping' component={MappingView} />
         <Route name='importfile' path='/import' component={ImportFileView} />
-
+        <Route name='editmapping' path='/editmapping' component={EditMappingView} />
     </Route>
 );

@@ -1,6 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 
 class Header extends Component {
+
+
+  moveToEditMapping(e){
+    
+  }
   render() {
     return (
       <div className="navbar navbar-default navbar-main-menu">
@@ -24,7 +29,7 @@ class Header extends Component {
                 <li><a href="" ng-click="moveToMappingEditor()">Mapping Editor</a></li>
               </ul>
             </li>
-            <li><a className="pointer" ng-click="moveToEditMapping()">Edit</a></li>
+            <li><a href="/editmapping" onClick={this.moveToEditMapping.bind(this)}>Edit</a></li>
             <li className="dropdown">
               <a className="dropdown-toggle" data-toggle="dropdown">Validate <b className="caret"></b></a>
               <ul className="dropdown-menu">
@@ -61,8 +66,9 @@ class Header extends Component {
           <form className="navbar-form navbar-right" role="search">
             <div className="form-group">
               <input type="text" className="form-control" placeholder="Search" />
+            
+            <button type="submit" className="btn btn-default"><span className="glyphicon glyphicon-search"></span></button>
             </div>
-            <sup><button type="submit" className="btn btn-default"><span className="glyphicon glyphicon-search"></span></button></sup>
           </form>
         </div>
       </div>
