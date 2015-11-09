@@ -23,7 +23,8 @@ class ImportView extends Component {
         //<!-- <download-json-file data="{{downloadedData}}"></download-json-file> -->
         return (
             <div className="container">
-                <div className="row">
+                <div className="row">dir
+
                     <div className="upload-container">
                         <legend>Json Preview</legend>
                     </div>

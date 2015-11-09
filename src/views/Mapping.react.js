@@ -9,11 +9,10 @@ class Mapping extends Component {
   constructor(props) {
     super(props);
     const { mappingsection, homesection, dispatch } = this.props;
-    this.state = mappingsection;
     this.actions = bindActionCreators(MappingActions, dispatch);
-    this.mappingName = this.state.mappingName;
+    this.mappingName = this.props.mappingsection.mappingName;
     if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        this.state.headers = this.props.homesection.filedata.headers.split(',');
+        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
     }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
@@ -28,50 +27,50 @@ class Mapping extends Component {
   }
   componentWillReceiveProps(nextProps){
       console.log(nextProps);
-      //this.state.mappingName
+      //this.props.mappingsection.mappingName
   }
 
   mapping(e) {
     e.preventDefault();
-    if(this.state.headSelect===''||this.state.propertySelect===''||this.state.selectedTab===''){
+    if(this.props.mappingsection.headSelect===''||this.props.mappingsection.propertySelect===''||this.props.mappingsection.selectedTab===''){
       alert("select three column");
     }
     else{
           let propertyname;
           let mappedField = {};
-          for(let index in this.state.attributeList){
-            if(this.state.selectedTab === index){
-              for(let idx in this.state.attributeList[index]){
-                if(this.state.attributeList[index][idx].field === this.state.propertySelect){
-                  this.state.attributeList[index][idx]['mapped'] = true;
+          for(let index in this.props.mappingsection.attributeList){
+            if(this.props.mappingsection.selectedTab === index){
+              for(let idx in this.props.mappingsection.attributeList[index]){
+                if(this.props.mappingsection.attributeList[index][idx].field === this.props.mappingsection.propertySelect){
+                  this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
                   mappedField = {
-                    "userFieldName": this.state.headSelect,
+                    "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
-                    "field": this.state.attributeList[index][idx].field,
-                    "defaultValue": this.state.defaultValue,
-                    "index": this.state.attributeList[index][idx].index,
-                    "instance": this.state.attributeList[index][idx].instance,
-                    "isRequired": this.state.attributeList[index][idx].isRequired,
-                    "rowId": this.state.mappedData.length++
+                    "field": this.props.mappingsection.attributeList[index][idx].field,
+                    "defaultValue": this.props.mappingsection.defaultValue,
+                    "index": this.props.mappingsection.attributeList[index][idx].index,
+                    "instance": this.props.mappingsection.attributeList[index][idx].instance,
+                    "isRequired": this.props.mappingsection.attributeList[index][idx].isRequired,
+                    "rowId": this.props.mappingsection.mappedData.length++
                   };
                 }
               }
             }
           }
-          if(this.state.pickedTable === 'product'){
-            propertyname = this.state.pickedTable+'.'+this.state.propertySelect;
+          if(this.props.mappingsection.pickedTable === 'product'){
+            propertyname = this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
           }else{
-            propertyname = 'product.'+this.state.pickedTable+'.'+this.state.propertySelect;
+            propertyname = 'product.'+this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
           }
-          if(this.state.defaultValue.length>0){
-            this.state.headSelect = this.state.defaultValue;
+          if(this.props.mappingsection.defaultValue.length>0){
+            this.props.mappingsection.headSelect = this.props.mappingsection.defaultValue;
           }
-          this.state.mappedFields.push({column:this.state.headSelect,propertydec: this.state.propertySelect, propertyname: propertyname});
-          this.state.mappedData.push(mappedField);
-          this.state.selectedTable = this.state.selectedTab;
-          this.state.mappedData = this.state.mappedData;
-          this.state.mappedFields = this.state.mappedFields;
-          this.actions.handleMappedChnages(this.state);
+          this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: this.props.mappingsection.propertySelect, propertyname: propertyname});
+          this.props.mappingsection.mappedData.push(mappedField);
+          this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
+          this.props.mappingsection.mappedData = this.props.mappingsection.mappedData;
+          this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
+          this.actions.handleMappedChnages(this.props.mappingsection);
   }
 }
 
@@ -87,24 +86,23 @@ class Mapping extends Component {
   selectedTable(e) {
     e.preventDefault();
     let selectedTab = e.currentTarget.value;
-    this.state.selectedTab = selectedTab;
-    for(let key in this.state.attributeList) {
+    this.props.mappingsection.selectedTab = selectedTab;
+    for(let key in this.props.mappingsection.attributeList) {
       if(key === selectedTab){
-        this.state.properties = this.state.attributeList[key];
-        this.actions.handleChanges(this.state);
+        this.props.mappingsection.properties = this.props.mappingsection.attributeList[key];
+        this.actions.handleChanges(this.props.mappingsection);
       }
     }
   }
 
   addToList(e){
-    for(let table in this.state.tables){
-      if(table === this.state.pickedTable){
-        this.state.tables[table].push(this.state.pickedTable);
+    for(let table in this.props.mappingsection.tables){
+      if(table === this.props.mappingsection.pickedTable){
+        this.props.mappingsection.tables[table].push(this.props.mappingsection.pickedTable);
       }
     }
-    this.actions.handleChanges(this.state);
+    this.actions.handleChanges(this.props.mappingsection);
     e.preventDefault();
-    e.stopImmediatePropagation();
   }
   selectedProperty(e) {
     e.preventDefault();
@@ -116,50 +114,50 @@ class Mapping extends Component {
     else
       $('.default-value').removeClass('active');
 
-    this.state.defaultValue = e.currentTarget.value;
+    this.props.mappingsection.defaultValue = e.currentTarget.value;
   }
 
   selectnewPropTable(e) {
     e.preventDefault();
-    this.state.pickedTable = e.target.text;
+    this.props.mappingsection.pickedTable = e.target.text;
     this.setState({});
   }
   mapAttribute(e) {
-    if(this.state.headSelect=="")
+    if(this.props.mappingsection.headSelect=="")
      alert("select column");
     else{
          e.preventDefault();
-        for(let table in this.state.tables){
+        for(let table in this.props.mappingsection.tables){
           if(table === 'attributeValues'){
-            this.state.tables[table].push('attributeValues');
+            this.props.mappingsection.tables[table].push('attributeValues');
           }
         }
-        this.state.mappedData.push({
-                  "userFieldName": this.state.headSelect,
+        this.props.mappingsection.mappedData.push({
+                  "userFieldName": this.props.mappingsection.headSelect,
                   "transformations": [],
                   "field": 'value',
-                  "defaultValue": this.state.defaultValue,
+                  "defaultValue": this.props.mappingsection.defaultValue,
                   "index": '',
                   "instance": '',
                   "isRequired": true,
-                  "rowId": this.state.mappedData.length++
+                  "rowId": this.props.mappingsection.mappedData.length++
                 });
 
-        this.state.mappedFields.push({column:this.state.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
-        this.state.mappedFields.push({column:'"'+this.state.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
-        this.state.mappedFields = this.state.mappedFields;
-        this.actions.handleChanges(this.state);
+        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
+        this.props.mappingsection.mappedFields.push({column:'"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
+        this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
+        this.actions.handleChanges(this.props.mappingsection);
     }
 }
   removeRow(index) {
-    this.state.mappedFields.splice(index,1);
-    console.log('Mapped Fields',this.state.mappedFields);
-    this.actions.handleMappedChnages(this.state);
+    this.props.mappingsection.mappedFields.splice(index,1);
+    console.log('Mapped Fields',this.props.mappingsection.mappedFields);
+    this.actions.handleMappedChnages(this.props.mappingsection);
 
   }
   renderChild() {
     const child = [];
-    for (let key in this.state.tables) {
+    for (let key in this.props.mappingsection.tables) {
       if(key !== "product"){
         child.push(<li><a>{key}</a></li>);
       }
@@ -169,7 +167,7 @@ class Mapping extends Component {
 
   renderChild1() {
     const child = [];
-    let tb = this.state.tables;
+    let tb = this.props.mappingsection.tables;
     console.log("--tb---");
     console.log(tb);
     for(let key in tb){
@@ -190,25 +188,25 @@ class Mapping extends Component {
   }
 
   selectHead(e) {
-    this.state.headSelect = e.currentTarget.value;
-    console.log(this.state.headSelect);
+    this.props.mappingsection.headSelect = e.currentTarget.value;
+    console.log(this.props.mappingsection.headSelect);
   }
 
   selectProperty(e) {
-    this.state.propertySelect = e.currentTarget.value;
-    for(let i=0; i<this.state.attributeList.length; i++){
-      if(e.currentTarget.value === this.state.attributesList[i].field){
-        this.state.attributesList[i]['mapped'] = true;
+    this.props.mappingsection.propertySelect = e.currentTarget.value;
+    for(let i=0; i<this.props.mappingsection.attributeList.length; i++){
+      if(e.currentTarget.value === this.props.mappingsection.attributesList[i].field){
+        this.props.mappingsection.attributesList[i]['mapped'] = true;
       }
     }
-    this.actions.handleChanges(this.state);
+    this.actions.handleChanges(this.props.mappingsection);
   }
 
   tableAttribute() {
-    console.log("(-------------)", this.state.headers);
+    console.log("(-------------)", this.props.mappingsection.headers);
     let headers;
     if(this.props.attributesectionsearch.customHeader.length === 0) {
-      headers = this.state.headers;
+      headers = this.props.mappingsection.headers;
     } else {
       headers = this.props.attributesectionsearch.customHeader;
     }
@@ -223,7 +221,7 @@ class Mapping extends Component {
 
   tableProperty() {
     const propertiesList = [];
-    const props = this.state.properties;
+    const props = this.props.mappingsection.properties;
     for(let index in props){
       if(props[index].mapped){
         propertiesList.push(<option key={index}  className="green-color" onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
@@ -237,7 +235,7 @@ class Mapping extends Component {
   }
 
   mappedDataInTable() {
-    const MD = this.state.mappedFields;
+    const MD = this.props.mappingsection.mappedFields;
     const MDHTML = [];
     if(MD.length>0){
       for(let key in MD){
@@ -260,28 +258,28 @@ class Mapping extends Component {
   }
 
   mappingNameHandler(e) {
-    this.state.mappingName = e.currentTarget.value;
+    this.props.mappingsection.mappingName = e.currentTarget.value;
   }
 
   saveMappingStep(e) {
-    if(this.state.mappingName===""){
+    if(this.props.mappingsection.mappingName===""){
       this.setState({mappingName:undefined});
     }
     else{
-      for(let i=0;i<this.state.mappedData.length;i++){
-          let mapped = this.state.mappedData[i];
+      for(let i=0;i<this.props.mappingsection.mappedData.length;i++){
+          let mapped = this.props.mappingsection.mappedData[i];
           if(mapped === undefined){
-              this.state.mappedData.splice(i,1);
+              this.props.mappingsection.mappedData.splice(i,1);
           }
       }
       let preview = this.props.attributesectionsearch;
       let finalData = {
         'delimeter': {includeHeader: preview.noHeader, delimeterFormat: preview.delimeter, dateFormat: preview.dFormat, numberFormat: preview.noFormat},
         'fileName': this.props.homesection.filedata.fileName,
-        'mappingInfo': this.state.mappedData,
+        'mappingInfo': this.props.mappingsection.mappedData,
         'tenantId': 'tnt1',
         'attributeId': this.props.homesection.filedata.fileName,
-        'mappingName': this.state.mappingName
+        'mappingName': this.props.mappingsection.mappingName
       };
       this.actions.saveMappedData(finalData);
       this.actions.redirectImport();
@@ -299,7 +297,7 @@ class Mapping extends Component {
             <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
             <div className="col-sm-3">
               <input name="jobId" className="form-control" onChange={this.mappingNameHandler.bind(this)} placeholder="Choose Mapping Name" id="mapName" type="text" ng-model="map.name" required ng-disabled="edit" />
-            { this.state.mappingName === undefined &&
+            { this.props.mappingsection.mappingName === undefined &&
             <span  id="error">please enter mapping name</span>
                 }
             </div>
@@ -364,11 +362,11 @@ class Mapping extends Component {
               <div className="btn-group" id="subTable">
                 <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
                   {
-                    this.state.pickedTable !== "Select" &&
-                    <span ng-show="pickedTable">{this.state.pickedTable}</span>
+                    this.props.mappingsection.pickedTable !== "Select" &&
+                    <span ng-show="pickedTable">{this.props.mappingsection.pickedTable}</span>
                   }
                   {
-                    this.state.pickedTable === "Select" &&
+                    this.props.mappingsection.pickedTable === "Select" &&
                     <span ng-hide="pickedTable">Select</span>
                   }
 
@@ -387,13 +385,13 @@ class Mapping extends Component {
         </div>
         <div className="button-container">
           {
-          this.state.mappedData && this.state.mappedData.length === 0 &&
+          this.props.mappingsection.mappedData && this.props.mappingsection.mappedData.length === 0 &&
             <div ng-show="tableData.length == 0">
               No mapped details
             </div>
           }
           {
-            this.state.mappedFields && this.state.mappedFields.length > 0 &&
+            this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 &&
             <div ng-show="tableData.length > 0">
               <table className="table" cellspacing="0">
                 <thead>
