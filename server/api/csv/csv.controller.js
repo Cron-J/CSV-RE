@@ -32,12 +32,22 @@ exports.index =  function(req,res){
 };
 
 exports.getMappingList = function(req,res){
-  models.mapping.find().then(function(result){
+  models.mapping.findAll({}).then(function(result){
     console.log('==Result==', result);
+    res.status(200).json(result);
   }).catch(function(error){
     console.log("==Error==", error);
   });
 };
+// Get Mapping
+exports.getMapping = function(req, res) {
+  models.mapping.find({where: {id: req.params.id}}).then(function(result){
+    console.log('==Result==', result);
+    res.status(200).json(result);
+  }).catch(function(error){
+    console.log("==Error==", error);
+  });
+}
 //format change
 var changeFormat = function (item, format){
     if(isNaN(item)) {

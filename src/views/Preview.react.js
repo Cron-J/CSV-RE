@@ -7,6 +7,7 @@ class Preview extends Component {
   constructor(props) {
     super(props);
     const { state, dispatch } = this.props;
+    console.log('eit mode', state);
     this.uploadpage = state.homesection;
     this.previewPage = state.attributesectionsearch;
     this.actions = bindActionCreators(PreviewActions, dispatch);
