@@ -8,6 +8,15 @@ class Preview extends Component {
     super(props);
     const { state, dispatch } = this.props;
     console.log('eit mode', state);
+    // if (state.selectmapping.data) {
+    //   this.previewPage = state.selectmapping.data;
+    //   this.delimiter = this.previewPage;
+    //   console.log('adaas', this.previewPage);
+    //   this.noHeader = this.previewPage.includeHeader;
+    //   this.dFormat = this.previewPage.dateFormat;
+    //   this.noFormat = this.previewPage.numberFormat;
+    //   this.thirdStep.bind(this);
+    // } else {
     this.uploadpage = state.homesection;
     this.previewPage = state.attributesectionsearch;
     this.actions = bindActionCreators(PreviewActions, dispatch);
@@ -28,9 +37,11 @@ class Preview extends Component {
     this.dFormat = this.previewPage.dFormat;
     this.noFormat = this.previewPage.noFormat;
     this.checkedState = true;
+  // }
   }
 
   componentWillMount() {
+    // if (this.uploadpage) {
       let uploadpage = this.uploadpage;
       if(!(uploadpage.fileSelected && uploadpage.filedata && uploadpage.filedata.fileName)){
           console.log('No File selected redirecting to home');
@@ -39,6 +50,9 @@ class Preview extends Component {
       else{
           this.dateFormat(this,'MM/dd/yyyy');
       }
+    // } else {
+    //   console.log('cAME');
+    // }
   }
   componentDidMount(){
     
@@ -221,6 +235,7 @@ class Preview extends Component {
       console.log('please correct the settings to procced');
     }
     else{
+      console.log('jrrrr');
      /*redirect to mapping*/
      // window.location.href = '/mapping';
      this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);

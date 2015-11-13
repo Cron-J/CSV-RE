@@ -28,7 +28,7 @@ export function redirectPreview(id) {
     type: types.SETPREVIEW,
     meta: {
       transition: () => ({
-          path: '/preview',
+          path: '/mapping',
       })
     }
   };

@@ -8,16 +8,20 @@ import { connect } from 'react-redux';
 class Mapping extends Component {
   constructor(props) {
     super(props);
-    const { mappingsection, homesection, dispatch } = this.props;
+    const { mappingsection, homesection, selectmapping, dispatch } = this.props;
    //this.props.mappingsection = mappingsection;
-   console.log("mapping",mappingsection);
+   console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
-    this.mappingName = this.props.mappingsection.mappingName;
-    if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
+    if (this.props.selectmapping.data) {
+      this.mappingName = this.props.selectmapping.mappingName;
+    } else {
+      this.mappingName = this.props.mappingsection.mappingName;
+      if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
         this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
-    }else{
+      }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
+      }
     }
     //this.growler= null;
   }
@@ -423,9 +427,9 @@ class Mapping extends Component {
 }
 
 function mapStateToProps(state) {
-  const { mappingsection, attributesectionsearch, homesection } = state;
+  const { mappingsection, attributesectionsearch, homesection, selectmapping } = state;
   return {
-    mappingsection, attributesectionsearch, homesection
+    mappingsection, attributesectionsearch, homesection, selectmapping
   };
 }
 
