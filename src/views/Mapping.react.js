@@ -67,8 +67,8 @@ class Mapping extends Component {
               }
             }
           }
-          if(this.props.mappingsection.pickedTable === 'product'){
-            propertyname = this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
+          if(this.props.mappingsection.pickedTable === 'Select'){
+            propertyname = 'product.'+this.props.mappingsection.propertySelect;
           }else{
             propertyname = 'product.'+this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
           }
@@ -285,6 +285,7 @@ class Mapping extends Component {
       }
       let preview = this.props.attributesectionsearch;
       let finalData = {
+        'id': this.props.mappingsection.id,
         'delimeter': {includeHeader: preview.noHeader, delimeterFormat: preview.delimeter, dateFormat: preview.dFormat, numberFormat: preview.noFormat},
         'fileName': this.props.homesection.filedata.fileName,
         'mappingInfo': this.props.mappingsection.mappedData,

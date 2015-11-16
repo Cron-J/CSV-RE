@@ -30,7 +30,7 @@ export function createMappedData(data) {
 export function updateMappedData(data) {
   console.log("mapped data 1", data);
   return {
-    types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
+    types: [types.UPDATEMAPPEDDATA, types.UPDATEMAPPEDDATASUCCESS, types.UPDATEMAPPEDDATAERROR],
     payload: {
       response: api.updateMapping(data).then(response => response),
       data

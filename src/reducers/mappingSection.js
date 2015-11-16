@@ -616,15 +616,38 @@ export default createReducer(initialState, {
     for (var i = 0; i < response.mappingInfo.length; i++) {
       arr[i] = {};
       arr[i].column = response.mappingInfo[i].userFieldName;
-      arr[i].propertyname = response.mappingInfo[i].field;
-      arr[i].propertydec = response.mappingInfo[i].table + '.' + response.mappingInfo[i].field;
+      arr[i].propertyname = response.mappingInfo[i].table !== 'product' ?
+      response.mappingInfo[i].table + '.' + response.mappingInfo[i].field :
+      'product.' + response.mappingInfo[i].table + '.' + response.mappingInfo[i].field;
+      arr[i].propertydec = response.mappingInfo[i].field;
+    };
+    var res = [];
+    for (var i = 0; i < response.mappingInfo.length; i++) {
+        res[i] = {};
+        res[i].userFieldName = response.mappingInfo[i].userFieldName;
+        res[i].transformations = response.mappingInfo[i].transformations;
+        res[i].table = response.mappingInfo[i].table;
+        res[i].field = response.mappingInfo[i].field;
+        res[i].defaultValue = response.mappingInfo[i].defaultValue;
+        res[i].index = response.mappingInfo[i].index;
+        res[i].instance = response.mappingInfo[i].instance;
+        res[i].isRequired = response.mappingInfo[i].isRequired;
+        res[i].rowId = response.mappingInfo[i].rowId;
     };
     return {
       ...state,
       id: response.id,
       mappingName: response.mappingName,
       mappedFields: arr,
+      mappedData: res,
       tenantId: response.tenantId
     };
   },
+  [types.UPDATEMAPPEDDATASUCCESS](state, action) {
+    const { data } = action.payload;
+    return {
+      ...state
+    }
+  }
+
 });
