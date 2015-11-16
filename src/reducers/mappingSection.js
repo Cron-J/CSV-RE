@@ -3,6 +3,7 @@ import * as types from 'constants/ActionTypes';
 import { createReducer } from 'redux-create-reducer';
 
 const initialState = {
+  id: '',
   tables: [],
   properties: [],
   mappingData: {},
@@ -16,7 +17,9 @@ const initialState = {
   mappedFields : [],
   mappedData : [],
   selectedTab : '',
-  mappingName : ''
+  mappingName : '',
+  tenantId: '',
+  mappingInfo: []
 };
 
 
@@ -34,6 +37,7 @@ export default createReducer(initialState, {
     const { response } = action.payload;
     return {
       ...state,
+      id: '',
       tables: [],
       properties: [],
       attributeList: {},
@@ -596,5 +600,31 @@ export default createReducer(initialState, {
         mappingInfo: response,
         mappingDataPreview: true
     }
-  }
+  },
+  [types.GETCSVDATASUCCESS](state, action) {
+    const { response } = action.payload;
+    var arr = response.headers.split(', ');
+    return {
+    ...state,
+        headers: arr
+    }
+  },
+  [types.GETMAPINFOSUCCESS](state, action) {
+    const { response } = action.payload;
+    console.log('edit map', response);
+    var arr = [];
+    for (var i = 0; i < response.mappingInfo.length; i++) {
+      arr[i] = {};
+      arr[i].column = response.mappingInfo[i].userFieldName;
+      arr[i].propertyname = response.mappingInfo[i].field;
+      arr[i].propertydec = response.mappingInfo[i].table + '.' + response.mappingInfo[i].field;
+    };
+    return {
+      ...state,
+      id: response.id,
+      mappingName: response.mappingName,
+      mappedFields: arr,
+      tenantId: response.tenantId
+    };
+  },
 });

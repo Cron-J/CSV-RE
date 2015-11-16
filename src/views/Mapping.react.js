@@ -12,8 +12,15 @@ class Mapping extends Component {
    //this.props.mappingsection = mappingsection;
    console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
-    if (this.props.selectmapping.data) {
-      this.mappingName = this.props.selectmapping.mappingName;
+    //this.growler= null;
+  }
+  componentWillMount() {
+    this.actions.attributeList();
+    const params = this.props.params;
+    if (typeof params.id !== 'undefined') {
+      this.actions.getMapInfo(params.id);
+      this.actions.getCSVfileData(params.id, 'tnt1');
+      this.edit= true;
     } else {
       this.mappingName = this.props.mappingsection.mappingName;
       if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
@@ -23,10 +30,6 @@ class Mapping extends Component {
         this.actions.redirectPreview();
       }
     }
-    //this.growler= null;
-  }
-  componentWillMount() {
-    this.actions.attributeList();
   }
 
   componentDidMount() {
@@ -52,6 +55,7 @@ class Mapping extends Component {
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
+                    "table": this.props.mappingsection.pickedTable,
                     "field": this.props.mappingsection.attributeList[index][idx].field,
                     "defaultValue": this.props.mappingsection.defaultValue,
                     "index": this.props.mappingsection.attributeList[index][idx].index,
@@ -295,7 +299,6 @@ class Mapping extends Component {
   render() {
     return (
 	    <div className="container">
-
         <div className="upload-container">
           <legend>Mapping</legend>
         </div>
@@ -303,7 +306,11 @@ class Mapping extends Component {
           <div className="form-group">
             <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
             <div className="col-sm-3">
-              <input name="jobId" className="form-control" onChange={this.mappingNameHandler.bind(this)} placeholder="Choose Mapping Name" id="mapName" type="text" ng-model="map.name" required ng-disabled="edit" />
+              <input name="jobId" className="form-control"
+              value={this.props.mappingsection.mappingName}
+              onChange={this.mappingNameHandler.bind(this)} 
+              placeholder="Choose Mapping Name" id="mapName" type="text"
+              required disabled={this.edit} />
             { this.props.mappingsection.mappingName === undefined &&
             <span  id="error">please enter mapping name</span>
                 }
@@ -392,14 +399,8 @@ class Mapping extends Component {
         </div>
         <div className="button-container">
           {
-          this.props.mappingsection.mappedData && this.props.mappingsection.mappedData.length === 0 &&
-            <div ng-show="tableData.length == 0">
-              No mapped details
-            </div>
-          }
-          {
-            this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 &&
-            <div ng-show="tableData.length > 0">
+            this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 ?
+            <div >
               <table className="table" cellspacing="0">
                 <thead>
                   <tr>
@@ -412,7 +413,7 @@ class Mapping extends Component {
                 </thead>
                 {this.mappedDataInTable()}
               </table>
-            </div>
+            </div> : <p>No mapped details</p>
           }    
           <hr />
           <div className="pull-right">
@@ -435,6 +436,7 @@ function mapStateToProps(state) {
 
 Mapping.propTypes = {
   mappingsection: React.PropTypes.object,
+  params: React.PropTypes.object,
   dispatch: React.PropTypes.func.isRequired,
   attributesectionsearch: React.PropTypes.object
 };

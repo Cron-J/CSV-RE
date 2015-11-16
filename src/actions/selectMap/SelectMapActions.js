@@ -14,21 +14,12 @@ export function loadMappingList() {
   };
 }
 
-export function getMapInfo(id) {
-  return  {
-    types: [types.GETMAPINFO, types.GETMAPINFOSUCCESS, types.GETMAPINFOFAIL],
-    payload: {
-      response: api.getMapping(id).then(response => response),
-      id
-    }
-  };
-}
-export function redirectPreview(id) {
+export function editMapping(id) {
   return  {
     type: types.SETPREVIEW,
     meta: {
       transition: () => ({
-          path: '/mapping',
+          path: '/mapping/edit/' + id,
       })
     }
   };

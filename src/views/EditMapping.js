@@ -2,12 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as SelectMapActions from 'actions/selectMap/SelectMapActions';
+import * as MappingActions from 'actions/mappingPage/MappingActions';
 import {Button} from 'react-bootstrap'
 class EditMapping extends Component{
  	constructor(props) {
  		super(props);
  		const { selectmapping, dispatch } = this.props;
 		this.actions = bindActionCreators(SelectMapActions, dispatch);
+    this.mapActions = bindActionCreators(MappingActions, dispatch);
  	}
  	componentWillMount() {
     this.actions.loadMappingList();
@@ -21,11 +23,7 @@ class EditMapping extends Component{
 	  this.actions.handleChanges(change);
   }
   edit() {
-    this.actions.getMapInfo(this.props.selectmapping.mapId);
-  }
-  preview() {
-  	console.log('here');
-  	this.actions.redirectPreview();
+    this.actions.editMapping(this.props.selectmapping.mapId);
   }
  	render(){
  		console.log('list', this.props.selectmapping);
@@ -47,8 +45,6 @@ class EditMapping extends Component{
 					</div>
 					{this.props.selectmapping.edit === true ?
 					<Button className="btn" bsStyle="primary" onClick={this.edit.bind(this)}>EDIT</Button> : '' }
-					{this.props.selectmapping.next === true ?
-					<Button className="btn" bsStyle="primary" onClick={this.preview.bind(this)}>Next</Button> : ''}
 			  </div>		
 			</div>
  		)

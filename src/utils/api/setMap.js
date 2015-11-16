@@ -13,13 +13,6 @@ const utils = {
       method: 'GET',
       json: true
     });
-  },
-  getMapping: (id) => {
-    return request({
-      url: 'http://localhost:4000/api/csv/getMapping/' + id,
-      method: 'GET',
-      json: true
-    });
   }
 
 };

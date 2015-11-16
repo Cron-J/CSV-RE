@@ -4,9 +4,7 @@ import { createReducer } from 'redux-create-reducer';
 
 const initialState = {
     mapId: null,
-    next: false,
     edit: false,
-    data: {},
     list: []
 };
 export default createReducer(initialState, {
@@ -15,18 +13,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       mapId: data.mapId,
-      edit: data.mapId? true : false,
-      next: false,
-      data: ''
-    };
-  },
-  [types.GETMAPINFOSUCCESS](state, action) {
-    const { response } = action.payload;
-    return {
-      ...state,
-      edit: false,
-      next: true,
-      data: response
+      edit: data.mapId? true : false
     };
   },
   [types.SETPREVIEW](state, action) {
