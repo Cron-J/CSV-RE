@@ -10,12 +10,20 @@ class Mapping extends Component {
     super(props);
     const { mappingsection, homesection, selectmapping, dispatch } = this.props;
    //this.props.mappingsection = mappingsection;
-   console.log("mapping",this.props);
+    console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
     //this.growler= null;
   }
   componentWillMount() {
     this.actions.attributeList();
+  }
+
+  componentDidMount() {
+  }
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps);
+    this.props = nextProps
+    //this.props.mappingsection.mappingName
     const params = this.props.params;
     if (typeof params.id !== 'undefined') {
       this.actions.getMapInfo(params.id);
@@ -30,13 +38,6 @@ class Mapping extends Component {
         this.actions.redirectPreview();
       }
     }
-  }
-
-  componentDidMount() {
-  }
-  componentWillReceiveProps(nextProps){
-      console.log(nextProps);
-      //this.props.mappingsection.mappingName
   }
 
   mapping(e) {

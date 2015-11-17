@@ -577,7 +577,8 @@ export default createReducer(initialState, {
       pickedTable: data.pickedTable,
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
-      selectedTable: data.selectedTable
+      selectedTable: data.selectedTable,
+      headers: data.headers
     }
   },
   [types.SAVEMAPPEDDATA](state,action) {
