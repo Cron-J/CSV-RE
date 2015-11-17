@@ -9,12 +9,11 @@ class Mapping extends Component {
   constructor(props) {
     super(props);
     const { mappingsection, homesection, dispatch } = this.props;
-   //this.props.mappingsection = mappingsection;
-   console.log("mapping",mappingsection);
+    this.state = mappingsection;
     this.actions = bindActionCreators(MappingActions, dispatch);
-    this.mappingName = this.props.mappingsection.mappingName;
+    this.mappingName = this.state.mappingName;
     if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
+        this.state.headers = this.props.homesection.filedata.headers.split(',');
     }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
@@ -28,8 +27,23 @@ class Mapping extends Component {
   componentDidMount() {
   }
   componentWillReceiveProps(nextProps){
-      console.log(nextProps);
-      //this.props.mappingsection.mappingName
+    console.log(nextProps);
+    this.props = nextProps
+    //this.props.mappingsection.mappingName
+    const params = this.props.params;
+    if (typeof params.id !== 'undefined') {
+      this.actions.getMapInfo(params.id);
+      this.actions.getCSVfileData(params.id, 'tnt1');
+      this.edit= true;
+    } else {
+      this.mappingName = this.props.mappingsection.mappingName;
+      if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
+        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
+      }else{
+        console.log('no headers found. possiblity that file is not uploaded');
+        this.actions.redirectPreview();
+      }
+    }
   }
 
   mapping(e) {
@@ -48,6 +62,7 @@ class Mapping extends Component {
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
+                    "table": this.props.mappingsection.pickedTable,
                     "field": this.props.mappingsection.attributeList[index][idx].field,
                     "defaultValue": this.props.mappingsection.defaultValue,
                     "index": this.props.mappingsection.attributeList[index][idx].index,
@@ -59,8 +74,8 @@ class Mapping extends Component {
               }
             }
           }
-          if(this.props.mappingsection.pickedTable === 'product'){
-            propertyname = this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
+          if(this.props.mappingsection.pickedTable === 'Select'){
+            propertyname = 'product.'+this.props.mappingsection.propertySelect;
           }else{
             propertyname = 'product.'+this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
           }
@@ -277,6 +292,7 @@ class Mapping extends Component {
       }
       let preview = this.props.attributesectionsearch;
       let finalData = {
+        'id': this.props.mappingsection.id,
         'delimeter': {includeHeader: preview.noHeader, delimeterFormat: preview.delimeter, dateFormat: preview.dFormat, numberFormat: preview.noFormat},
         'fileName': this.props.homesection.filedata.fileName,
         'mappingInfo': this.props.mappingsection.mappedData,
@@ -291,7 +307,6 @@ class Mapping extends Component {
   render() {
     return (
 	    <div className="container">
-
         <div className="upload-container">
           <legend>Mapping</legend>
         </div>
@@ -299,7 +314,11 @@ class Mapping extends Component {
           <div className="form-group">
             <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
             <div className="col-sm-3">
-              <input name="jobId" className="form-control" onChange={this.mappingNameHandler.bind(this)} placeholder="Choose Mapping Name" id="mapName" type="text" ng-model="map.name" required ng-disabled="edit" />
+              <input name="jobId" className="form-control"
+              value={this.props.mappingsection.mappingName}
+              onChange={this.mappingNameHandler.bind(this)}
+              placeholder="Choose Mapping Name" id="mapName" type="text"
+              required disabled={this.edit} />
             { this.props.mappingsection.mappingName === undefined &&
             <span  id="error">please enter mapping name</span>
                 }
@@ -388,14 +407,8 @@ class Mapping extends Component {
         </div>
         <div className="button-container">
           {
-          this.props.mappingsection.mappedData && this.props.mappingsection.mappedData.length === 0 &&
-            <div ng-show="tableData.length == 0">
-              No mapped details
-            </div>
-          }
-          {
-            this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 &&
-            <div ng-show="tableData.length > 0">
+            this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 ?
+            <div >
               <table className="table" cellspacing="0">
                 <thead>
                   <tr>
@@ -408,7 +421,7 @@ class Mapping extends Component {
                 </thead>
                 {this.mappedDataInTable()}
               </table>
-            </div>
+            </div> : <p>No mapped details</p>
           }    
           <hr />
           <div className="pull-right">
@@ -423,14 +436,15 @@ class Mapping extends Component {
 }
 
 function mapStateToProps(state) {
-  const { mappingsection, attributesectionsearch, homesection } = state;
+  const { mappingsection, attributesectionsearch, homesection, selectmapping } = state;
   return {
-    mappingsection, attributesectionsearch, homesection
+    mappingsection, attributesectionsearch, homesection, selectmapping
   };
 }
 
 Mapping.propTypes = {
   mappingsection: React.PropTypes.object,
+  params: React.PropTypes.object,
   dispatch: React.PropTypes.func.isRequired,
   attributesectionsearch: React.PropTypes.object
 };

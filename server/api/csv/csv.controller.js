@@ -32,12 +32,39 @@ exports.index =  function(req,res){
 };
 
 exports.getMappingList = function(req,res){
-  models.mapping.find().then(function(result){
+  models.mapping.findAll({}).then(function(result){
     console.log('==Result==', result);
+    res.status(200).json(result);
   }).catch(function(error){
     console.log("==Error==", error);
   });
 };
+// Get Mapping
+exports.getMapping = function(req, res) {
+  models.mapping.find({where: {id: req.params.id}}).then(function(result){
+    console.log('==Result==', result);
+    res.status(200).json(result);
+  }).catch(function(error){
+    console.log("==Error==", error);
+  });
+}
+// Get csv file data for mapping
+exports.getMappingCSVData = function(req, res) {
+  models.mapping.find({where: {id: req.params.id, tenantId: req.params.tenantId}}).then(function(result){
+    var path = 'uploads';
+    var upload_path = path + '/' + result.dataValues.fileName;
+
+    fs.readFile(upload_path, 'utf8', function(err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log('data', data);
+        res.status(200).json(csvJSON(data, result.dataValues.fileName));
+    });
+  }).catch(function(error){
+    console.log("==Error==", error);
+  });
+}
 //format change
 var changeFormat = function (item, format){
     if(isNaN(item)) {
@@ -261,6 +288,13 @@ exports.create =  function(req,res){
     res.status(500).json(error);
   });
 };
+
+// Edit Mapping
+exports.update =  function(req,res){
+  var data = req.body;
+  console.log('came to update', req.body);
+}
+
 // Deprecated
 exports.uploadFileData = function(req, res) {
   var data = req.body;

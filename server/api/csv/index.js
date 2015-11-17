@@ -8,7 +8,10 @@ var express = require('express'),
 
 router.get('/', controller.index);
 router.get('/getMappingList', controller.getMappingList);
+router.get('/getMapping/:id', controller.getMapping);
 router.post('/', controller.create);
 router.post('/uploadfile', controller.uploadFileData);
 router.post('/uploadCSV',csvImporter.any(), controller.uploadCSV);
+router.get('/getCSVdata/:id/:tenantId', controller.getMappingCSVData);
+router.put('/update', controller.update);
 module.exports = router;

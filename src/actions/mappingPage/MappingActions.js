@@ -11,11 +11,29 @@ export function handleMappedChnages(data) {
 }
 
 export function saveMappedData(data) {
+  if(data.id) {
+    updateMappedData(data);
+  } else {
+    createMappedData(data);
+  }
+}
+
+export function createMappedData(data) {
   console.log("mapped data 1", data);
   return {
     types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
     payload: {
       response: api.saveMappedData(data).then(response => response)
+    }
+  };
+}
+export function updateMappedData(data) {
+  console.log("mapped data 1", data);
+  return {
+    types: [types.UPDATEMAPPEDDATA, types.UPDATEMAPPEDDATASUCCESS, types.UPDATEMAPPEDDATAERROR],
+    payload: {
+      response: api.updateMapping(data).then(response => response),
+      data
     }
   };
 }
@@ -60,5 +78,25 @@ export function redirectImport(data) {
     }
   };
 }
+export function getCSVfileData(id, tenantId) {
+  return  {
+    types: [types.GETCSVDATA, types.GETCSVDATASUCCESS, types.GETCSVDATAFAIL],
+    payload: {
+      response: api.getCSVData(id, tenantId).then(response => response),
+      id, tenantId
+    }
+  };
+}
+
+export function getMapInfo(id) {
+  return  {
+    types: [types.GETMAPINFO, types.GETMAPINFOSUCCESS, types.GETMAPINFOFAIL],
+    payload: {
+      response: api.getMapping(id).then(response => response),
+      id
+    }
+  };
+}
+
 
 

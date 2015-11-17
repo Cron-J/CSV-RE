@@ -1,66 +1,65 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-import * as PreviewActions from 'actions/previewPage/PreviewActions';
+import * as SelectMapActions from 'actions/selectMap/SelectMapActions';
+import * as MappingActions from 'actions/mappingPage/MappingActions';
+import {Button} from 'react-bootstrap'
 class EditMapping extends Component{
  	constructor(props) {
  		super(props);
- 		const { mappingsection, dispatch } = this.props;
- 		this.staticData=[
-							{
-							    "mappingName" : "eswer",
-							    "_id" :"55e41577e027bf281269bac5"
-							},
-							{
-							    "mappingName" : "eswer1",
-							    "_id" : "55e41630e027bf281269bacd"
-							},
-							{
-							    "mappingName" : "eswer3",
-							    "_id" : "55e41681e027bf281269bad3"
-							},
-							{
-							    "mappingName" : "mapper",
-							    "_id" : "56384a4941d310b0150b945a"
-							}];
-							
-							 this.actions = bindActionCreators(PreviewActions, dispatch);
+ 		const { selectmapping, dispatch } = this.props;
+		this.actions = bindActionCreators(SelectMapActions, dispatch);
+    this.mapActions = bindActionCreators(MappingActions, dispatch);
  	}
-selectMapping(e){
-	//this.actions.redirectMapping();
-}
+ 	componentWillMount() {
+    this.actions.loadMappingList();
+  }
+
+  componentDidMount() {
+  }
+  selectedMapping(e){
+	  const change = {};
+	  change.mapId = e.target.value;
+	  this.actions.handleChanges(change);
+  }
+  edit() {
+    this.actions.editMapping(this.props.selectmapping.mapId);
+  }
  	render(){
- 		
+ 		console.log('list', this.props.selectmapping);
  		var mappingDropdown = [];
-		for (var i = 0; i < this.staticData.length; i++) {
-  			mappingDropdown.push(<option value={this.staticData[i].mappingName}>{this.staticData[i].mappingName}</option>);
+		for (var i = 0; i < this.props.selectmapping.list.length; i++) {
+  		mappingDropdown.push(<option key={i} value={this.props.selectmapping.list[i].id}>{this.props.selectmapping.list[i].mappingName}</option>);
 		}
  		return(
- 			<div className="Container">
+ 			<div className="container">
  				<div className="form-group">
-                    <label className="col-sm-2 control-label">Mapping Name:</label>
-                       <div className="col-sm-8">
-                         	<select name="mappingName" id="number" className="form-control" onChange={this.selectMapping.bind(this)}  required>
-                            	<option value="">select format</option>
-                    	 	 	{mappingDropdown}
-                          	</select>
-					   </div>
-					</div>		
+          <label className="col-sm-2 control-label">Mapping Name:</label>
+          <div className="col-sm-5">
+            <select name="mappingName" id="number" className="form-control"
+            value={this.props.selectmapping.mapName}
+            onChange={this.selectedMapping.bind(this)}  required>
+              <option value="">select format</option>
+              {mappingDropdown}
+            </select>
+					</div>
+					{this.props.selectmapping.edit === true ?
+					<Button className="btn" bsStyle="primary" onClick={this.edit.bind(this)}>EDIT</Button> : '' }
+			  </div>		
 			</div>
  		)
  	}
 
 }
 function mapStateToProps(state) {
-    const { editmappingection } = state;
+    const { selectmapping } = state;
     return {
-        editmappingection
+        selectmapping
     };
 }
 
 EditMapping.propTypes = {
-    editmappingection: React.PropTypes.object,
+    selectmapping: React.PropTypes.object,
     dispatch: React.PropTypes.func.isRequired
 };
 

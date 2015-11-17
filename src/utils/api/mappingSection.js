@@ -16,13 +16,37 @@ const utils = {
   },
 
   saveMappedData: (data) => {
-    console.log("mapping data to save", data);
     return request({
       url: "http://localhost:4000/api/csv",
       method: 'POST',
       json: true,
       body: data
     });
+  },
+
+  getCSVData: (id, tenantId) => {
+    return request({
+      url: "http://localhost:4000/api/csv/getCSVdata/" + id + '/' + tenantId,
+      method: 'GET',
+      json: true
+    });
+  },
+  
+  getMapping: (id) => {
+    return request({
+      url: 'http://localhost:4000/api/csv/getMapping/' + id,
+      method: 'GET',
+      json: true
+    });
+  },
+
+  updateMapping:(data) => {
+    return request({
+      url: 'http://localhost:4000/api/csv/update',
+      method: 'PUT',
+      json: true,
+      body: data
+    })
   }
 
 };

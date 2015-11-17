@@ -3,6 +3,7 @@ import * as types from 'constants/ActionTypes';
 import { createReducer } from 'redux-create-reducer';
 
 const initialState = {
+  id: '',
   tables: [],
   properties: [],
   mappingData: {},
@@ -16,7 +17,9 @@ const initialState = {
   mappedFields : [],
   mappedData : [],
   selectedTab : '',
-  mappingName : ''
+  mappingName : '',
+  tenantId: '',
+  mappingInfo: []
 };
 
 
@@ -34,6 +37,7 @@ export default createReducer(initialState, {
     const { response } = action.payload;
     return {
       ...state,
+      id: '',
       tables: [],
       properties: [],
       attributeList: {},
@@ -573,7 +577,8 @@ export default createReducer(initialState, {
       pickedTable: data.pickedTable,
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
-      selectedTable: data.selectedTable
+      selectedTable: data.selectedTable,
+      headers: data.headers
     }
   },
   [types.SAVEMAPPEDDATA](state,action) {
@@ -596,5 +601,54 @@ export default createReducer(initialState, {
         mappingInfo: response,
         mappingDataPreview: true
     }
+  },
+  [types.GETCSVDATASUCCESS](state, action) {
+    const { response } = action.payload;
+    var arr = response.headers.split(', ');
+    return {
+    ...state,
+        headers: arr
+    }
+  },
+  [types.GETMAPINFOSUCCESS](state, action) {
+    const { response } = action.payload;
+    console.log('edit map', response);
+    var arr = [];
+    for (var i = 0; i < response.mappingInfo.length; i++) {
+      arr[i] = {};
+      arr[i].column = response.mappingInfo[i].userFieldName;
+      arr[i].propertyname = response.mappingInfo[i].table !== 'product' ?
+      response.mappingInfo[i].table + '.' + response.mappingInfo[i].field :
+      'product.' + response.mappingInfo[i].table + '.' + response.mappingInfo[i].field;
+      arr[i].propertydec = response.mappingInfo[i].field;
+    };
+    var res = [];
+    for (var i = 0; i < response.mappingInfo.length; i++) {
+        res[i] = {};
+        res[i].userFieldName = response.mappingInfo[i].userFieldName;
+        res[i].transformations = response.mappingInfo[i].transformations;
+        res[i].table = response.mappingInfo[i].table;
+        res[i].field = response.mappingInfo[i].field;
+        res[i].defaultValue = response.mappingInfo[i].defaultValue;
+        res[i].index = response.mappingInfo[i].index;
+        res[i].instance = response.mappingInfo[i].instance;
+        res[i].isRequired = response.mappingInfo[i].isRequired;
+        res[i].rowId = response.mappingInfo[i].rowId;
+    };
+    return {
+      ...state,
+      id: response.id,
+      mappingName: response.mappingName,
+      mappedFields: arr,
+      mappedData: res,
+      tenantId: response.tenantId
+    };
+  },
+  [types.UPDATEMAPPEDDATASUCCESS](state, action) {
+    const { data } = action.payload;
+    return {
+      ...state
+    }
   }
+
 });
