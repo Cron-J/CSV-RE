@@ -40,9 +40,9 @@ const utils = {
     });
   },
 
-  updateMapping:(data) => {
+  updateMapping: (data) => {
     return request({
-      url: 'http://localhost:4000/api/csv/update',
+      url: 'http://localhost:4000/api/csv/updateMapping/' + data.id + '/' + data.tenantId,
       method: 'PUT',
       json: true,
       body: data

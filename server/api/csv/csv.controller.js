@@ -292,7 +292,20 @@ exports.create =  function(req,res){
 // Edit Mapping
 exports.update =  function(req,res){
   var data = req.body;
-  console.log('came to update', req.body);
+  models.mapping.find({
+    where: {tenantId:req.params.tenantId, id: req.params.id}
+  }).then(function(mapping){
+    mapping.updateAttributes({
+      tenantId: data.tenantId,
+      mappingInfo: data.mappingInfo,
+      delimeter: data.delimeter,
+      mappingName : data.mappingName
+    }).then(function(mapping){
+      res.json(204)
+    });
+  }).catch(function(error){
+    res.status(404).json(error)
+  });
 }
 
 // Deprecated

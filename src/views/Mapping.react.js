@@ -297,7 +297,9 @@ class Mapping extends Component {
         'mappingName': this.props.mappingsection.mappingName
       };
       this.actions.saveMappedData(finalData);
-      this.actions.redirectImport();
+      if(!this.props.mappingsection.id) {
+        this.actions.redirectImport();
+      }
     }
   }
   render() {
@@ -420,11 +422,17 @@ class Mapping extends Component {
             </div> : <p>No mapped details</p>
           }    
           <hr />
+          { this.props.mappingsection.id ?
+          <div className="pull-right">
+          <button className="btn btn-primary"
+          onClick={this.saveMappingStep.bind(this)}>Update</button>
+          </div> :
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.actions.redirectPreview}>Back</button>
             <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Next</button>
           </div>
+         }
         </div>
 	    </div>
     );

@@ -30,10 +30,20 @@ export function createMappedData(data) {
 export function updateMappedData(data) {
   console.log("mapped data 1", data);
   return {
-    types: [types.UPDATEMAPPEDDATA, types.UPDATEMAPPEDDATASUCCESS, types.UPDATEMAPPEDDATAERROR],
+    types: [types.UPDATEMAPPING, types.UPDATEMAPPINGSUCCESS, types.UPDATEMAPPINGFAIL],
     payload: {
       response: api.updateMapping(data).then(response => response),
       data
+    },
+    meta: {
+      transition: () => ({
+        onSuccess: () =>({
+          path: '/editmapping'
+        }),
+        onFail: (error) =>({
+          console.log('error', error);
+        })
+      })
     }
   };
 }
