@@ -30,7 +30,6 @@ class Home extends Component {
         this.uploadedFile;
         this.actions = bindActionCreators(PreviewActions, dispatch);
         this.homeSectionActions = bindActionCreators(homeActions,dispatch);
-        console.log("akki",this.homeSectionActions);
     }
 
 
@@ -53,11 +52,7 @@ class Home extends Component {
             this.type=" type:"+files[0].type;
             //this.buttonVisibility=false;
             console.log(this.size+" "+this.name);
-            var req = request.post('http://localhost:4000/api/csv/uploadCSV');
-            files.forEach((file)=> {
-                req.attach(file.name, file);
-            });
-            req.end(this.callBack.bind(this));
+            
         }
         else{
 
@@ -67,6 +62,11 @@ class Home extends Component {
             this.type="";
 
         }
+        var req = request.post('http://localhost:4000/api/csv/uploadCSV');
+            files.forEach((file)=> {
+                req.attach(file.name, file);
+            });
+            req.end(this.callBack.bind(this));
     }
     callBack(err,response) {
         if(err){
@@ -125,7 +125,7 @@ class Home extends Component {
           { 
             this.message==='please select csv file' &&
             <div className="errorMessage">
-              error
+             {this.message}
             </div>
               }
 

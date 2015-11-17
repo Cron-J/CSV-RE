@@ -9,6 +9,8 @@ class Mapping extends Component {
   constructor(props) {
     super(props);
     const { mappingsection, homesection, dispatch } = this.props;
+   //this.props.mappingsection = mappingsection;
+   console.log("mapping",mappingsection);
     this.actions = bindActionCreators(MappingActions, dispatch);
     this.mappingName = this.props.mappingsection.mappingName;
     if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
@@ -103,6 +105,7 @@ class Mapping extends Component {
     }
     this.actions.handleChanges(this.props.mappingsection);
     e.preventDefault();
+    //e.stopImmediatePropagation();
   }
   selectedProperty(e) {
     e.preventDefault();

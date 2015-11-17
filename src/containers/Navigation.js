@@ -22,6 +22,7 @@ export default class Navigation extends React.Component {
         <Header />
         <div brand={<Link to="/"></Link>}>
         <div className="container">
+        
           <div className="btn-group btn-group-justified btn-group-wizard">
               <Link to="/" className={this.path==='/' ? "btn btn-wizard active" : 'btn btn-wizard'}  >
                 <span  className="badge">1</span>Upload
@@ -32,7 +33,7 @@ export default class Navigation extends React.Component {
               <Link to="/mapping" className={this.path==='/mapping' ? "btn btn-wizard active" : 'btn btn-wizard'}>
                 <span className="badge">3</span>Map
               </Link>
-              <Link to="/" className={this.path==='/import' ? "btn btn-wizard active" : 'btn btn-wizard'}>
+              <Link to="/import" className={this.path==='/import' ? "btn btn-wizard active" : 'btn btn-wizard'}>
                 <span className="badge">4</span>Import
               </Link>
           </div>
