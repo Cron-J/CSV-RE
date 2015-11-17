@@ -12,13 +12,13 @@ export function handleMappedChnages(data) {
 
 export function saveMappedData(data) {
   if(data.id) {
-    updateMappedData(data);
+    return updateMappedData(data);
   } else {
-    createMappedData(data);
+    return createMappedData(data);
   }
 }
 
-export function createMappedData(data) {
+function createMappedData(data) {
   console.log("mapped data 1", data);
   return {
     types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
@@ -27,7 +27,7 @@ export function createMappedData(data) {
     }
   };
 }
-export function updateMappedData(data) {
+function updateMappedData(data) {
   console.log("mapped data 1", data);
   return {
     types: [types.UPDATEMAPPING, types.UPDATEMAPPINGSUCCESS, types.UPDATEMAPPINGFAIL],
@@ -37,12 +37,7 @@ export function updateMappedData(data) {
     },
     meta: {
       transition: () => ({
-        onSuccess: () =>({
           path: '/editmapping'
-        }),
-        onFail: (error) =>({
-          console.log('error', error);
-        })
       })
     }
   };
