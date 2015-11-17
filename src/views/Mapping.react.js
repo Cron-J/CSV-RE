@@ -8,17 +8,25 @@ import { connect } from 'react-redux';
 class Mapping extends Component {
   constructor(props) {
     super(props);
-    const { mappingsection, homesection, dispatch } = this.props;
-    this.state = mappingsection;
+    const { mappingsection, homesection, selectmapping, dispatch } = this.props;
+   //this.props.mappingsection = mappingsection;
+    console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
-    this.state.mappingName = this.state.mappingName;
-    if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        this.state.headers = this.props.homesection.filedata.headers.split(',');
-    }else{
+    //this.growler= null;
+    const params = this.props.params;
+    if (typeof params.id !== 'undefined') {
+      this.actions.getMapInfo(params.id);
+      this.actions.getCSVfileData(params.id, 'tnt1');
+      this.edit= true;
+    } else {
+      this.mappingName = this.props.mappingsection.mappingName;
+      if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
+        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
+      }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
+      }
     }
-    //this.growler= null;
   }
   componentWillMount() {
     this.actions.attributeList();
@@ -28,9 +36,8 @@ class Mapping extends Component {
   }
   componentWillReceiveProps(nextProps){
     console.log(nextProps);
-    this.props = nextProps;
-    const { mappingsection, homesection, dispatch } = this.props;
-    this.state = mappingsection;
+    this.props = nextProps
+    //this.props.mappingsection.mappingName
   }
 
   mapping(e) {
@@ -263,11 +270,13 @@ class Mapping extends Component {
   }
 
   mappingNameHandler(e) {
-    this.setState({mappingName: e.currentTarget.value});
+    const change = this.props.mappingsection;
+    change.mappingName = e.target.value;
+    this.actions.handleChanges(change);
   }
 
   saveMappingStep(e) {
-    if(this.state.mappingName===""){
+    if(this.props.mappingsection.mappingName===""){
       this.setState({mappingName:undefined});
     }
     else{
@@ -285,7 +294,7 @@ class Mapping extends Component {
         'mappingInfo': this.props.mappingsection.mappedData,
         'tenantId': 'tnt1',
         'attributeId': this.props.homesection.filedata.fileName,
-        'mappingName': this.state.mappingName
+        'mappingName': this.props.mappingsection.mappingName
       };
       this.actions.saveMappedData(finalData);
       this.actions.redirectImport();
@@ -302,11 +311,11 @@ class Mapping extends Component {
             <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
             <div className="col-sm-3">
               <input name="jobId" className="form-control"
-              value={this.state.mappingName}
-              onChange={this.mappingNameHandler.bind(this)}
+              value={this.props.mappingsection.mappingName}
+              onChange={this.mappingNameHandler.bind(this)} 
               placeholder="Choose Mapping Name" id="mapName" type="text"
               required disabled={this.edit} />
-            { this.state.mappingName === undefined &&
+            { this.props.mappingsection.mappingName === undefined &&
             <span  id="error">please enter mapping name</span>
                 }
             </div>
@@ -411,11 +420,17 @@ class Mapping extends Component {
             </div> : <p>No mapped details</p>
           }    
           <hr />
+          { this.props.mappingsection.id ?
+          <div className="pull-right">
+          <button className="btn btn-primary"
+          onClick={this.saveMappingStep.bind(this)}>Update</button>
+          </div> :
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.actions.redirectPreview}>Back</button>
             <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Next</button>
           </div>
+         }
         </div>
 	    </div>
     );

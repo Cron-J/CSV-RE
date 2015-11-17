@@ -644,7 +644,7 @@ export default createReducer(initialState, {
       tenantId: response.tenantId
     };
   },
-  [types.UPDATEMAPPEDDATASUCCESS](state, action) {
+  [types.UPDATEMAPPINGSUCCESS](state, action) {
     const { data } = action.payload;
     return {
       ...state
