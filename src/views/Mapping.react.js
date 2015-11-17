@@ -11,7 +11,7 @@ class Mapping extends Component {
     const { mappingsection, homesection, dispatch } = this.props;
     this.state = mappingsection;
     this.actions = bindActionCreators(MappingActions, dispatch);
-    this.mappingName = this.state.mappingName;
+    this.state.mappingName = this.state.mappingName;
     if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
         this.state.headers = this.props.homesection.filedata.headers.split(',');
     }else{
@@ -28,22 +28,9 @@ class Mapping extends Component {
   }
   componentWillReceiveProps(nextProps){
     console.log(nextProps);
-    this.props = nextProps
-    //this.props.mappingsection.mappingName
-    const params = this.props.params;
-    if (typeof params.id !== 'undefined') {
-      this.actions.getMapInfo(params.id);
-      this.actions.getCSVfileData(params.id, 'tnt1');
-      this.edit= true;
-    } else {
-      this.mappingName = this.props.mappingsection.mappingName;
-      if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
-      }else{
-        console.log('no headers found. possiblity that file is not uploaded');
-        this.actions.redirectPreview();
-      }
-    }
+    this.props = nextProps;
+    const { mappingsection, homesection, dispatch } = this.props;
+    this.state = mappingsection;
   }
 
   mapping(e) {
@@ -276,11 +263,11 @@ class Mapping extends Component {
   }
 
   mappingNameHandler(e) {
-    this.props.mappingsection.mappingName = e.currentTarget.value;
+    this.setState({mappingName: e.currentTarget.value});
   }
 
   saveMappingStep(e) {
-    if(this.props.mappingsection.mappingName===""){
+    if(this.state.mappingName===""){
       this.setState({mappingName:undefined});
     }
     else{
@@ -298,7 +285,7 @@ class Mapping extends Component {
         'mappingInfo': this.props.mappingsection.mappedData,
         'tenantId': 'tnt1',
         'attributeId': this.props.homesection.filedata.fileName,
-        'mappingName': this.props.mappingsection.mappingName
+        'mappingName': this.state.mappingName
       };
       this.actions.saveMappedData(finalData);
       this.actions.redirectImport();
@@ -315,11 +302,11 @@ class Mapping extends Component {
             <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
             <div className="col-sm-3">
               <input name="jobId" className="form-control"
-              value={this.props.mappingsection.mappingName}
+              value={this.state.mappingName}
               onChange={this.mappingNameHandler.bind(this)}
               placeholder="Choose Mapping Name" id="mapName" type="text"
               required disabled={this.edit} />
-            { this.props.mappingsection.mappingName === undefined &&
+            { this.state.mappingName === undefined &&
             <span  id="error">please enter mapping name</span>
                 }
             </div>
