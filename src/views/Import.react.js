@@ -7,27 +7,8 @@ class ImportView extends Component {
     constructor(props) {
         super(props);
         const { mappingsection, homesection, dispatch } = this.props;
-        console.log(this.state);
-        this.mappedJson;
-        this.jsonpreview = [
-                    {
-                        "product":"pen",
-                        "ProductId":100,
-                        "price":100
-                    },
-                    {
-                        "product":"pencile",
-                        "ProductId":101,
-                        "price":101
-                    },
-                    {
-                        "product":"ink",
-                        "ProductId":102,
-                        "price":102
-                    }
-
-            ];
-        this.stringJSon=JSON.stringify(this.jsonpreview,null,4); 
+        this.jsonpreview = mappingsection.mappingData;
+        this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
         this.actions = bindActionCreators(PreviewActions, dispatch);
         console.log("json",this.stringJSon.length);
     }
@@ -55,8 +36,7 @@ class ImportView extends Component {
     render() {     
         return (
             <div className="container">
-                <div className="row">dir
-
+                <div className="row">
                     <div className="upload-container">
                         <legend>Json Preview</legend>
                     </div>
