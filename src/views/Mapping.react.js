@@ -40,6 +40,10 @@ class Mapping extends Component {
     //this.props.mappingsection.mappingName
   }
 
+  redirectMapping() {
+    this.actions.redirectEdit();
+  }
+
   mapping(e) {
     e.preventDefault();
     if(this.props.mappingsection.headSelect===''||this.props.mappingsection.propertySelect===''||this.props.mappingsection.selectedTab===''){
@@ -424,8 +428,11 @@ class Mapping extends Component {
           <hr />
           { this.props.mappingsection.id ?
           <div className="pull-right">
-          <button className="btn btn-primary"
-          onClick={this.saveMappingStep.bind(this)}>Update</button>
+            <button className="btn btn-primary"
+            onClick={this.saveMappingStep.bind(this)}>Update</button>
+            <span> </span>
+            <button className="btn btn-primary"
+            onClick={this.redirectMapping.bind(this)}>Cancel</button>
           </div> :
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.actions.redirectPreview}>Back</button>

@@ -649,6 +649,12 @@ export default createReducer(initialState, {
     return {
       ...state
     }
+  },
+  [types.UPDATEMAPPINGSUCCESS](state, action) {
+    const { data } = action.payload;
+    return {
+      ...state
+    }
   }
 
 });

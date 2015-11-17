@@ -34,14 +34,21 @@ function updateMappedData(data) {
     payload: {
       response: api.updateMapping(data).then(response => response),
       data
-    },
+    }
+  };
+}
+
+export function redirectEdit() {
+  return {
+    type: types.HANDLEREDIRECT,
     meta: {
       transition: () => ({
           path: '/editmapping'
       })
     }
-  };
+  }
 }
+
 export function mappinginfo(data) {
   return {
     types: [types.HANDLEMAPPEDINFO, types.HANDLEMAPPEDINFOSUCCESS, types.HANDLEMAPPEDINFOERROR],
