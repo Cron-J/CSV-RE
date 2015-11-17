@@ -21,6 +21,11 @@ export default createReducer(initialState, {
       ...state
     };
   },
+  [types.SETHOME](state, action) {
+    return {
+      ...state
+    };
+  },
   [types.LOADLISTSUCCESS](state, action) {
     const { response } = action.payload;
     return {

@@ -40,6 +40,7 @@ export const LOADLIST = 'LOADLIST';
 export const LOADLISTSUCCESS = 'LOADLISTSUCCESS';
 export const LOADLISTFAIL = 'LOADLISTFAIL';
 export const SETPREVIEW = 'SETPREVIEW';
+export const SETHOME = 'SETHOME';
 
 //edit mapping
 export const GETCSVDATA = 'GETCSVDATA';

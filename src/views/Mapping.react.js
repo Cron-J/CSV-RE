@@ -13,17 +13,6 @@ class Mapping extends Component {
     console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
     //this.growler= null;
-  }
-  componentWillMount() {
-    this.actions.attributeList();
-  }
-
-  componentDidMount() {
-  }
-  componentWillReceiveProps(nextProps){
-    console.log(nextProps);
-    this.props = nextProps
-    //this.props.mappingsection.mappingName
     const params = this.props.params;
     if (typeof params.id !== 'undefined') {
       this.actions.getMapInfo(params.id);
@@ -38,6 +27,17 @@ class Mapping extends Component {
         this.actions.redirectPreview();
       }
     }
+  }
+  componentWillMount() {
+    this.actions.attributeList();
+  }
+
+  componentDidMount() {
+  }
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps);
+    this.props = nextProps
+    //this.props.mappingsection.mappingName
   }
 
   mapping(e) {
@@ -270,7 +270,9 @@ class Mapping extends Component {
   }
 
   mappingNameHandler(e) {
-    this.props.mappingsection.mappingName = e.currentTarget.value;
+    const change = this.props.mappingsection;
+    change.mappingName = e.target.value;
+    this.actions.handleChanges(change);
   }
 
   saveMappingStep(e) {
