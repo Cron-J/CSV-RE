@@ -10,12 +10,9 @@ class Mapping extends Component {
     super(props);
     const { mappingsection, homesection, selectmapping, dispatch } = this.props;
    //this.props.mappingsection = mappingsection;
-   console.log("mapping",this.props);
+    console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
     //this.growler= null;
-  }
-  componentWillMount() {
-    this.actions.attributeList();
     const params = this.props.params;
     if (typeof params.id !== 'undefined') {
       this.actions.getMapInfo(params.id);
@@ -31,12 +28,20 @@ class Mapping extends Component {
       }
     }
   }
+  componentWillMount() {
+    this.actions.attributeList();
+  }
 
   componentDidMount() {
   }
   componentWillReceiveProps(nextProps){
-      console.log(nextProps);
-      //this.props.mappingsection.mappingName
+    console.log(nextProps);
+    this.props = nextProps
+    //this.props.mappingsection.mappingName
+  }
+
+  redirectMapping() {
+    this.actions.redirectEdit();
   }
 
   mapping(e) {
@@ -269,7 +274,9 @@ class Mapping extends Component {
   }
 
   mappingNameHandler(e) {
-    this.props.mappingsection.mappingName = e.currentTarget.value;
+    const change = this.props.mappingsection;
+    change.mappingName = e.target.value;
+    this.actions.handleChanges(change);
   }
 
   saveMappingStep(e) {
@@ -417,11 +424,20 @@ class Mapping extends Component {
             </div> : <p>No mapped details</p>
           }    
           <hr />
+          { this.props.mappingsection.id ?
+          <div className="pull-right">
+            <button className="btn btn-primary"
+            onClick={this.saveMappingStep.bind(this)}>Update</button>
+            <span> </span>
+            <button className="btn btn-primary"
+            onClick={this.redirectMapping.bind(this)}>Cancel</button>
+          </div> :
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.actions.redirectPreview}>Back</button>
             <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Next</button>
           </div>
+         }
         </div>
 	    </div>
     );

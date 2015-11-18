@@ -577,7 +577,8 @@ export default createReducer(initialState, {
       pickedTable: data.pickedTable,
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
-      selectedTable: data.selectedTable
+      selectedTable: data.selectedTable,
+      headers: data.headers
     }
   },
   [types.SAVEMAPPEDDATA](state,action) {
@@ -643,7 +644,13 @@ export default createReducer(initialState, {
       tenantId: response.tenantId
     };
   },
-  [types.UPDATEMAPPEDDATASUCCESS](state, action) {
+  [types.UPDATEMAPPINGSUCCESS](state, action) {
+    const { data } = action.payload;
+    return {
+      ...state
+    }
+  },
+  [types.UPDATEMAPPINGSUCCESS](state, action) {
     const { data } = action.payload;
     return {
       ...state

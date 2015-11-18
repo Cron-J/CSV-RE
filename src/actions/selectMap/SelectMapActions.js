@@ -24,3 +24,14 @@ export function editMapping(id) {
     }
   };
 }
+
+export function redirectToHome(id) {
+  return  {
+    type: types.SETHOME,
+    meta: {
+      transition: () => ({
+          path: '/',
+      })
+    }
+  };
+}

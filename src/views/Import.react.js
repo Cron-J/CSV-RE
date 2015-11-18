@@ -28,8 +28,9 @@ class ImportView extends Component {
                     }
 
             ];
-        this.stringJson=JSON.stringify(this.jsonpreview,null,4); 
-        this.actions = bindActionCreators(PreviewActions, dispatch);        
+        this.jsonpreview = mappingsection.mappingData;
+        this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
+        this.actions = bindActionCreators(PreviewActions, dispatch);
     }
  
     importJson() {
@@ -70,17 +71,7 @@ class ImportView extends Component {
                            <div className="panel panel-default">
                            <div className="panel-body">
                              
-                                        <span>"product":</span> <span>"pen"</span>,
-                                        <span>"ProductId":</span> <span>100</span>,
-                                        <span>"price":</span> <span>100</span>
-                                    
-                                        <span>"product":</span> <span>"pencile"</span>,
-                                        <span>"ProductId":</span> <span>101</span>,
-                                        <span>"price":</span> <span>101</span>
-                                    
-                                        <span>"product":</span> <span>"ink"</span>,
-                                        <span>"ProductId":</span> <span>102</span>,
-                                        <span>"price":</span> <span>102</span>
+                                        {this.stringJSon}
                                     
                                 
                            </div>
