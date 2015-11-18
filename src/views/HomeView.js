@@ -48,11 +48,11 @@ class Home extends Component {
 
         if(extention==="csv"){
             console.log(files);
-            this.message="uploaded file:";
-            this.size=" size:"+files[0].size+"B";
-            this.name=" name:"+files[0].name;
+            this.message="Uploaded file:";
+            this.size=files[0].size+"B";
+            this.name=files[0].name;
             if(files[0].type==="application/vnd.ms-excel")
-              this.type=" type:Microsoft Office Comma Seperated Value";
+              this.type=":Microsoft Office Comma Seperated Value";
            
             //this.buttonVisibility=false;
             console.log(this.size+" "+this.name);
@@ -134,15 +134,15 @@ class Home extends Component {
               }
 
           {
-            this.message==='uploaded file:' &&
+            this.message==='Uploaded file:' &&
             <div className="displayMessage">
-                <b>{this.message}</b>{this.name}-{this.size}-{this.type}
+                <b>{this.message}</b>{this.name}-<b>Size</b>:{this.size}-<b>Type</b>{this.type}
             </div>
 
           }
         
          
-         { this.message==='uploaded file:' &&
+         { this.message==='Uploaded file:' &&
          <div className="pull-right">
              <button className="btn btn-primary" onClick={this.startRead.bind(this)}>Next</button>
          </div>
