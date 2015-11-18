@@ -32,11 +32,9 @@ class Preview extends Component {
     this.row1 = [];
     this.row2 = [];
     this.checkboxSelected = true;
-    this.includeHeader = true;
     this.noHeader = this.previewPage.noHeader;
     this.dFormat = this.previewPage.dFormat;
     this.noFormat = this.previewPage.noFormat;
-    this.checkedState = this.previewPage.checkedState;
   // }
   }
 
@@ -45,7 +43,7 @@ class Preview extends Component {
       let uploadpage = this.uploadpage;
       if(!(uploadpage.fileSelected && uploadpage.filedata && uploadpage.filedata.fileName)){
           console.log('No File selected redirecting to home');
-          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader,this.checkedState]);
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
       }
       else{
           this.dateFormat(this,'MM/dd/yyyy');
@@ -53,6 +51,11 @@ class Preview extends Component {
   }
   componentDidMount(){
     
+  }
+  componentWillRecieveProps(nextProps){
+      const { state, dispatch } = nextProps;
+      this.previewPage = state.attributesectionsearch;
+      this.customHeader = this.previewPage.customHeader;
   }
   resetPreviewSetting(e) {
     console.log('data');
@@ -65,23 +68,23 @@ class Preview extends Component {
   }
 
   changeColumn(e,p) {
-    this.checkedState=!this.checkedState;
     if(e.target.checked == false) {
-      this.noHeader = true;
-      this.includeHeader = false;
-      this.setState({});
-      for(let c=1; c<=this.row1.length; c++){
-        this.customHeader.push('Column'+c);
+      this.noHeader = false;
+      if(this.customHeader.length === 0){
+          for(let c=1; c<=this.row1.length; c++){
+              this.customHeader.push('Column'+c);
+          }
       }
       this.state.customHeader = this.customHeader;
       this.actions.handleCustomHeader(this.state);
-      this.setState({});
+      this.setState(this.state);
     }
     else{
       this.customHeader = [];
-      this.noHeader = false;
-      this.includeHeader = true;
-      this.setState({});
+      this.noHeader = true;
+      this.state.customHeader = [];
+      this.actions.handleCustomHeader(this.state);
+      this.setState(this.state);
     }
   }
   changeDateFormat(list,format) {
@@ -181,14 +184,13 @@ class Preview extends Component {
     this.setState({});
   }
   delimiterFormat(e,p){
-    if(p===",")
-      this.delimiter=",";
-    else
-      this.delimiter = e.target.value;
-    this.headers = this.splitter(this.state.headers, this.delimiter);
-    this.row1 = this.splitter(this.state.rowOne, this.delimiter);
-    this.row2 = this.splitter(this.state.rowTwo, this.delimiter);
-    this.setState({});
+    p==="," ? this.delimiter=",": this.delimiter = e.target.value;
+    if(this.delimiter){
+        this.headers = this.splitter(this.state.headers, this.delimiter);
+        this.row1 = this.splitter(this.state.rowOne, this.delimiter);
+        this.row2 = this.splitter(this.state.rowTwo, this.delimiter);
+        this.setState({});
+    }
   }
   splitter(data, splittype) {
     return data.split(splittype);
@@ -241,7 +243,7 @@ class Preview extends Component {
     }
     else{
       console.log('jrrrr');
-     this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader,this.checkedState]);
+     this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
     }
   }
 
@@ -252,7 +254,7 @@ class Preview extends Component {
           console.log('please correct the settings to procced');
       }
       else {
-          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader,this.checkedState]);
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
       }
   }
 
@@ -264,7 +266,12 @@ class Preview extends Component {
    // console.log(this.headers);
     //console.log(this.row1);
    // console.log(this.row2);\
-
+    this.customHeader = [];
+    if(!this.noHeader){
+        for(let c=1; c <=this.row1.length; c++){
+            this.customHeader.push('Column'+c);
+        }
+    }
     let CHeader = this.customHeader.map(function(head){
         return <th>{head}</th>;
     });
@@ -296,7 +303,7 @@ class Preview extends Component {
                   <div className="form-group">
                     <label className="col-sm-4 control-label">First line include header</label>
                     <div className="col-sm-8">
-                      <input type="checkbox" checked={this.checkedState}  onChange={this.changeColumn.bind(this)}/>
+                      <input type="checkbox" checked={this.noHeader}  onChange={this.changeColumn.bind(this)}/>
                     </div>
                   </div>
                   <div className="form-group">
@@ -360,25 +367,25 @@ class Preview extends Component {
               </div>
               <div className="table-Allignment">
               <table className="table table-bordered">
+                  {
+                      !this.noHeader &&
+                      <thead>
+                      <tr>
+                          {CHeader}
+                      </tr>
+                      </thead>
+                  }
                 {
-                  this.includeHeader &&
-                  <thead ng-show="fileStyle.includeHeader">
+                  this.noHeader &&
+                  <thead>
                   <tr>
                     {header}
                   </tr>
                 </thead>
                 }
-                {
-                  this.noHeader &&
-                  <thead ng-show="!fileStyle.includeHeader">
-                  <tr>
-                    {CHeader}
-                  </tr>
-                </thead>
-                }
                 <tbody>
                   {
-                    this.noHeader &&
+                    !this.noHeader &&
                     <tr>
                       {headerAsData}
                     </tr>
