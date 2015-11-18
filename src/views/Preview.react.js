@@ -64,19 +64,18 @@ class Preview extends Component {
     this.setState({});
   }
 
-  changeColumn(e) {
+  changeColumn(e,p) {
     this.checkedState=!this.checkedState;
     if(e.target.checked == false) {
       this.noHeader = true;
-      //this.previewPage.noHeader=true;
       this.includeHeader = false;
       this.setState({});
       for(let c=1; c<=this.row1.length; c++){
         this.customHeader.push('Column'+c);
       }
-      else
-        this.state.customHeader = this.customHeader;
+      this.state.customHeader = this.customHeader;
       this.actions.handleCustomHeader(this.state);
+      this.setState({});
     }
     else{
       this.customHeader = [];

@@ -202,7 +202,9 @@ class Mapping extends Component {
     }
     return child;
   }
-
+  secondStep(e){
+    this.actions.redirectPreview();
+  }
   selectHead(e) {
     this.props.mappingsection.headSelect = e.currentTarget.value;
     console.log(this.props.mappingsection.headSelect);
@@ -433,7 +435,7 @@ class Mapping extends Component {
             onClick={this.redirectMapping.bind(this)}>Cancel</button>
           </div> :
           <div className="pull-right">
-            <button className="btn btn-primary "  onClick={this.actions.redirectPreview}>Back</button>
+            <button className="btn btn-primary "  onClick={this.secondStep.bind(this)}>Back</button>
             <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Next</button>
           </div>
