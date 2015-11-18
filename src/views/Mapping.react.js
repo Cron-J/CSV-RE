@@ -21,7 +21,7 @@ class Mapping extends Component {
     } else {
       this.mappingName = this.props.mappingsection.mappingName;
       if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
+        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(', ');
       }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
@@ -60,34 +60,37 @@ class Mapping extends Component {
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
-                    "table": this.props.mappingsection.pickedTable,
+                    "table": this.props.mappingsection.selectedTab,
                     "field": this.props.mappingsection.attributeList[index][idx].field,
                     "defaultValue": this.props.mappingsection.defaultValue,
                     "index": this.props.mappingsection.attributeList[index][idx].index,
                     "instance": this.props.mappingsection.attributeList[index][idx].instance,
-                    "isRequired": this.props.mappingsection.attributeList[index][idx].isRequired,
-                    "rowId": this.props.mappingsection.mappedData.length++
+                    "isRequired": this.props.mappingsection.attributeList[index][idx].isRequired
                   };
                 }
               }
             }
           }
-          if(this.props.mappingsection.pickedTable === 'Select'){
+          if(this.props.mappingsection.selectedTab === 'product'){
             propertyname = 'product.'+this.props.mappingsection.propertySelect;
           }else{
             propertyname = 'product.'+this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
           }
-          if(this.props.mappingsection.defaultValue.length>0){
-            this.props.mappingsection.headSelect = this.props.mappingsection.defaultValue;
+          if(this.props.mappingsection.defaultValue){
+            this.props.mappingsection.headSelect = '"'+this.props.mappingsection.defaultValue+'"';
           }
           this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: this.props.mappingsection.propertySelect, propertyname: propertyname});
           this.props.mappingsection.mappedData.push(mappedField);
           this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
           this.props.mappingsection.mappedData = this.props.mappingsection.mappedData;
           this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
+          if(this.props.mappingsection.defaultValue){
+            this.props.mappingsection.defaultValue = '';
+          }
           this.actions.handleMappedChnages(this.props.mappingsection);
+    }
+
   }
-}
 
   toAddDefaultName(e) {
     $('.edit-icon').addClass('hide');
@@ -129,8 +132,9 @@ class Mapping extends Component {
       $('.default-value').addClass('active');
     else
       $('.default-value').removeClass('active');
-
-    this.props.mappingsection.defaultValue = e.currentTarget.value;
+    const change = this.props.mappingsection
+    change.defaultValue = e.currentTarget.value;
+    this.actions.handleChanges(this.props.mappingsection);
   }
 
   selectnewPropTable(e) {
@@ -148,26 +152,41 @@ class Mapping extends Component {
             this.props.mappingsection.tables[table].push('attributeValues');
           }
         }
-        this.props.mappingsection.mappedData.push({
-                  "userFieldName": this.props.mappingsection.headSelect,
-                  "transformations": [],
-                  "field": 'value',
-                  "defaultValue": this.props.mappingsection.defaultValue,
-                  "index": '',
-                  "instance": '',
-                  "isRequired": true,
-                  "rowId": this.props.mappingsection.mappedData.length++
-                });
-
+        const mapField1 = {
+          "userFieldName": this.props.mappingsection.headSelect,
+          "transformations": [],
+          "field": 'value',
+          "defaultValue": this.props.mappingsection.defaultValue,
+          "index": '',
+          "instance": '',
+          "table": 'attributeValues',
+          "isRequired": true
+        }
+        this.props.mappingsection.mappedData.push(mapField1);
         this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
-        this.props.mappingsection.mappedFields.push({column:'"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
+        const mapField2 = {
+          "userFieldName": this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"': '"'+this.props.mappingsection.headSelect+'"',
+          "transformations": [],
+          "field": 'attribute',
+          "defaultValue": this.props.mappingsection.defaultValue,
+          "index": '',
+          "instance": '',
+          "table": 'attributeValues',
+          "isRequired": true
+        }
+        this.props.mappingsection.mappedData.push(mapField2);
+        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"' : '"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
         this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
+        if (this.props.mappingsection.defaultValue) {
+          this.props.mappingsection.defaultValue = '';
+        }
         this.actions.handleChanges(this.props.mappingsection);
     }
 }
   removeRow(index) {
     this.props.mappingsection.mappedFields.splice(index,1);
-    console.log('Mapped Fields',this.props.mappingsection.mappedFields);
+    this.props.mappingsection.mappedData.splice(index,1);
+    console.log('Mapped Fields',this.props.mappingsection.mappedData);
     this.actions.handleMappedChnages(this.props.mappingsection);
 
   }
@@ -301,7 +320,9 @@ class Mapping extends Component {
         'mappingName': this.props.mappingsection.mappingName
       };
       this.actions.saveMappedData(finalData);
-      this.actions.redirectImport();
+      if (!this.props.mappingsection.id) {
+        this.actions.redirectImport();
+      }
     }
   }
   render() {
@@ -376,7 +397,8 @@ class Mapping extends Component {
             </div>
             <form role="form">
               <div className="form-group">
-                <input type="text"  className="form-control" onChange={this.enteredDefaultVal.bind(this)}  placeholder="" />
+                <input type="text"  className="form-control" value={this.props.mappingsection.defaultValue}
+                onChange={this.enteredDefaultVal.bind(this)}  placeholder="" />
               </div>
             </form>
           </div>
