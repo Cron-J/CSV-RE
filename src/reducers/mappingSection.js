@@ -578,7 +578,8 @@ export default createReducer(initialState, {
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
       selectedTable: data.selectedTable,
-      headers: data.headers
+      headers: data.headers,
+      defaultValue: data.defaultValue
     }
   },
   [types.SAVEMAPPEDDATA](state,action) {
@@ -616,9 +617,10 @@ export default createReducer(initialState, {
     var arr = [];
     for (var i = 0; i < response.mappingInfo.length; i++) {
       arr[i] = {};
-      arr[i].column = response.mappingInfo[i].userFieldName;
-      arr[i].propertyname = response.mappingInfo[i].table !== 'product' ?
-      response.mappingInfo[i].table + '.' + response.mappingInfo[i].field :
+      arr[i].column = response.mappingInfo[i].table !== 'attributeValues' && response.mappingInfo[i].defaultValue?
+      '"'+response.mappingInfo[i].defaultValue+'"' : response.mappingInfo[i].userFieldName;
+      arr[i].propertyname = response.mappingInfo[i].table === 'product' ?
+       'product.' + response.mappingInfo[i].field :
       'product.' + response.mappingInfo[i].table + '.' + response.mappingInfo[i].field;
       arr[i].propertydec = response.mappingInfo[i].field;
     };
