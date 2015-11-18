@@ -7,7 +7,7 @@ class Preview extends Component {
   constructor(props) {
     super(props);
     const { state, dispatch } = this.props;
-    console.log('eit mode', state);
+    console.log('edit mode', state);
     // if (state.selectmapping.data) {
     //   this.previewPage = state.selectmapping.data;
     //   this.delimiter = this.previewPage;
@@ -36,7 +36,7 @@ class Preview extends Component {
     this.noHeader = this.previewPage.noHeader;
     this.dFormat = this.previewPage.dFormat;
     this.noFormat = this.previewPage.noFormat;
-    this.checkedState = true;
+    this.checkedState = this.previewPage.checkedState;
   // }
   }
 
@@ -45,22 +45,21 @@ class Preview extends Component {
       let uploadpage = this.uploadpage;
       if(!(uploadpage.fileSelected && uploadpage.filedata && uploadpage.filedata.fileName)){
           console.log('No File selected redirecting to home');
-          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader,this.checkedState]);
       }
       else{
           this.dateFormat(this,'MM/dd/yyyy');
       }
-    // } else {
-    //   console.log('cAME');
-    // }
   }
   componentDidMount(){
     
   }
   resetPreviewSetting(e) {
     console.log('data');
-    this.dFormat = "";
-    this.noFormat = "";
+    //this.dateFormat="MM/dd/yyyy";
+    this.delimiter=",";
+    this.dFormat = "MM/dd/yyyy";
+    this.noFormat = "#,###.##";
     this.setState({});
   }
 
@@ -238,7 +237,7 @@ class Preview extends Component {
       console.log('jrrrr');
      /*redirect to mapping*/
      // window.location.href = '/mapping';
-     this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
+     this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader,this.checkedState]);
     }
     //location.path('/mapping');
   }
@@ -250,7 +249,7 @@ class Preview extends Component {
           console.log('please correct the settings to procced');
       }
       else {
-          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader,this.checkedState]);
       }
   }
 

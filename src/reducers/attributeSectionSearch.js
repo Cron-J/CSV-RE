@@ -18,6 +18,7 @@ const initialState = {
   dFormat : 'MM/dd/yyyy',
   delimiter : ',',
   noHeader : false,
+  checkedState : true,
   customHeader:[]
 };
 export default createReducer(initialState, {
@@ -28,7 +29,8 @@ export default createReducer(initialState, {
         delimiter : response[0],
         dFormat : response[1],
         noFormat : response[2],
-        noHeader : response[3]
+        noHeader : response[3],
+        checkedState : response[4]
       }
     },
   [types.HANDLESEARCH](state, action) {

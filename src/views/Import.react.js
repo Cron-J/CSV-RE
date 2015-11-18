@@ -8,7 +8,7 @@ class ImportView extends Component {
         super(props);
         const { mappingsection, homesection, dispatch } = this.props;
         console.log(this.state);
-        this.mappedJson="sadtg";
+        this.mappedJson="";
         this.jsonFormated="";
         this.jsonpreview = [
                     {
@@ -28,9 +28,11 @@ class ImportView extends Component {
                     }
 
             ];
-        this.jsonpreview = mappingsection.mappingData;
+        //here we call json preview from mappingsection
+        //this.jsonpreview = mappingsection.mappingData;
         this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
         this.actions = bindActionCreators(PreviewActions, dispatch);
+        
     }
  
     importJson() {
@@ -42,7 +44,6 @@ class ImportView extends Component {
     parseJson(json){
         json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        //this.mappedJson+= "'<span>' +{{ match}} + '</span>'";
         return '<span>' + match + '</span>';
     });
 
@@ -55,8 +56,6 @@ class ImportView extends Component {
         }
     }
     render() {     
-        console.log(this.parseJson(this.stringJson));
-        console.log(this.mappedJson);
         return (
             <div className="container">
                 <div className="row">
@@ -70,10 +69,7 @@ class ImportView extends Component {
                             Processing Json</div>
                            <div className="panel panel-default">
                            <div className="panel-body">
-                             
-                                        {this.stringJSon}
-                                    
-                                
+                             {this.stringJSon}                                                   
                            </div>
                          
                            </div>
