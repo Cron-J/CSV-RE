@@ -95,7 +95,9 @@ footer .copyright {
     padding-bottom: .25em;
     text-align: left;
 }
-
+.btn-Allignment{
+    padding-left: 14px;
+}
 li a.icon-nav-item {
     font-size: 1.5em;
     border-right: 1px solid #e7e7e7;
@@ -718,4 +720,10 @@ h2 {
     text-align: center;
     margin: 2em 0;
     font-size: 20px;
+}
+.Preview-Container{
+    padding-left: 14px;
+}
+.table-Allignment{
+    padding-top: 10px;
 }

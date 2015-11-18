@@ -15,6 +15,7 @@ class Home extends Component {
         console.log("homesection",homesection);
         this.state=homesection;
         if(this.props.homesection.fileSelected==true){
+
           this.message=this.props.homesection.properties.message;
           this.size=this.props.homesection.properties.size;
           this.type=this.props.homesection.properties.type;
@@ -46,16 +47,19 @@ class Home extends Component {
         extention=extention.toLowerCase();
 
         if(extention==="csv"){
+            console.log(files);
             this.message="uploaded file:";
             this.size=" size:"+files[0].size+"B";
             this.name=" name:"+files[0].name;
-            this.type=" type:"+files[0].type;
+            if(files[0].type==="application/vnd.ms-excel")
+              this.type=" type:Microsoft Office Comma Seperated Value";
+           
             //this.buttonVisibility=false;
             console.log(this.size+" "+this.name);
             
         }
         else{
-
+          console.log(files);
             this.message="please select csv file";
             this.size="";
             this.name="";

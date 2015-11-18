@@ -7,12 +7,34 @@ class ImportView extends Component {
     constructor(props) {
         super(props);
         const { mappingsection, homesection, dispatch } = this.props;
-        this.jsonpreview = mappingsection.mappingData;
+        console.log(this.state);
+        this.mappedJson="";
+        this.jsonFormated="";
+        this.jsonpreview = [
+                    {
+                        "product":"pen",
+                        "ProductId":100,
+                        "price":100
+                    },
+                    {
+                        "product":"pencile",
+                        "ProductId":101,
+                        "price":101
+                    },
+                    {
+                        "product":"ink",
+                        "ProductId":102,
+                        "price":102
+                    }
+
+            ];
+        //here we call json preview from mappingsection
+        //this.jsonpreview = mappingsection.mappingData;
         this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
         this.actions = bindActionCreators(PreviewActions, dispatch);
-        console.log("json",this.stringJSon.length);
+        
     }
-
+ 
     importJson() {
 
     }
@@ -47,7 +69,7 @@ class ImportView extends Component {
                             Processing Json</div>
                            <div className="panel panel-default">
                            <div className="panel-body">
-                                {this.stringJSon}
+                             {this.stringJSon}                                                   
                            </div>
                          
                            </div>

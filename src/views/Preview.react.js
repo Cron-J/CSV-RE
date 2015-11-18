@@ -7,7 +7,7 @@ class Preview extends Component {
   constructor(props) {
     super(props);
     const { state, dispatch } = this.props;
-    console.log('eit mode', state);
+    console.log('edit mode', state);
     // if (state.selectmapping.data) {
     //   this.previewPage = state.selectmapping.data;
     //   this.delimiter = this.previewPage;
@@ -36,7 +36,7 @@ class Preview extends Component {
     this.noHeader = this.previewPage.noHeader;
     this.dFormat = this.previewPage.dFormat;
     this.noFormat = this.previewPage.noFormat;
-    this.checkedState = true;
+    this.checkedState = this.previewPage.checkedState;
   // }
   }
 
@@ -45,22 +45,22 @@ class Preview extends Component {
       let uploadpage = this.uploadpage;
       if(!(uploadpage.fileSelected && uploadpage.filedata && uploadpage.filedata.fileName)){
           console.log('No File selected redirecting to home');
-          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader,this.checkedState]);
       }
       else{
           this.dateFormat(this,'MM/dd/yyyy');
       }
-    // } else {
-    //   console.log('cAME');
-    // }
   }
   componentDidMount(){
     
   }
   resetPreviewSetting(e) {
     console.log('data');
-    this.dFormat = "";
-    this.noFormat = "";
+    this.delimiter=",";
+    this.dFormat = "MM/dd/yyyy";
+    this.noFormat = "#,###.##";
+    this.delimiterFormat(e,",");
+    this.dateFormatt(e,"MM/dd/yyyy");
     this.setState({});
   }
 
@@ -68,12 +68,14 @@ class Preview extends Component {
     this.checkedState=!this.checkedState;
     if(e.target.checked == false) {
       this.noHeader = true;
+      //this.previewPage.noHeader=true;
       this.includeHeader = false;
       this.setState({});
       for(let c=1; c<=this.row1.length; c++){
         this.customHeader.push('Column'+c);
       }
-      this.state.customHeader = this.customHeader;
+      else
+        this.state.customHeader = this.customHeader;
       this.actions.handleCustomHeader(this.state);
     }
     else{
@@ -142,9 +144,12 @@ class Preview extends Component {
       }
     }
   }
- dateFormatt(e){
-   this.dFormat=e.target.value;
-     this.headers = this.splitter(this.state.headers, this.delimiter);
+ dateFormatt(e,p){
+    if(p==="MM/dd/yyyy")
+      this.dFormat="MM/dd/yyyy";
+    else
+      this.dFormat=e.target.value;
+    this.headers = this.splitter(this.state.headers, this.delimiter);
     let rowOne = this.splitter(this.state.rowOne, this.delimiter);
     let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
     this.row1 = this.changeDateFormat(rowOne);
@@ -162,10 +167,11 @@ class Preview extends Component {
     this.numberFormat(this.noFormat);
     this.setState({});
   }
-  numberFormat(e){
+  numberFormat(e,p){
     if(typeof e === 'string'){
         this.noFormat = e;
-    }else{
+    }
+    else{
         this.noFormat=e.target.value;
     }
     this.headers = this.splitter(this.state.headers, this.delimiter);
@@ -175,9 +181,11 @@ class Preview extends Component {
     this.row2 = this.changeNumberFormat(rowTwo, e.noFormat);
     this.setState({});
   }
-  delimiterFormat(e){
-    console.log('Delimiter Format', e.target.value);
-    this.delimiter = e.target.value;
+  delimiterFormat(e,p){
+    if(p===",")
+      this.delimiter=",";
+    else
+      this.delimiter = e.target.value;
     this.headers = this.splitter(this.state.headers, this.delimiter);
     this.row1 = this.splitter(this.state.rowOne, this.delimiter);
     this.row2 = this.splitter(this.state.rowTwo, this.delimiter);
@@ -230,17 +238,12 @@ class Preview extends Component {
   }
   thirdStep(e){
     if(this.dFormat==""||this.noFormat==""||this.delimiter==""){
-        /*no selected*/
-       //location.path('/mapping');
       console.log('please correct the settings to procced');
     }
     else{
       console.log('jrrrr');
-     /*redirect to mapping*/
-     // window.location.href = '/mapping';
-     this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
+     this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader,this.checkedState]);
     }
-    //location.path('/mapping');
   }
 
   firstStep(){
@@ -250,7 +253,7 @@ class Preview extends Component {
           console.log('please correct the settings to procced');
       }
       else {
-          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader]);
+          this.actions.redirectHome([this.delimiter, this.dFormat, this.noFormat, this.noHeader,this.checkedState]);
       }
   }
 
@@ -284,6 +287,7 @@ class Preview extends Component {
         <div>
           <div className='container'>
             <div className='row'>
+            <div className="Preview-Container">
               <div className="upload-container">
                 <legend>File Preview</legend>
               </div>
@@ -349,13 +353,13 @@ class Preview extends Component {
                     </div>
                     </div>
                 </div>
-                <div className="row btn-margin">
+                <div className="row btn-margin btn-Allignment">
                   <button className="btn btn-primary" onClick={this.resetPreviewSetting.bind(this)}>Reset Preview Settings</button>
                 </div>
                 </div>
                 
               </div>
-
+              <div className="table-Allignment">
               <table className="table table-bordered">
                 {
                   this.includeHeader &&
@@ -388,6 +392,7 @@ class Preview extends Component {
                   </tr>
                 </tbody>
               </table>
+              </div>
               <div className="btn-set button-container pull-right">
                   <Link to="/"> <button className="btn btn-primary" onClick={this.firstStep.bind(this)}>Back</button></Link>
                   <span> </span>
@@ -396,6 +401,7 @@ class Preview extends Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     );
   }
