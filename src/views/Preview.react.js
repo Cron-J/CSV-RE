@@ -283,6 +283,7 @@ class Preview extends Component {
         <div>
           <div className='container'>
             <div className='row'>
+            <div className="Preview-Container">
               <div className="upload-container">
                 <legend>File Preview</legend>
               </div>
@@ -348,13 +349,13 @@ class Preview extends Component {
                     </div>
                     </div>
                 </div>
-                <div className="row btn-margin">
+                <div className="row btn-margin btn-Allignment">
                   <button className="btn btn-primary" onClick={this.resetPreviewSetting.bind(this)}>Reset Preview Settings</button>
                 </div>
                 </div>
                 
               </div>
-
+              <div className="table-Allignment">
               <table className="table table-bordered">
                 {
                   this.includeHeader &&
@@ -387,6 +388,7 @@ class Preview extends Component {
                   </tr>
                 </tbody>
               </table>
+              </div>
               <div className="btn-set button-container pull-right">
                   <Link to="/"> <button className="btn btn-primary" onClick={this.firstStep.bind(this)}>Back</button></Link>
                   <span> </span>
@@ -395,6 +397,7 @@ class Preview extends Component {
             </div>
           </div>
         </div>
+      </div>
       </div>
     );
   }
