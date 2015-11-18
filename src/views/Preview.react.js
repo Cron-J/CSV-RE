@@ -56,10 +56,11 @@ class Preview extends Component {
   }
   resetPreviewSetting(e) {
     console.log('data');
-    //this.dateFormat="MM/dd/yyyy";
     this.delimiter=",";
     this.dFormat = "MM/dd/yyyy";
     this.noFormat = "#,###.##";
+    this.delimiterFormat(e,",");
+    this.dateFormatt(e,"MM/dd/yyyy");
     this.setState({});
   }
 
@@ -67,12 +68,14 @@ class Preview extends Component {
     this.checkedState=!this.checkedState;
     if(e.target.checked == false) {
       this.noHeader = true;
+      //this.previewPage.noHeader=true;
       this.includeHeader = false;
       this.setState({});
       for(let c=1; c<=this.row1.length; c++){
         this.customHeader.push('Column'+c);
       }
-      this.state.customHeader = this.customHeader;
+      else
+        this.state.customHeader = this.customHeader;
       this.actions.handleCustomHeader(this.state);
     }
     else{
@@ -141,9 +144,12 @@ class Preview extends Component {
       }
     }
   }
- dateFormatt(e){
-   this.dFormat=e.target.value;
-     this.headers = this.splitter(this.state.headers, this.delimiter);
+ dateFormatt(e,p){
+    if(p==="MM/dd/yyyy")
+      this.dFormat="MM/dd/yyyy";
+    else
+      this.dFormat=e.target.value;
+    this.headers = this.splitter(this.state.headers, this.delimiter);
     let rowOne = this.splitter(this.state.rowOne, this.delimiter);
     let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
     this.row1 = this.changeDateFormat(rowOne);
@@ -161,10 +167,11 @@ class Preview extends Component {
     this.numberFormat(this.noFormat);
     this.setState({});
   }
-  numberFormat(e){
+  numberFormat(e,p){
     if(typeof e === 'string'){
         this.noFormat = e;
-    }else{
+    }
+    else{
         this.noFormat=e.target.value;
     }
     this.headers = this.splitter(this.state.headers, this.delimiter);
@@ -174,9 +181,11 @@ class Preview extends Component {
     this.row2 = this.changeNumberFormat(rowTwo, e.noFormat);
     this.setState({});
   }
-  delimiterFormat(e){
-    console.log('Delimiter Format', e.target.value);
-    this.delimiter = e.target.value;
+  delimiterFormat(e,p){
+    if(p===",")
+      this.delimiter=",";
+    else
+      this.delimiter = e.target.value;
     this.headers = this.splitter(this.state.headers, this.delimiter);
     this.row1 = this.splitter(this.state.rowOne, this.delimiter);
     this.row2 = this.splitter(this.state.rowTwo, this.delimiter);
@@ -229,17 +238,12 @@ class Preview extends Component {
   }
   thirdStep(e){
     if(this.dFormat==""||this.noFormat==""||this.delimiter==""){
-        /*no selected*/
-       //location.path('/mapping');
       console.log('please correct the settings to procced');
     }
     else{
       console.log('jrrrr');
-     /*redirect to mapping*/
-     // window.location.href = '/mapping';
      this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader,this.checkedState]);
     }
-    //location.path('/mapping');
   }
 
   firstStep(){
