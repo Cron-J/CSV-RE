@@ -29,7 +29,8 @@ class ImportView extends Component {
 
             ];
         //here we call json preview from mappingsection
-        //this.jsonpreview = mappingsection.mappingData;
+       
+        this.jsonpreview = mappingsection.mappingData;
         this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
         this.actions = bindActionCreators(PreviewActions, dispatch);
         
@@ -41,14 +42,14 @@ class ImportView extends Component {
     isBackToThirdStep(e){
         this.actions.redirectMapping();
     }
-
-    }
     componentWillReceiveProps(nextProps){
+        console.log("In componentWillReceiveProps");
         this.props = nextProps;
         let mappingsection = this.props.mappingsection;
         if(mappingsection && mappingsection.mappingData){
             this.jsonpreview = mappingsection.mappingData;
         }
+        console.log("json"+this.jsonpreview);
     }
     render() {     
         return (

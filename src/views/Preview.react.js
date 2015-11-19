@@ -370,7 +370,7 @@ class Preview extends Component {
                 
               </div>
               <div className="table-Allignment">
-              <table className="table table-bordered">
+              <table className="table table-bordered ">
                   {
                       !this.noHeader &&
                       <thead>
