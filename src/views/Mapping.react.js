@@ -11,7 +11,6 @@ class Mapping extends Component {
     super(props);
     const { mappingsection, homesection, selectmapping, dispatch } = this.props;
    //this.props.mappingsection = mappingsection;
-    console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
     //this.growler= null;
     const params = this.props.params;
@@ -311,8 +310,10 @@ class Mapping extends Component {
   }
 
   saveMappingStep(e) {
-    if(this.props.mappingsection.mappingName===""){
-      this.setState({mappingName:undefined});
+    if(this.props.mappingsection.mappingName=== "" ||
+      this.props.mappingsection.mappingName=== undefined){
+      this.props.mappingsection.mappingName = undefined;
+      this.actions.handleChanges(this.props.mappingsection);
     }
     else{
       for(let i=0;i<this.props.mappingsection.mappedData.length;i++){
@@ -352,9 +353,10 @@ class Mapping extends Component {
               onChange={this.mappingNameHandler.bind(this)} 
               placeholder="Choose Mapping Name" id="mapName" type="text"
               required disabled={this.edit} />
-            { this.props.mappingsection.mappingName === undefined &&
-            <span  id="error">please enter mapping name</span>
-                }
+              {this.props.mappingsection.mappingName === undefined ?
+              <span  id="error">
+              please enter mapping name</span> : ''
+              }
             </div>
           </div>
         </form>
