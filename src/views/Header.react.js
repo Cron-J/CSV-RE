@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-
+import { Link } from 'react-router';
 class Header extends Component {
 
 
@@ -29,7 +29,7 @@ class Header extends Component {
                 <li><a href="" ng-click="moveToMappingEditor()">Mapping Editor</a></li>
               </ul>
             </li>
-            <li><a href="/editmapping" onClick={this.moveToEditMapping.bind(this)}>Edit</a></li>
+            <li><Link to="/editmapping" onClick={this.moveToEditMapping.bind(this)}>Edit</Link></li>
             <li className="dropdown">
               <a className="dropdown-toggle" data-toggle="dropdown">Validate <b className="caret"></b></a>
               <ul className="dropdown-menu">
