@@ -1,12 +1,27 @@
 import * as types from 'constants/ActionTypes';
 import api from 'utils/api/attributeSection';
+import {handleChanges as mappingSectionhandlechanges}  from '../mappingPage/MappingActions';
 
 export function handleChanges(data) {
   return { type: types.HANDLESEARCHATTRIBUTE, payload: { data } };
 }
 
 export function handleCustomHeader(data) {
-  return { type: types.HANDLECUSTOMHEADER, payload: { data } };
+  return { type: types.STOREPREVIEW, payload: { data } };
+}
+
+export function handleResetMappingData(data,mappingsectionobject){
+  return {
+    type: types.STOREPREVIEW,
+    payload: {data},
+    meta: {
+      transition: () =>({
+        func: () =>{
+          mappingSectionhandlechanges(mappingsectionobject)
+        }
+      })
+    }
+  };
 }
 
 export function previewFile() {
