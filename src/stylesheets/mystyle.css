@@ -703,11 +703,12 @@ h2 {
     height: auto;
     padding: 100px 54px;
     text-align: center;
+    cursor:pointer;
    
 }
 .displayMessage{
      position: relative;
-    top:10px;
+    margin-top:10px;
 }
 
 .errorMessage{
@@ -725,8 +726,11 @@ h2 {
     padding-left: 14px;
 }
 .table-Allignment{
-    padding-top: 10px;
+    margin-top: 10px;
 }
 .marginleft5{
-    margin-left: 5px;
+    margin-left: 0.5em;
+}
+.dropdown-element{
+    cursor: pointer;
 }
