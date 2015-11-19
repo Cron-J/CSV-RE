@@ -29,7 +29,8 @@ class ImportView extends Component {
 
             ];
         //here we call json preview from mappingsection
-        //this.jsonpreview = mappingsection.mappingData;
+       
+        this.jsonpreview = mappingsection.mappingData;
         this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
         this.actions = bindActionCreators(PreviewActions, dispatch);
         
@@ -41,19 +42,14 @@ class ImportView extends Component {
     isBackToThirdStep(e){
         this.actions.redirectMapping();
     }
-    parseJson(json){
-        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        return '<span>' + match + '</span>';
-    });
-
-    }
     componentWillReceiveProps(nextProps){
+        console.log("In componentWillReceiveProps");
         this.props = nextProps;
         let mappingsection = this.props.mappingsection;
         if(mappingsection && mappingsection.mappingData){
             this.jsonpreview = mappingsection.mappingData;
         }
+        console.log("json"+this.jsonpreview);
     }
     render() {     
         return (
@@ -67,12 +63,11 @@ class ImportView extends Component {
                             <div ng-hide="mappedJson">
                                 <i className="fa fa-spinner fa-pulse"></i>
                             Processing Json</div>
-                           <div className="panel panel-default">
-                           <div className="panel-body">
-                             {this.stringJSon}                                                   
+                       
+                           <div>
+                             <pre>{JSON.stringify(this.jsonpreview, null, 2) }</pre>                                                   
                            </div>
-                         
-                           </div>
+                        
                         </div>
                     </div>
                     <div className="col-lg-3 col-lg-offset-9 btn-set button-container">

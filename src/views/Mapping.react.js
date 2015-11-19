@@ -216,7 +216,7 @@ class Mapping extends Component {
     const child = [];
     for (let key in this.props.mappingsection.tables) {
       if(key !== "product"){
-        child.push(<li><a>{key}</a></li>);
+        child.push(<li className="dropdown-element"><a>{key}</a></li>);
       }
     }
     return child;
