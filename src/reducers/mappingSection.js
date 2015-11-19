@@ -29,7 +29,7 @@ export default createReducer(initialState, {
       const data = action.payload.response;
       return {
       ...state,
-          properties : action.payload.properties,
+          fileproperties : action.payload.properties,
           defaultValue:''
       }
   },
@@ -582,7 +582,18 @@ export default createReducer(initialState, {
       pickedTable: data.pickedTable,
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
-      selectedTable: data.selectedTable
+      selectedTable: data.selectedTable,
+      mappingData: data.mappingData,
+      headers : data.headers,
+      headSelect : data.headSelect,
+      propertySelect : data.propertySelect,
+      defaultValue : data.defaultValue,
+      selectedHeaders : data.selectedHeaders,
+      selectedTables : data.selectedTables,
+      selectedProperties : data.selectedProperties,
+      selectedTab : data.selectedTab,
+      mappingName : data.mappingName,
+      mappingInfo : data.mappingInfo
     }
   },
   [types.HANDLEMAPPEDCHNAGES](state, action) {

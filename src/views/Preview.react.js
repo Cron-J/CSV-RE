@@ -8,15 +8,6 @@ class Preview extends Component {
     super(props);
     const { state, dispatch } = this.props;
     console.log('edit mode', state);
-    // if (state.selectmapping.data) {
-    //   this.previewPage = state.selectmapping.data;
-    //   this.delimiter = this.previewPage;
-    //   console.log('adaas', this.previewPage);
-    //   this.noHeader = this.previewPage.includeHeader;
-    //   this.dFormat = this.previewPage.dateFormat;
-    //   this.noFormat = this.previewPage.numberFormat;
-    //   this.thirdStep.bind(this);
-    // } else {
     this.uploadpage = state.homesection;
     this.previewPage = state.attributesectionsearch;
     this.actions = bindActionCreators(PreviewActions, dispatch);

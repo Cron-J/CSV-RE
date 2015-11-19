@@ -22,9 +22,9 @@ class Mapping extends Component {
     } else {
       this.mappingName = this.props.mappingsection.mappingName;
       if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        if(this.props.mappingsection.headers.length === 0){
-          this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
-        }
+        //if(this.props.mappingsection.headers.length === 0){
+          this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(this.props.attributesectionsearch.delimiter);
+        //}
       }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
@@ -40,12 +40,7 @@ class Mapping extends Component {
       else return {'value':header, 'mapped':false}
     })
   }
-  componentWillMount() {
-    this.actions.attributeList();
-  }
 
-  componentDidMount() {
-  }
   componentWillReceiveProps(nextProps){
     console.log(nextProps);
     this.props = nextProps;
@@ -104,8 +99,6 @@ class Mapping extends Component {
           this.props.mappingsection.mappedData.push(mappedField);
           this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
           this.props.mappingsection.headers = this.headers;
-          this.props.mappingsection.mappedData = this.props.mappingsection.mappedData;
-          this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
           if(this.props.mappingsection.defaultValue){
             this.props.mappingsection.defaultValue = '';
           }
@@ -130,9 +123,9 @@ class Mapping extends Component {
     for(let key in this.props.mappingsection.attributeList) {
       if(key === selectedTab){
         this.props.mappingsection.properties = this.props.mappingsection.attributeList[key];
-        this.actions.handleChanges(this.props.mappingsection);
       }
     }
+    this.actions.handleChanges(this.props.mappingsection);
   }
 
   addToList(e){
@@ -154,15 +147,14 @@ class Mapping extends Component {
       $('.default-value').addClass('active');
     else
       $('.default-value').removeClass('active');
-    const change = this.props.mappingsection
-    change.defaultValue = e.currentTarget.value;
+    this.props.mappingsection.defaultValue = e.currentTarget.value;
     this.actions.handleChanges(this.props.mappingsection);
   }
 
   selectnewPropTable(e) {
     e.preventDefault();
     this.props.mappingsection.pickedTable = e.target.text;
-    this.setState({});
+    this.actions.handleChanges(this.props.mappingsection);
   }
   mapAttribute(e) {
     if(this.props.mappingsection.headSelect=="")
@@ -199,9 +191,9 @@ class Mapping extends Component {
         }
         this.props.mappingsection.mappedData.push(mapField2);
         this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"' : '"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
-        this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
         if (this.props.mappingsection.defaultValue) {
           this.props.mappingsection.defaultValue = '';
+          $('.default-value').removeClass('active');
         }
         this.actions.handleChanges(this.props.mappingsection);
     }
@@ -249,7 +241,7 @@ class Mapping extends Component {
   }
   selectHead(e) {
     this.props.mappingsection.headSelect = e.currentTarget.value;
-    console.log(this.props.mappingsection.headSelect);
+    this.actions.handleChanges(this.props.mappingsection);
   }
 
   selectProperty(e) {
@@ -263,7 +255,6 @@ class Mapping extends Component {
   }
 
   tableAttribute() {
-    console.log("(-------------)", this.props.mappingsection.headers);
     let headers = this.headers;
     const attributesList = [];
     console.log("--header--");
@@ -281,6 +272,11 @@ class Mapping extends Component {
   tableProperty() {
     const propertiesList = [];
     const props = this.props.mappingsection.properties;
+    for(var idx in props){
+      if(props[idx].field ==="tenantId"){
+        props[idx]['mapped']=true;
+      }
+    }
     for(let index in props){
       if(props[index].mapped){
         propertiesList.push(<option key={index}  className="green-color" onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
