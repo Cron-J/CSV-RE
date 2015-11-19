@@ -26,6 +26,7 @@ class Preview extends Component {
         this.state.customHeader = this.previewPage.customHeader;
 
     }
+    
     this.delimiter = this.previewPage.delimiter;
     this.headers = [];
     this.customHeader = this.previewPage.customHeader;
@@ -247,6 +248,8 @@ class Preview extends Component {
 
   firstStep(){
       if(this.dFormat==""||this.noFormat==""||this.delimiter==""){
+          /*no selected*/
+          //location.path('/mapping');
           console.log('please correct the settings to procced');
       }
       else {
@@ -259,6 +262,10 @@ class Preview extends Component {
   }
 
   render() {
+   // console.log(this.headers);
+    //console.log(this.row1);
+   // console.log(this.row2);\
+
     let CHeader = this.customHeader.map(function(head){
         return <th>{head}</th>;
     });

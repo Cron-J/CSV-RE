@@ -41,11 +41,6 @@ class ImportView extends Component {
     isBackToThirdStep(e){
         this.actions.redirectMapping();
     }
-    parseJson(json){
-        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        return '<span>' + match + '</span>';
-    });
 
     }
     componentWillReceiveProps(nextProps){
@@ -67,12 +62,11 @@ class ImportView extends Component {
                             <div ng-hide="mappedJson">
                                 <i className="fa fa-spinner fa-pulse"></i>
                             Processing Json</div>
-                           <div className="panel panel-default">
-                           <div className="panel-body">
-                             {this.stringJSon}                                                   
+                       
+                           <div>
+                             <pre>{JSON.stringify(this.jsonpreview, null, 2) }</pre>                                                   
                            </div>
-                         
-                           </div>
+                        
                         </div>
                     </div>
                     <div className="col-lg-3 col-lg-offset-9 btn-set button-container">
