@@ -43,6 +43,7 @@
     "react-dropzone-component": "^0.7.0",
     "react-growl": "^0.1.2",
     "react-notification-system": "^0.2.5",
+    "react-json-tree": "^0.3.0",
     "react-notifications": "^0.1.0",
     "react-redux": "^2.0.0",
     "react-router": "^1.0.0-rc1",

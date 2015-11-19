@@ -27,9 +27,9 @@ export default class Navigation extends React.Component {
               <Link to="/" className={this.path==='/' ? "btn btn-wizard active" : 'btn btn-wizard'}  >
                 <span  className="badge">1</span>Upload
               </Link>
-              <span className={this.path==='/preview' ? "btn btn-wizard active" : 'btn btn-wizard'}>
-                <span className="badge">2</span>Preview
-              </span>
+              <Link to="/preview" className={this.path==='/preview' ? "btn btn-wizard active" : 'btn btn-wizard'}>
+                <span className="badge">2</span>Preview         
+              </Link>
               <Link to="/mapping" className={this.path==='/mapping' ? "btn btn-wizard active" : 'btn btn-wizard'}>
                 <span className="badge">3</span>Map
               </Link>
