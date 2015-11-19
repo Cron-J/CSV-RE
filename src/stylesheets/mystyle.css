@@ -736,3 +736,6 @@ h2 {
     cursor: pointer;
     background: transparent url('img/jsoneditor-icons.png');
 }
+.marginleft5{
+    margin-left: 5px;
+}

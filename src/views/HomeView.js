@@ -136,7 +136,7 @@ class Home extends Component {
           {
             this.message==='Uploaded file:' &&
             <div className="displayMessage">
-                <b>{this.message}</b>{this.name}-<b>Size</b>:{this.size}-<b>Type</b>{this.type}
+                <b>{this.message}</b>{this.name}<b className="marginleft5">Size</b>:{this.size}<b className="marginleft5">Type</b>{this.type}
             </div>
 
           }

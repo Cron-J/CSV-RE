@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import * as MappingActions from 'actions/mappingPage/MappingActions';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 //import Growl from 'react-growl';
 //import 'react-notifications/lib/notifications.css';
 //import Notifications from 'react-notifications';
@@ -21,12 +22,20 @@ class Mapping extends Component {
     } else {
       this.mappingName = this.props.mappingsection.mappingName;
       if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(', ');
+        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
       }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
       }
     }
+    if(this.props.attributesectionsearch.customHeader.length === 0) {
+      this.headers = this.props.mappingsection.headers;
+    } else {
+      this.headers = this.props.attributesectionsearch.customHeader;
+    }
+    this.headers =  _.map(this.headers, function (header) {
+      return {'value':header, 'mapped':false}
+    })
   }
   componentWillMount() {
     this.actions.attributeList();
@@ -36,7 +45,7 @@ class Mapping extends Component {
   }
   componentWillReceiveProps(nextProps){
     console.log(nextProps);
-    this.props = nextProps
+    this.props = nextProps;
     //this.props.mappingsection.mappingName
   }
 
@@ -57,6 +66,7 @@ class Mapping extends Component {
               for(let idx in this.props.mappingsection.attributeList[index]){
                 if(this.props.mappingsection.attributeList[index][idx].field === this.props.mappingsection.propertySelect){
                   this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
+                  this.headers[_.findIndex(this.headers,_.find(this.headers,{'value':this.props.mappingsection.headSelect}))].mapped = true;
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
@@ -82,6 +92,7 @@ class Mapping extends Component {
           this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: this.props.mappingsection.propertySelect, propertyname: propertyname});
           this.props.mappingsection.mappedData.push(mappedField);
           this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
+          this.props.mappingsection.headers = this.headers;
           this.props.mappingsection.mappedData = this.props.mappingsection.mappedData;
           this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
           if(this.props.mappingsection.defaultValue){
@@ -241,17 +252,16 @@ class Mapping extends Component {
 
   tableAttribute() {
     console.log("(-------------)", this.props.mappingsection.headers);
-    let headers;
-    if(this.props.attributesectionsearch.customHeader.length === 0) {
-      headers = this.props.mappingsection.headers;
-    } else {
-      headers = this.props.attributesectionsearch.customHeader;
-    }
+    let headers = this.headers;
     const attributesList = [];
     console.log("--header--");
     console.log(headers);
     for(let index in headers){
-      attributesList.push(<option key={index} onClick={this.selectHead.bind(this)} value={headers[index]}>{headers[index]}</option>);
+      if(headers[index].mapped){
+        attributesList.push(<option key={index} className="green-color" onClick={this.selectHead.bind(this)} value={headers[index].value}>{headers[index].value}</option>);
+      }else{
+        attributesList.push(<option key={index} onClick={this.selectHead.bind(this)} value={headers[index].value}>{headers[index].value}</option>);
+      }
     }
     return attributesList;
   }
