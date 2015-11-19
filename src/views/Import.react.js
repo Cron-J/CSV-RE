@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import JSONTree from 'react-json-tree';
 
 import * as PreviewActions from 'actions/previewPage/PreviewActions';
 class ImportView extends Component {
@@ -9,27 +10,7 @@ class ImportView extends Component {
         const { mappingsection, homesection, dispatch } = this.props;
         console.log(this.state);
         this.mappedJson="";
-        this.jsonFormated="";
-        this.jsonpreview = [
-                    {
-                        "product":"pen",
-                        "ProductId":100,
-                        "price":100
-                    },
-                    {
-                        "product":"pencile",
-                        "ProductId":101,
-                        "price":101
-                    },
-                    {
-                        "product":"ink",
-                        "ProductId":102,
-                        "price":102
-                    }
-
-            ];
-        //here we call json preview from mappingsection
-       
+        this.jsonFormated="";     
         this.jsonpreview = mappingsection.mappingData;
         this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
         this.actions = bindActionCreators(PreviewActions, dispatch);
@@ -65,7 +46,7 @@ class ImportView extends Component {
                             Processing Json</div>
                        
                            <div>
-                             <pre>{JSON.stringify(this.jsonpreview, null, 2) }</pre>                                                   
+                             <pre>{<JSONTree data={ this.jsonpreview }/>}</pre>                                                   
                            </div>
                         
                         </div>
