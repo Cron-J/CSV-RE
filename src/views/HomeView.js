@@ -46,25 +46,27 @@ class Home extends Component {
         extention= files[0].name.split('.').pop();
         extention=extention.toLowerCase();
 
-        if(extention==="csv"){
+        if(extention==="csv" || extention === "txt"){
             console.log(files);
             this.message="Uploaded file:";
             this.size=files[0].size+"B";
             this.name=files[0].name;
             if(files[0].type==="application/vnd.ms-excel")
               this.type=":Microsoft Office Comma Seperated Value";
-           
+            else{
+                this.type = files[0].type;
+            }
             //this.buttonVisibility=false;
             console.log(this.size+" "+this.name);
             
         }
         else{
-          console.log(files);
             this.message="please select csv file";
             this.size="";
             this.name="";
             this.type="";
-
+            this.setState({message: this.message});
+            this.homeSectionActions.showMessage('Only text and csv files are supported please select a valid file');
         }
         var req = request.post('http://localhost:4000/api/csv/uploadCSV');
             files.forEach((file)=> {
@@ -136,7 +138,7 @@ class Home extends Component {
           {
             this.message==='Uploaded file:' &&
             <div className="displayMessage">
-                <b>{this.message}</b>{this.name}<b className="marginleft5">Size</b>:{this.size}<b className="marginleft5">Type</b>{this.type}
+                <b>{this.message}</b>{this.name}<b className="marginleft5">Size</b>:{this.size}<b className="marginleft5">Type</b>: {this.type}
             </div>
 
           }

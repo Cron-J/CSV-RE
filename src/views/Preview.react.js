@@ -53,7 +53,7 @@ class Preview extends Component {
   componentDidMount(){
     
   }
-  componentWillRecieveProps(nextProps){
+    componentWillReceiveProps(nextProps){
       const { state, dispatch } = nextProps;
       this.previewPage = state.attributesectionsearch;
       this.customHeader = this.previewPage.customHeader;
@@ -369,7 +369,8 @@ class Preview extends Component {
                 </div>
                 
               </div>
-              <div className="table-Allignment">
+              <div className="clearfix"></div>
+              <div className="mappingtop10">
               <table className="table table-bordered ">
                   {
                       !this.noHeader &&

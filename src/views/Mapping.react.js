@@ -11,6 +11,7 @@ class Mapping extends Component {
     super(props);
     const { mappingsection, homesection, selectmapping, dispatch } = this.props;
    //this.props.mappingsection = mappingsection;
+    console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
     //this.growler= null;
     const params = this.props.params;
@@ -21,7 +22,9 @@ class Mapping extends Component {
     } else {
       this.mappingName = this.props.mappingsection.mappingName;
       if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
+        if(this.props.mappingsection.headers.length === 0){
+          this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
+        }
       }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
@@ -33,7 +36,8 @@ class Mapping extends Component {
       this.headers = this.props.attributesectionsearch.customHeader;
     }
     this.headers =  _.map(this.headers, function (header) {
-      return {'value':header, 'mapped':false}
+      if(header.value) return header;
+      else return {'value':header, 'mapped':false}
     })
   }
   componentWillMount() {
@@ -52,6 +56,14 @@ class Mapping extends Component {
     this.actions.redirectEdit();
   }
 
+  setHeaderSelected(headSelect){
+    var header = _.find(this.headers,{'value':this.props.mappingsection.headSelect});
+    if(header){
+      this.headers[_.findIndex(this.headers,header)].mapped = true;
+      return;
+    }
+  }
+
   mapping(e) {
     e.preventDefault();
     if(this.props.mappingsection.headSelect===''||this.props.mappingsection.propertySelect===''||this.props.mappingsection.selectedTab===''){
@@ -65,7 +77,7 @@ class Mapping extends Component {
               for(let idx in this.props.mappingsection.attributeList[index]){
                 if(this.props.mappingsection.attributeList[index][idx].field === this.props.mappingsection.propertySelect){
                   this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
-                  this.headers[_.findIndex(this.headers,_.find(this.headers,{'value':this.props.mappingsection.headSelect}))].mapped = true;
+                  this.setHeaderSelected(this.props.mappingsection.headSelect);
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
@@ -162,6 +174,7 @@ class Mapping extends Component {
             this.props.mappingsection.tables[table].push('attributeValues');
           }
         }
+        this.setHeaderSelected(this.props.mappingsection.headSelect);
         const mapField1 = {
           "userFieldName": this.props.mappingsection.headSelect,
           "transformations": [],
@@ -232,7 +245,7 @@ class Mapping extends Component {
     return child;
   }
   secondStep(e){
-    this.actions.redirectPreview();
+    this.actions.redirectPreview([this.props.mappingsection,this.headers]);
   }
   selectHead(e) {
     this.props.mappingsection.headSelect = e.currentTarget.value;
@@ -286,7 +299,6 @@ class Mapping extends Component {
     if(MD.length>0){
       for(let key in MD){
       MDHTML.push(
-        <tbody>
           <tr>
             <td>{MD[key].column}</td>
             <td>{MD[key].propertyname}</td>
@@ -296,7 +308,6 @@ class Mapping extends Component {
               <button className="btn btn-default btn-xs" onClick={this.removeRow.bind(this,key)}><span className="glyphicon glyphicon-remove"></span> Remove</button>
             </td>
           </tr>
-        </tbody>
       )
     }
     }
@@ -313,6 +324,7 @@ class Mapping extends Component {
     if(this.props.mappingsection.mappingName=== "" ||
       this.props.mappingsection.mappingName=== undefined){
       this.props.mappingsection.mappingName = undefined;
+      this.actions.showAddMappingMessage('Please enter the mapping name');
       this.actions.handleChanges(this.props.mappingsection);
     }
     else{
@@ -353,10 +365,9 @@ class Mapping extends Component {
               onChange={this.mappingNameHandler.bind(this)} 
               placeholder="Choose Mapping Name" id="mapName" type="text"
               required disabled={this.edit} />
-              {this.props.mappingsection.mappingName === undefined ?
-              <span id="error" className="required-color">
-              please enter mapping name</span> : ''
-              }
+            { this.props.mappingsection.mappingName === undefined &&
+            <span  id="error" className="red-color">Please enter mapping name</span>
+                }
             </div>
           </div>
         </form>
@@ -445,7 +456,7 @@ class Mapping extends Component {
           {
             this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 ?
             <div >
-              <table className="table" cellspacing="0">
+              <table className="table" cellSpacing="0">
                 <thead>
                   <tr>
                     <th prev-default>Column from import file</th>
@@ -455,7 +466,9 @@ class Mapping extends Component {
                     <th>Actions</th>
                   </tr>
                 </thead>
-                {this.mappedDataInTable()}
+                <tbody>
+                 {this.mappedDataInTable()}
+                </tbody>
               </table>
             </div> : <p>No mapped details</p>
           }    
@@ -471,7 +484,7 @@ class Mapping extends Component {
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.secondStep.bind(this)}>Back</button>
             <span> </span>
-            <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Next</button>
+            <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Save Mapping & Proceed</button>
           </div>
          }
         </div>

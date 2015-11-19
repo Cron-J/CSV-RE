@@ -708,7 +708,7 @@ h2 {
 }
 .displayMessage{
      position: relative;
-    margin-top:10px;
+    margin-top:1em;
 }
 
 .errorMessage{
@@ -725,12 +725,12 @@ h2 {
 .Preview-Container{
     padding-left: 14px;
 }
-.table-Allignment{
-    margin-top: 0.5em;
-}
 .marginleft5{
     margin-left: 0.5em;
 }
 .dropdown-element{
     cursor: pointer;
+}
+.mappingtop10{
+    margin-top: 10px;
 }
