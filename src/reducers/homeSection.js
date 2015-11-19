@@ -22,5 +22,10 @@ export default createReducer(initialState, {
             filedata : data,
             showNextButton : this.isFile(data)
         }
+    },
+    [types.SHOWCSVERRMSG](state,action) {
+        return {
+            ...state
+        }
     }
 });

@@ -369,7 +369,8 @@ class Preview extends Component {
                 </div>
                 
               </div>
-              <div className="table-Allignment">
+              <div className="clearfix"></div>
+              <div className="mappingtop10">
               <table className="table table-bordered ">
                   {
                       !this.noHeader &&
