@@ -354,7 +354,7 @@ class Mapping extends Component {
               placeholder="Choose Mapping Name" id="mapName" type="text"
               required disabled={this.edit} />
               {this.props.mappingsection.mappingName === undefined ?
-              <span  id="error">
+              <span id="error" className="required-color">
               please enter mapping name</span> : ''
               }
             </div>
