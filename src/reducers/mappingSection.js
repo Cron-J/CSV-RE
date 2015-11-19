@@ -30,7 +30,7 @@ export default createReducer(initialState, {
       return {
       ...state,
           properties : action.payload.properties,
-          defaultValue:data
+          defaultValue:''
       }
   },
   [types.SHOWMESSAGE](state,action){

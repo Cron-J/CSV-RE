@@ -21,10 +21,8 @@ class Mapping extends Component {
       this.edit= true;
     } else {
       this.mappingName = this.props.mappingsection.mappingName;
-      if( this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        if(this.props.mappingsection.headers.length === 0){
-          this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
-        }
+      if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
+        this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
       }else{
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
@@ -55,14 +53,6 @@ class Mapping extends Component {
     this.actions.redirectEdit();
   }
 
-  setHeaderSelected(headSelect){
-    var header = _.find(this.headers,{'value':this.props.mappingsection.headSelect});
-    if(header){
-      this.headers[_.findIndex(this.headers,header)].mapped = true;
-      return;
-    }
-  }
-
   mapping(e) {
     e.preventDefault();
     if(this.props.mappingsection.headSelect===''||this.props.mappingsection.propertySelect===''||this.props.mappingsection.selectedTab===''){
@@ -76,7 +66,7 @@ class Mapping extends Component {
               for(let idx in this.props.mappingsection.attributeList[index]){
                 if(this.props.mappingsection.attributeList[index][idx].field === this.props.mappingsection.propertySelect){
                   this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
-                  this.setHeaderSelected(this.props.mappingsection.headSelect);
+                  this.headers[_.findIndex(this.headers,_.find(this.headers,{'value':this.props.mappingsection.headSelect}))].mapped = true;
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
@@ -173,7 +163,6 @@ class Mapping extends Component {
             this.props.mappingsection.tables[table].push('attributeValues');
           }
         }
-        this.setHeaderSelected(this.props.mappingsection.headSelect);
         const mapField1 = {
           "userFieldName": this.props.mappingsection.headSelect,
           "transformations": [],
@@ -244,7 +233,7 @@ class Mapping extends Component {
     return child;
   }
   secondStep(e){
-    this.actions.redirectPreview([this.props.mappingsection,this.headers]);
+    this.actions.redirectPreview();
   }
   selectHead(e) {
     this.props.mappingsection.headSelect = e.currentTarget.value;
@@ -322,9 +311,11 @@ class Mapping extends Component {
   }
 
   saveMappingStep(e) {
-    if(this.props.mappingsection.mappingName===""){
+    if(this.props.mappingsection.mappingName=== "" ||
+      this.props.mappingsection.mappingName=== undefined){
+      this.props.mappingsection.mappingName = undefined;
       this.actions.showAddMappingMessage('Please enter the mapping name');
-      this.setState({mappingName:undefined});
+      this.actions.handleChanges(this.props.mappingsection);
     }
     else{
       for(let i=0;i<this.props.mappingsection.mappedData.length;i++){
@@ -481,7 +472,7 @@ class Mapping extends Component {
           <div className="pull-right">
             <button className="btn btn-primary "  onClick={this.secondStep.bind(this)}>Back</button>
             <span> </span>
-            <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Save Mapping & Proceed</button>
+            <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Next</button>
           </div>
          }
         </div>
