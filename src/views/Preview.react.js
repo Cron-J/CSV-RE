@@ -52,7 +52,7 @@ class Preview extends Component {
   componentDidMount(){
     
   }
-  componentWillRecieveProps(nextProps){
+    componentWillReceiveProps(nextProps){
       const { state, dispatch } = nextProps;
       this.previewPage = state.attributesectionsearch;
       this.customHeader = this.previewPage.customHeader;

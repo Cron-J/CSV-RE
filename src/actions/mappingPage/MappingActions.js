@@ -1,5 +1,6 @@
 import * as types from 'constants/ActionTypes';
 import api from 'utils/api/mappingSection';
+import * as messageActions from '../../common/messageComponent/actions/messageActions';
 
 export function handleChanges(data) {
   console.log('data in action',data);
@@ -70,9 +71,25 @@ export function selectedDefaultValue(data) {
   return { type: types.HANDLESELECTEDDEFAULTVALUE, payload: { data } };
 }
 
+export function showAddMappingMessage(error){
+  return {
+    type: types.SHOWMESSAGE,
+    meta: {
+      transition: () =>({
+        func: () =>{
+          return messageActions.showmessages(error, 'error');
+        }
+      })
+    }
+  }
+}
+
 export function redirectPreview(data) {
   return  {
-    type: types.RESETSEARCH,
+    type: types.PERSISTMAPPINGDATA,
+    payload : {
+      response : data
+    },
     meta: {
       transition: () => ({
         path: '/preview'

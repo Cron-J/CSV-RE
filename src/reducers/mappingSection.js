@@ -33,6 +33,24 @@ export default createReducer(initialState, {
           defaultValue:data
       }
   },
+  [types.SHOWMESSAGE](state,action){
+    return {
+        ...state
+    }
+  },
+  [types.PERSISTMAPPINGDATA](state, action){
+    const {response} = action.payload;
+    if(response){
+        return {
+            ...state,
+            mappingData : response[0]
+        }
+    }else{
+        return{
+            ...state
+        }
+    }
+  },
   [types.HANDLEATTRIBUTELIST](state, action) {
     const { response } = action.payload;
     return {
