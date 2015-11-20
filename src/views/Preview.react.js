@@ -8,15 +8,6 @@ class Preview extends Component {
     super(props);
     const { state, dispatch } = this.props;
     console.log('edit mode', state);
-    // if (state.selectmapping.data) {
-    //   this.previewPage = state.selectmapping.data;
-    //   this.delimiter = this.previewPage;
-    //   console.log('adaas', this.previewPage);
-    //   this.noHeader = this.previewPage.includeHeader;
-    //   this.dFormat = this.previewPage.dateFormat;
-    //   this.noFormat = this.previewPage.numberFormat;
-    //   this.thirdStep.bind(this);
-    // } else {
     this.uploadpage = state.homesection;
     this.previewPage = state.attributesectionsearch;
     this.actions = bindActionCreators(PreviewActions, dispatch);
@@ -26,7 +17,6 @@ class Preview extends Component {
         this.state.customHeader = this.previewPage.customHeader;
 
     }
-    
     this.delimiter = this.previewPage.delimiter;
     this.headers = [];
     this.customHeader = this.previewPage.customHeader;
@@ -36,7 +26,6 @@ class Preview extends Component {
     this.noHeader = this.previewPage.noHeader;
     this.dFormat = this.previewPage.dFormat;
     this.noFormat = this.previewPage.noFormat;
-  // }
   }
 
   componentWillMount() {
@@ -58,7 +47,18 @@ class Preview extends Component {
       this.previewPage = state.attributesectionsearch;
       this.customHeader = this.previewPage.customHeader;
   }
-  resetPreviewSetting(e) {
+    createMappingSectionReplaceObject(){
+        const { state, dispatch } = this.props;
+        // this object is for maintaining and destroying persistance of mapping page state;
+        this.mappingsectionstate = state.mappingsection;
+        this.mappingsectionstate.headers = [];
+        this.mappingsectionstate.mappedData = [];
+        this.mappingsectionstate.mappedFields = [];
+        this.mappingsectionstate.mappingData = [];
+        this.mappingsectionstate.headSelect = '';
+        this.mappingsectionstate.pickedTable = '';
+    }
+    resetPreviewSetting(e) {
     console.log('data');
     this.delimiter=",";
     this.dFormat = "MM/dd/yyyy";
@@ -66,7 +66,9 @@ class Preview extends Component {
     this.delimiterFormat(e,",");
     this.dateFormatt(e,"MM/dd/yyyy");
     this.noHeader = true;
-    this.setState({});
+    console.log('handleresetmappingcalled');
+    this.createMappingSectionReplaceObject();
+    this.actions.handleResetMappingData([this.delimiter,this.dFormat,this.noFormat,this.noHeader],this.mappingsectionstate);
   }
 
   changeColumn(e,p) {
@@ -78,15 +80,17 @@ class Preview extends Component {
           }
       }
       this.state.customHeader = this.customHeader;
-      this.actions.handleCustomHeader(this.state);
-      this.setState(this.state);
+        console.log('handleresetmappingcalled');
+        this.createMappingSectionReplaceObject();
+      this.actions.handleResetMappingData([this.delimiter,this.dFormat,this.noFormat,this.noHeader],this.mappingsectionstate);
     }
     else{
       this.customHeader = [];
       this.noHeader = true;
       this.state.customHeader = [];
-      this.actions.handleCustomHeader(this.state);
-      this.setState(this.state);
+        console.log('handleresetmappingcalled');
+        this.createMappingSectionReplaceObject();
+      this.actions.handleResetMappingData([this.delimiter,this.dFormat,this.noFormat,this.noHeader],this.mappingsectionstate);
     }
   }
   changeDateFormat(list,format) {
@@ -160,7 +164,7 @@ class Preview extends Component {
         this.row2 = this.changeDateFormat(rowTwo);
         this.numberFormat(this.noFormat);
     }
-    this.setState({});
+     this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
  }
   dateFormat(e){
    //console.log("00"+e.target.value);
@@ -170,7 +174,7 @@ class Preview extends Component {
     this.row1 = this.changeDateFormat(rowOne);
     this.row2 = this.changeDateFormat(rowTwo);
     this.numberFormat(this.noFormat);
-    this.setState({});
+      this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
   }
   numberFormat(e,p){
     if(typeof e === 'string'){
@@ -184,7 +188,7 @@ class Preview extends Component {
         this.row1 = this.changeNumberFormat(rowOne, this.noFormat);
         this.row2 = this.changeNumberFormat(rowTwo, e.noFormat);
     }
-    this.setState({});
+      this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
   }
   delimiterFormat(e,p){
     p==="," ? this.delimiter=",": this.delimiter = e.target.value;
@@ -192,7 +196,9 @@ class Preview extends Component {
         this.headers = this.splitter(this.state.headers, this.delimiter);
         this.row1 = this.splitter(this.state.rowOne, this.delimiter);
         this.row2 = this.splitter(this.state.rowTwo, this.delimiter);
-        this.setState({});
+        console.log('handleresetmappingcalled');
+        this.createMappingSectionReplaceObject();
+        this.actions.handleResetMappingData([this.delimiter,this.dFormat,this.noFormat,this.noHeader],this.mappingsectionstate);
     }
   }
   splitter(data, splittype) {

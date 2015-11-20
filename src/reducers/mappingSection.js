@@ -29,7 +29,7 @@ export default createReducer(initialState, {
       const data = action.payload.response;
       return {
       ...state,
-          properties : action.payload.properties,
+          fileproperties : action.payload.properties,
           defaultValue:''
       }
   },
@@ -43,7 +43,24 @@ export default createReducer(initialState, {
     if(response){
         return {
             ...state,
-            mappingData : response[0]
+            tables: response[0].tables,
+            properties: response[0].properties,
+            attributeList: response[0].attributeList,
+            pickedTable: response[0].pickedTable,
+            mappedData: response[0].mappedData,
+            mappedFields: response[0].mappedFields,
+            selectedTable: response[0].selectedTable,
+            mappingData: response[0].mappingData,
+            headers : response[1],
+            headSelect : response[0].headSelect,
+            propertySelect : response[0].propertySelect,
+            defaultValue : response[0].defaultValue,
+            selectedHeaders : response[0].selectedHeaders,
+            selectedTables : response[0].selectedTables,
+            selectedProperties : response[0].selectedProperties,
+            selectedTab : response[0].selectedTab,
+            mappingName : response[0].mappingName,
+            mappingInfo : response[0].mappingInfo
         }
     }else{
         return{
@@ -582,7 +599,18 @@ export default createReducer(initialState, {
       pickedTable: data.pickedTable,
       mappedData: data.mappedData,
       mappedFields: data.mappedFields,
-      selectedTable: data.selectedTable
+      selectedTable: data.selectedTable,
+      mappingData: data.mappingData,
+      headers : data.headers,
+      headSelect : data.headSelect,
+      propertySelect : data.propertySelect,
+      defaultValue : data.defaultValue,
+      selectedHeaders : data.selectedHeaders,
+      selectedTables : data.selectedTables,
+      selectedProperties : data.selectedProperties,
+      selectedTab : data.selectedTab,
+      mappingName : data.mappingName,
+      mappingInfo : data.mappingInfo
     }
   },
   [types.HANDLEMAPPEDCHNAGES](state, action) {

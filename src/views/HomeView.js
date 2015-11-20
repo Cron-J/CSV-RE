@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Dropzone from 'react-dropzone';
 import { bindActionCreators } from 'redux';
 import * as PreviewActions from 'actions/previewPage/PreviewActions';
+import * as MappingActions from 'actions/mappingPage/MappingActions';
 import * as homeActions from 'actions/homePage/HomeActions'
 import { connect } from 'react-redux';
 import request from 'superagent';
@@ -27,13 +28,14 @@ class Home extends Component {
           this.name="";
           this.type="";
         }
-        this.style;
-        this.uploadedFile;
         this.actions = bindActionCreators(PreviewActions, dispatch);
         this.homeSectionActions = bindActionCreators(homeActions,dispatch);
+        this.mappingSectionActions = bindActionCreators(MappingActions, dispatch);
     }
 
-
+    componentWillMount(){
+        this.mappingSectionActions.attributeList();
+    }
     onDrop(files,e) {
       if(e.target.className==="dropzoneContainer")
           e.target.style.border='5px dashed #DDD';

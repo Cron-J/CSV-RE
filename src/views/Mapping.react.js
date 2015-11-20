@@ -20,32 +20,34 @@ class Mapping extends Component {
       this.actions.getCSVfileData(params.id, 'tnt1');
       this.edit= true;
     } else {
-      this.mappingName = this.props.mappingsection.mappingName;
-      if(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers){
-        if(this.props.mappingsection.headers.length === 0){
-          this.props.mappingsection.headers = this.props.homesection.filedata.headers.split(',');
-        }
-      }else{
+      if(!(this.props.homesection && this.props.homesection.filedata && this.props.homesection.filedata.headers)){
         console.log('no headers found. possiblity that file is not uploaded');
         this.actions.redirectPreview();
       }
     }
-    if(this.props.attributesectionsearch.customHeader.length === 0) {
+    this.mappingName = this.props.mappingsection.mappingName;
+    if(this.props.mappingsection.headers && this.props.mappingsection.headers.length){
       this.headers = this.props.mappingsection.headers;
+    }
+    else if(!this.props.attributesectionsearch.noHeader) {
+      let headers = [];
+      let row = this.splitter(this.props.homesection.filedata.headers, this.props.attributesectionsearch.delimiter);
+      for(let c=1; c <=row.length; c++){
+        headers.push('Column'+c);
+      }
+      this.headers = headers;
     } else {
-      this.headers = this.props.attributesectionsearch.customHeader;
+      if(this.props.homesection.filedata.headers){
+        this.headers = this.props.homesection.filedata.headers.split(this.props.attributesectionsearch.delimiter);
+      }
     }
     this.headers =  _.map(this.headers, function (header) {
       if(header.value) return header;
       else return {'value':header, 'mapped':false}
     })
-  }
-  componentWillMount() {
-    this.actions.attributeList();
+    this.props.mappingsection.headers = this.headers;
   }
 
-  componentDidMount() {
-  }
   componentWillReceiveProps(nextProps){
     console.log(nextProps);
     this.props = nextProps;
@@ -55,11 +57,14 @@ class Mapping extends Component {
   redirectMapping() {
     this.actions.redirectEdit();
   }
+  splitter(data, splittype) {
+    return data.split(splittype);
+  }
 
-  setHeaderSelected(headSelect){
-    var header = _.find(this.headers,{'value':this.props.mappingsection.headSelect});
+  setHeaderSelected(headSelect,value){
+    var header = _.find(this.headers,{'value':headSelect});
     if(header){
-      this.headers[_.findIndex(this.headers,header)].mapped = true;
+      this.headers[_.findIndex(this.headers,header)].mapped = value;
       return;
     }
   }
@@ -67,7 +72,7 @@ class Mapping extends Component {
   mapping(e) {
     e.preventDefault();
     if(this.props.mappingsection.headSelect===''||this.props.mappingsection.propertySelect===''||this.props.mappingsection.selectedTab===''){
-      alert("select three column");
+      this.actions.showAddMappingMessage('Please select three columns');
     }
     else{
           let propertyname;
@@ -77,7 +82,7 @@ class Mapping extends Component {
               for(let idx in this.props.mappingsection.attributeList[index]){
                 if(this.props.mappingsection.attributeList[index][idx].field === this.props.mappingsection.propertySelect){
                   this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
-                  this.setHeaderSelected(this.props.mappingsection.headSelect);
+                  this.setHeaderSelected(this.props.mappingsection.headSelect,true);
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
@@ -104,10 +109,9 @@ class Mapping extends Component {
           this.props.mappingsection.mappedData.push(mappedField);
           this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
           this.props.mappingsection.headers = this.headers;
-          this.props.mappingsection.mappedData = this.props.mappingsection.mappedData;
-          this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
           if(this.props.mappingsection.defaultValue){
             this.props.mappingsection.defaultValue = '';
+            $('.default-value').removeClass('active');
           }
           this.actions.handleMappedChnages(this.props.mappingsection);
     }
@@ -130,9 +134,9 @@ class Mapping extends Component {
     for(let key in this.props.mappingsection.attributeList) {
       if(key === selectedTab){
         this.props.mappingsection.properties = this.props.mappingsection.attributeList[key];
-        this.actions.handleChanges(this.props.mappingsection);
       }
     }
+    this.actions.handleChanges(this.props.mappingsection);
   }
 
   addToList(e){
@@ -154,15 +158,14 @@ class Mapping extends Component {
       $('.default-value').addClass('active');
     else
       $('.default-value').removeClass('active');
-    const change = this.props.mappingsection
-    change.defaultValue = e.currentTarget.value;
+    this.props.mappingsection.defaultValue = e.currentTarget.value;
     this.actions.handleChanges(this.props.mappingsection);
   }
 
   selectnewPropTable(e) {
     e.preventDefault();
     this.props.mappingsection.pickedTable = e.target.text;
-    this.setState({});
+    this.actions.handleChanges(this.props.mappingsection);
   }
   mapAttribute(e) {
     if(this.props.mappingsection.headSelect=="")
@@ -174,7 +177,7 @@ class Mapping extends Component {
             this.props.mappingsection.tables[table].push('attributeValues');
           }
         }
-        this.setHeaderSelected(this.props.mappingsection.headSelect);
+        this.setHeaderSelected(this.props.mappingsection.headSelect, true);
         const mapField1 = {
           "userFieldName": this.props.mappingsection.headSelect,
           "transformations": [],
@@ -199,17 +202,25 @@ class Mapping extends Component {
         }
         this.props.mappingsection.mappedData.push(mapField2);
         this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"' : '"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
-        this.props.mappingsection.mappedFields = this.props.mappingsection.mappedFields;
         if (this.props.mappingsection.defaultValue) {
           this.props.mappingsection.defaultValue = '';
+          $('.default-value').removeClass('active');
         }
         this.actions.handleChanges(this.props.mappingsection);
     }
 }
   removeRow(index) {
+    // get the table element and remove color
+    let fieldname = this.props.mappingsection.mappedData[index].field;
+    let rowindex = _.findIndex(this.props.mappingsection.attributeList[this.props.mappingsection.mappedData[index].table], function(chr) {
+      return  chr.field == fieldname;
+    });
+    this.props.mappingsection.attributeList[this.props.mappingsection.mappedData[index].table][rowindex]['mapped'] = false;
+    //get the column element and remove color
+    this.setHeaderSelected(this.props.mappingsection.mappedData[index].userFieldName,false);
+    this.props.mappingsection.headers = this.headers;
     this.props.mappingsection.mappedFields.splice(index,1);
     this.props.mappingsection.mappedData.splice(index,1);
-    console.log('Mapped Fields',this.props.mappingsection.mappedData);
     this.actions.handleMappedChnages(this.props.mappingsection);
 
   }
@@ -249,7 +260,7 @@ class Mapping extends Component {
   }
   selectHead(e) {
     this.props.mappingsection.headSelect = e.currentTarget.value;
-    console.log(this.props.mappingsection.headSelect);
+    this.actions.handleChanges(this.props.mappingsection);
   }
 
   selectProperty(e) {
@@ -263,7 +274,6 @@ class Mapping extends Component {
   }
 
   tableAttribute() {
-    console.log("(-------------)", this.props.mappingsection.headers);
     let headers = this.headers;
     const attributesList = [];
     console.log("--header--");
@@ -281,6 +291,11 @@ class Mapping extends Component {
   tableProperty() {
     const propertiesList = [];
     const props = this.props.mappingsection.properties;
+    for(var idx in props){
+      if(props[idx].field ==="tenantId"){
+        props[idx]['mapped']=true;
+      }
+    }
     for(let index in props){
       if(props[index].mapped){
         propertiesList.push(<option key={index}  className="green-color" onClick={this.selectProperty.bind(this)} value={props[index].field}>{props[index].field}</option>);
