@@ -66,7 +66,7 @@ class Home extends Component {
             this.name="";
             this.type="";
             this.setState({message: this.message});
-            this.homeSectionActions.showMessage('Only text and csv files are supported please select a valid file');
+            //this.homeSectionActions.showMessage('Only text and csv files are supported please select a valid file');
         }
         var req = request.post('http://localhost:4000/api/csv/uploadCSV');
             files.forEach((file)=> {
