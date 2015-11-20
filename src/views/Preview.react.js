@@ -98,6 +98,7 @@ class Preview extends Component {
     }
   }
   changeDateFormat(list,format) {
+    console.log("inside change");
     this.datFormat=format;
     console.log("list="+list);
     if (list) {
@@ -127,11 +128,8 @@ class Preview extends Component {
   }
   proccessNumberFormat(){
       if(this.state){
-          this.headers = this.splitter(this.state.headers, this.delimiter);
-          let rowOne = this.splitter(this.state.rowOne, this.delimiter);
-          let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
-          this.row1 = this.changeNumberFormat(rowOne, this.noFormat);
-          this.row2 = this.changeNumberFormat(rowTwo, this.noFormat);
+          this.row1 = this.changeNumberFormat(this.row1, this.noFormat);
+          this.row2 = this.changeNumberFormat(this.row2, this.noFormat);
       }else{
           console.log('Error : this.state is undefined');
       }

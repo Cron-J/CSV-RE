@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import * as MappingActions from 'actions/mappingPage/MappingActions';
 import { connect } from 'react-redux';
@@ -140,9 +140,10 @@ class Mapping extends Component {
   }
 
   addToList(e){
+    var i=0;
     for(let table in this.props.mappingsection.tables){
       if(table === this.props.mappingsection.pickedTable){
-        this.props.mappingsection.tables[table].push(this.props.mappingsection.pickedTable);
+        this.props.mappingsection.tables[table].push(this.props.mappingsection.pickedTable+"["+(this.props.mappingsection.tables[table].length)+"]");
       }
     }
     this.actions.handleChanges(this.props.mappingsection);
@@ -244,7 +245,7 @@ class Mapping extends Component {
       let ch = [];
       if(tb[key].length){
         for (let i = 0; i < tb[key].length; i++) {
-          ch.push(<option key={key} onClick={this.selectedTable.bind(this)} value={tb[key][i]}>{tb[key][i]}</option>);
+          ch.push(<option key={key+""+i} onClick={this.selectedTable.bind(this)} value={tb[key][i]}>{tb[key][i]}</option>);
         }
       }
       if(key === 'product'){

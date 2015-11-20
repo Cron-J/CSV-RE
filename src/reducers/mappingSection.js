@@ -4,7 +4,7 @@ import { createReducer } from 'redux-create-reducer';
 
 const initialState = {
   id: '',
-  tables: [],
+  tables: {},
   properties: [],
   mappingData: {},
   headers : [],
@@ -73,7 +73,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       id: '',
-      tables: [],
+      tables: {},
       properties: [],
       attributeList: {},
       pickedTable: 'Select',
