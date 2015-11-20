@@ -26,7 +26,7 @@ class Mapping extends Component {
       }
     }
     this.mappingName = this.props.mappingsection.mappingName;
-    if(this.props.mappingsection.headers && this.props.mappingsection.headers.length){
+    if(this.props.mappingsection.headers.length){
       this.headers = this.props.mappingsection.headers;
     }
     else if(!this.props.attributesectionsearch.noHeader) {
@@ -48,9 +48,22 @@ class Mapping extends Component {
     this.props.mappingsection.headers = this.headers;
   }
 
+  componentWillMount() {
+    console.log('caret');
+  }
+
   componentWillReceiveProps(nextProps){
     console.log(nextProps);
     this.props = nextProps;
+    if (typeof this.props.params.id !== 'undefined') {
+      if(this.props.mappingsection.headers.length >  0) {
+        for (var i = 0; i < this.props.mappingsection.headers.length; i++) {
+          if(this.props.mappingsection.headers[i].value == undefined) {
+            this.props.mappingsection.headers[i] = {'value':this.props.mappingsection.headers[i], 'mapped':false}
+          }
+        };
+      }
+    }
     //this.props.mappingsection.mappingName
   }
 
