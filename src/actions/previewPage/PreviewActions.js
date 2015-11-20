@@ -17,7 +17,7 @@ export function handleResetMappingData(data,mappingsectionobject){
     meta: {
       transition: () =>({
         func: () =>{
-          mappingSectionhandlechanges(mappingsectionobject)
+         return mappingSectionhandlechanges(mappingsectionobject)
         }
       })
     }

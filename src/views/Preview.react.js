@@ -26,6 +26,8 @@ class Preview extends Component {
     this.noHeader = this.previewPage.noHeader;
     this.dFormat = this.previewPage.dFormat;
     this.noFormat = this.previewPage.noFormat;
+    this.proccessDateFormat();
+    this.proccessNumberFormat();
   }
 
   componentWillMount() {
@@ -46,7 +48,9 @@ class Preview extends Component {
       const { state, dispatch } = nextProps;
       this.previewPage = state.attributesectionsearch;
       this.customHeader = this.previewPage.customHeader;
-  }
+      this.proccessDateFormat();
+      this.proccessNumberFormat();
+    }
     createMappingSectionReplaceObject(){
         const { state, dispatch } = this.props;
         // this object is for maintaining and destroying persistance of mapping page state;
@@ -63,8 +67,8 @@ class Preview extends Component {
     this.delimiter=",";
     this.dFormat = "MM/dd/yyyy";
     this.noFormat = "#,###.##";
-    this.delimiterFormat(e,",");
-    this.dateFormatt(e,"MM/dd/yyyy");
+    //this.delimiterFormat(e,",");
+    //this.dateFormatt(e,"MM/dd/yyyy");
     this.noHeader = true;
     console.log('handleresetmappingcalled');
     this.createMappingSectionReplaceObject();
@@ -121,6 +125,29 @@ class Preview extends Component {
       return list;
     }
   }
+  proccessNumberFormat(){
+      if(this.state){
+          this.headers = this.splitter(this.state.headers, this.delimiter);
+          let rowOne = this.splitter(this.state.rowOne, this.delimiter);
+          let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
+          this.row1 = this.changeNumberFormat(rowOne, this.noFormat);
+          this.row2 = this.changeNumberFormat(rowTwo, this.noFormat);
+      }else{
+          console.log('Error : this.state is undefined');
+      }
+  }
+  proccessDateFormat(){
+      if(this.state) {
+          this.headers = this.splitter(this.state.headers, this.delimiter);
+          let rowOne = this.splitter(this.state.rowOne, this.delimiter);
+          let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
+          this.row1 = this.changeDateFormat(rowOne);
+          this.row2 = this.changeDateFormat(rowTwo);
+      }
+      else {
+          console.log('Error : this.state is undefined');
+      }
+  }
   guessDateFormat(text, possibleDateFormat, delimiter) {
     return possibleDateFormat.filter(testFormat);
 
@@ -157,24 +184,14 @@ class Preview extends Component {
       this.dFormat="MM/dd/yyyy";
     if(e && e.target && e.target.value){
         this.dFormat=e.target.value;
-        this.headers = this.splitter(this.state.headers, this.delimiter);
-        let rowOne = this.splitter(this.state.rowOne, this.delimiter);
-        let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
-        this.row1 = this.changeDateFormat(rowOne);
-        this.row2 = this.changeDateFormat(rowTwo);
-        this.numberFormat(this.noFormat);
     }
+     this.proccessDateFormat();
      this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
  }
   dateFormat(e){
    //console.log("00"+e.target.value);
-    this.headers = this.splitter(this.state.headers, this.delimiter);
-    let rowOne = this.splitter(this.state.rowOne, this.delimiter);
-    let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
-    this.row1 = this.changeDateFormat(rowOne);
-    this.row2 = this.changeDateFormat(rowTwo);
-    this.numberFormat(this.noFormat);
-      this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
+    this.proccessDateFormat();
+    this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
   }
   numberFormat(e,p){
     if(typeof e === 'string'){
@@ -182,13 +199,9 @@ class Preview extends Component {
     }
     if(e && e.target && e.target.value){
         this.noFormat=e.target.value;
-        this.headers = this.splitter(this.state.headers, this.delimiter);
-        let rowOne = this.splitter(this.state.rowOne, this.delimiter);
-        let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
-        this.row1 = this.changeNumberFormat(rowOne, this.noFormat);
-        this.row2 = this.changeNumberFormat(rowTwo, e.noFormat);
     }
-      this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
+    this.proccessNumberFormat();
+    this.actions.handleCustomHeader([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
   }
   delimiterFormat(e,p){
     p==="," ? this.delimiter=",": this.delimiter = e.target.value;
