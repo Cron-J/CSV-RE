@@ -53,7 +53,7 @@ class ImportView extends Component {
                     </div>
                     <div className="col-lg-3 col-lg-offset-9 btn-set button-container">
                         <button className="btn btn-primary pull-right"  onClick={this.actions.redirectMapping}>Back</button>
-                        <span>      </span>
+                        <span> </span>
                         <div className="btn btn-primary pull-right" onClick={this.importJson.bind(this)}>Download</div>
                     </div>
                 </div>

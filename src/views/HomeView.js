@@ -20,6 +20,7 @@ class Home extends Component {
           this.message=this.props.homesection.properties.message;
           this.size=this.props.homesection.properties.size;
           this.type=this.props.homesection.properties.type;
+          this.name=this.props.homesection.properties.name;
         }
         else
         {
