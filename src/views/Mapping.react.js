@@ -39,6 +39,9 @@ class Mapping extends Component {
     } else {
       if(this.props.homesection.filedata.headers){
         this.headers = this.props.homesection.filedata.headers.split(this.props.attributesectionsearch.delimiter);
+        for (var i = 0; i < this.headers.length; i++) {
+          this.headers[i] = this.headers[i].trim();
+        };
       }
     }
     this.headers =  _.map(this.headers, function (header) {
@@ -61,10 +64,12 @@ class Mapping extends Component {
       if(this.props.mappingsection.headers.length >  0) {
         for (var i = 0; i < this.props.mappingsection.headers.length; i++) {
           if(this.props.mappingsection.headers[i].value == undefined) {
-            this.props.mappingsection.headers[i] = {'value':this.props.mappingsection.headers[i], 'mapped':false}
+            this.props.mappingsection.headers[i] = {'value':this.props.mappingsection.headers[i].trim(), 'mapped':false}
           }
         };
         this.headers = this.props.mappingsection.headers;
+        this.mappedTables();
+        this.setColourToMappedItems();
       }
     }
     //this.props.mappingsection.mappingName
@@ -82,6 +87,40 @@ class Mapping extends Component {
     if(header){
       this.headers[_.findIndex(this.headers,header)].mapped = value;
       return;
+    }
+  }
+
+  setColourToMappedItems() {
+    this.setColourToMappedColumn();
+    this.setColourToMappedProperty();
+  }
+
+  setColourToMappedColumn() {
+    for (var i = 0; i < this.props.mappingsection.mappedData.length; i++) {
+      for (var j = 0; j < this.headers.length; j++) {
+        if (this.props.mappingsection.mappedData[i].userFieldName === this.headers[j].value) {
+          this.headers[j].mapped = true;
+        }  
+      };
+    }
+  }
+
+  setColourToMappedProperty() {
+    for (var i = 0; i < this.props.mappingsection.mappedData.length; i++) {
+      for (var k = 0; k < this.props.mappingsection.properties.length; k++) {
+        if(this.props.mappingsection.properties[k].field === this.props.mappingsection.mappedData[i].field ||
+          this.props.mappingsection.properties[k].field === 'tenantId') {
+          this.props.mappingsection.properties[k].mapped = true;
+        }
+      };
+    };
+  }
+
+  mappedTables() {
+    for (var i = 0; i < this.props.mappingsection.mappedData.length; i++) {
+      if(this.props.mappingsection.mappedData[i].table) {
+        this.props.mappingsection.tables[this.props.mappingsection.mappedData[i].table].push(this.props.mappingsection.mappedData[i].table);
+      }
     }
   }
 
@@ -222,6 +261,7 @@ class Mapping extends Component {
           this.props.mappingsection.defaultValue = '';
           $('.default-value').removeClass('active');
         }
+        this.setColourToMappedItems();
         this.actions.handleChanges(this.props.mappingsection);
     }
 }
@@ -237,6 +277,7 @@ class Mapping extends Component {
     this.props.mappingsection.headers = this.headers;
     this.props.mappingsection.mappedFields.splice(index,1);
     this.props.mappingsection.mappedData.splice(index,1);
+    this.setColourToMappedItems();
     this.actions.handleMappedChnages(this.props.mappingsection);
 
   }
