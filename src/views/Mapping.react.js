@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import * as MappingActions from 'actions/mappingPage/MappingActions';
 import { connect } from 'react-redux';
@@ -9,6 +9,7 @@ import _ from 'lodash';
 class Mapping extends Component {
   constructor(props) {
     super(props);
+    this.sTable={};
     const { mappingsection, homesection, selectmapping, dispatch } = this.props;
    //this.props.mappingsection = mappingsection;
     console.log("mapping",this.props);
@@ -184,20 +185,23 @@ class Mapping extends Component {
   }
   selectedTable(e) {
     e.preventDefault();
-    let selectedTab = e.currentTarget.value;
+    let selectedTab = e.currentTarget.value.slice(0,e.currentTarget.value.length-1);
+    this.sTable[e.currentTarget.value]=this.props.mappingsection.attributeList[selectedTab];
     this.props.mappingsection.selectedTab = selectedTab;
     for(let key in this.props.mappingsection.attributeList) {
       if(key === selectedTab){
-        this.props.mappingsection.properties = this.props.mappingsection.attributeList[key];
+        this.props.mappingsection.properties = this.sTable[e.currentTarget.value];
       }
     }
     this.actions.handleChanges(this.props.mappingsection);
   }
 
   addToList(e){
+    var i=0;
     for(let table in this.props.mappingsection.tables){
       if(table === this.props.mappingsection.pickedTable){
-        this.props.mappingsection.tables[table].push(this.props.mappingsection.pickedTable);
+        this.props.mappingsection.tables[table].push(this.props.mappingsection.pickedTable+this.props.mappingsection.tables[table].length);
+        //this.sTable.this.props.mappingsection.pickedTable=
       }
     }
     this.actions.handleChanges(this.props.mappingsection);
@@ -301,7 +305,7 @@ class Mapping extends Component {
       let ch = [];
       if(tb[key].length){
         for (let i = 0; i < tb[key].length; i++) {
-          ch.push(<option key={key} onClick={this.selectedTable.bind(this)} value={tb[key][i]}>{tb[key][i]}</option>);
+          ch.push(<option key={key+""+i} onClick={this.selectedTable.bind(this)} value={tb[key][i]}>{tb[key][i]}</option>);
         }
       }
       if(key === 'product'){
@@ -324,7 +328,7 @@ class Mapping extends Component {
     this.props.mappingsection.propertySelect = e.currentTarget.value;
     for(let i=0; i<this.props.mappingsection.attributeList.length; i++){
       if(e.currentTarget.value === this.props.mappingsection.attributesList[i].field){
-        this.props.mappingsection.attributesList[i]['mapped'] = true;
+        this.props.sTable[i]['mapped'] = true;
       }
     }
     this.actions.handleChanges(this.props.mappingsection);
