@@ -68,6 +68,7 @@ class Mapping extends Component {
           }
         };
         this.headers = this.props.mappingsection.headers;
+        this.mappedTables();
         this.setColourToMappedItems();
       }
     }
@@ -113,6 +114,14 @@ class Mapping extends Component {
         }
       };
     };
+  }
+
+  mappedTables() {
+    for (var i = 0; i < this.props.mappingsection.mappedData.length; i++) {
+      if(this.props.mappingsection.mappedData[i].table) {
+        this.props.mappingsection.tables[this.props.mappingsection.mappedData[i].table].push(this.props.mappingsection.mappedData[i].table);
+      }
+    }
   }
 
   mapping(e) {
