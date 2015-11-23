@@ -64,6 +64,7 @@ class Mapping extends Component {
             this.props.mappingsection.headers[i] = {'value':this.props.mappingsection.headers[i], 'mapped':false}
           }
         };
+        this.headers = this.props.mappingsection.headers;
       }
     }
     //this.props.mappingsection.mappingName
