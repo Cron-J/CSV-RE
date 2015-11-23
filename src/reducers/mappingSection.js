@@ -586,7 +586,8 @@ export default createReducer(initialState, {
       pickedTable: 'Select',
       mappedData: [],
       mappedFields: [],
-      selectedTable: ''
+      selectedTable: '',
+      mappingName: ''
     };
   },
   [types.HANDLEATTRIBUTELISTCHANGES](state, action) {
