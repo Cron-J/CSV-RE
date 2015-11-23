@@ -26,8 +26,8 @@ class Preview extends Component {
     this.noHeader = this.previewPage.noHeader;
     this.dFormat = this.previewPage.dFormat;
     this.noFormat = this.previewPage.noFormat;
-    this.proccessDateFormat();
     this.proccessNumberFormat();
+    this.proccessDateFormat();
   }
 
   componentWillMount() {
@@ -48,8 +48,8 @@ class Preview extends Component {
       const { state, dispatch } = nextProps;
       this.previewPage = state.attributesectionsearch;
       this.customHeader = this.previewPage.customHeader;
-      this.proccessDateFormat();
       this.proccessNumberFormat();
+      this.proccessDateFormat();
     }
     createMappingSectionReplaceObject(){
         const { state, dispatch } = this.props;
@@ -97,8 +97,8 @@ class Preview extends Component {
       this.actions.handleResetMappingData([this.delimiter,this.dFormat,this.noFormat,this.noHeader],this.mappingsectionstate);
     }
   }
-  changeDateFormat(list,format) {
-    this.datFormat=format;
+  changeDateFormat(list) {
+    let format = this.dFormat;
     console.log("list="+list);
     if (list) {
       for (var i = 0; i < list.length; i++) {
@@ -138,11 +138,11 @@ class Preview extends Component {
   }
   proccessDateFormat(){
       if(this.state) {
-          this.headers = this.splitter(this.state.headers, this.delimiter);
-          let rowOne = this.splitter(this.state.rowOne, this.delimiter);
-          let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
-          this.row1 = this.changeDateFormat(rowOne);
-          this.row2 = this.changeDateFormat(rowTwo);
+          //this.headers = this.splitter(this.state.headers, this.delimiter);
+          //let rowOne = this.splitter(this.state.rowOne, this.delimiter);
+          //let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
+          this.row1 = this.changeDateFormat(this.row1);
+          this.row2 = this.changeDateFormat(this.row2);
       }
       else {
           console.log('Error : this.state is undefined');

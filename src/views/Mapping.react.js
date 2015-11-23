@@ -49,7 +49,9 @@ class Mapping extends Component {
   }
 
   componentWillMount() {
-    console.log('caret');
+    if(this.props.mappingsection.tables === undefined || (this.props.mappingsection.tables && this.props.mappingsection.tables.length === 0)){
+      this.actions.attributeList();
+    }
   }
 
   componentWillReceiveProps(nextProps){

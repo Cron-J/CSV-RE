@@ -12,15 +12,16 @@ class Home extends Component {
 
     constructor(props) {
         super(props);
-        var { homesection,dispatch } = this.props;
+        var { homesection } = this.props.state;
+        var {dispatch} = this.props;
         console.log("homesection",homesection);
         this.state=homesection;
-        if(this.props.homesection.fileSelected==true){
+        if(this.props.state.homesection.fileSelected==true){
 
-          this.message=this.props.homesection.properties.message;
-          this.size=this.props.homesection.properties.size;
-          this.type=this.props.homesection.properties.type;
-          this.name=this.props.homesection.properties.name;
+          this.message=this.props.state.homesection.properties.message;
+          this.size=this.props.state.homesection.properties.size;
+          this.type=this.props.state.homesection.properties.type;
+          this.name=this.props.state.homesection.properties.name;
         }
         else
         {
@@ -37,6 +38,17 @@ class Home extends Component {
     componentWillMount(){
         this.mappingSectionActions.attributeList();
     }
+    createMappingSectionReplaceObject(){
+        const { state, dispatch } = this.props;
+        // this object is for maintaining and destroying persistance of mapping page state;
+        this.mappingsectionstate = state.mappingsection;
+        this.mappingsectionstate.headers = [];
+        this.mappingsectionstate.mappedData = [];
+        this.mappingsectionstate.mappedFields = [];
+        this.mappingsectionstate.mappingData = [];
+        this.mappingsectionstate.headSelect = '';
+        this.mappingsectionstate.pickedTable = '';
+    }
     onDrop(files,e) {
       if(e.target.className==="dropzoneContainer")
           e.target.style.border='5px dashed #DDD';
@@ -44,7 +56,7 @@ class Home extends Component {
          this.style={'border.dashed': 'green'}
         this.uploadedFile=files;
         console.log("homesection");
-        console.log(this.props.homesection);
+        console.log(this.props.state.homesection);
         var extention ="";
         extention= files[0].name.split('.').pop();
         extention=extention.toLowerCase();
@@ -55,7 +67,7 @@ class Home extends Component {
             this.size=files[0].size+"B";
             this.name=files[0].name;
             if(files[0].type==="application/vnd.ms-excel")
-              this.type=":Microsoft Office Comma Seperated Value";
+                this.type="Microsoft Office Comma Seperated Value";
             else{
                 this.type = files[0].type;
             }
@@ -83,6 +95,7 @@ class Home extends Component {
             //this.state.selectedFile(err);
             // handle of error upload goes here
         }else{
+            this.createMappingSectionReplaceObject();
             //Set your state to store file data;
             console.log(response.body);
             this.homeSectionActions.selectedFile({
@@ -91,7 +104,7 @@ class Home extends Component {
                     message:this.message,
                     type:this.type},
                 response : response.body
-            });
+            },this.mappingsectionstate);
         }
     }
     startRead(files){
@@ -117,7 +130,7 @@ class Home extends Component {
     }
     componentWillReceiveProps(nextProps){
         this.props = nextProps;
-        this.updateView(this.props.homesection.properties)
+        this.updateView(this.props.state.homesection.properties)
     }
     render() {
         return (
@@ -162,9 +175,8 @@ class Home extends Component {
 
 
 function mapStateToProps(state) {
-    const { homesection } = state;
     return {
-        homesection
+        state
     };
 }
 
