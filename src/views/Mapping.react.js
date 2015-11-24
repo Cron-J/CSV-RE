@@ -246,7 +246,7 @@ class Mapping extends Component {
         this.props.mappingsection.mappedData.push(mapField1);
         this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
         const mapField2 = {
-          "userFieldName": this.props.mappingsection.defaultValue? this.props.mappingsection.defaultValue : this.props.mappingsection.headSelect,
+          "userFieldName": this.props.mappingsection.headSelect,
           "transformations": [],
           "field": 'attribute',
           "defaultValue": this.props.mappingsection.defaultValue,
