@@ -578,6 +578,7 @@ export default createReducer(initialState, {
       tables[k] = [];
     }
     let properties = tst['product'];
+    console.log('tables_____ properties ',tables,properties);
     return {
       ...state,
       tables: tables,
