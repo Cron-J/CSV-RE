@@ -690,7 +690,8 @@ export default createReducer(initialState, {
       mappingName: response.mappingName,
       mappedFields: arr,
       mappedData: res,
-      tenantId: response.tenantId
+      tenantId: response.tenantId,
+      selectedTab: 'product'
     };
   },
   [types.UPDATEMAPPINGSUCCESS](state, action) {

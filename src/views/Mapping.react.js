@@ -108,8 +108,8 @@ class Mapping extends Component {
   setColourToMappedProperty() {
     for (var i = 0; i < this.props.mappingsection.mappedData.length; i++) {
       for (var k = 0; k < this.props.mappingsection.properties.length; k++) {
-        if(this.props.mappingsection.properties[k].field === this.props.mappingsection.mappedData[i].field ||
-          this.props.mappingsection.properties[k].field === 'tenantId') {
+        if(this.props.mappingsection.mappedData[i].table === this.props.mappingsection.selectedTab && (this.props.mappingsection.properties[k].field === this.props.mappingsection.mappedData[i].field ||
+          this.props.mappingsection.properties[k].field === 'tenantId')) {
           this.props.mappingsection.properties[k].mapped = true;
         }
       };
@@ -246,7 +246,7 @@ class Mapping extends Component {
         this.props.mappingsection.mappedData.push(mapField1);
         this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
         const mapField2 = {
-          "userFieldName": this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"': '"'+this.props.mappingsection.headSelect+'"',
+          "userFieldName": this.props.mappingsection.defaultValue? this.props.mappingsection.defaultValue : this.props.mappingsection.headSelect,
           "transformations": [],
           "field": 'attribute',
           "defaultValue": this.props.mappingsection.defaultValue,
