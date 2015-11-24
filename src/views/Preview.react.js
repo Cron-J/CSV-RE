@@ -97,16 +97,12 @@ class Preview extends Component {
       this.actions.handleResetMappingData([this.delimiter,this.dFormat,this.noFormat,this.noHeader],this.mappingsectionstate);
     }
   }
-
-
-
-
   changeDateFormat(list) {
     let format = this.dFormat;
     console.log("list="+list);
     if (list) {
       for (var i = 0; i < list.length; i++) {
-        if (isNaN(list[i]) && list[i].match(' ') === false) {
+        if (isNaN(list[i])) {
           var d = new Date(list[i]);
           if (d != 'Invalid Date') {
             if('dd-MM-yyyy' == this.guessDateFormat.bind(this, {fileName: this.props.fileName, headers: this.props.headers, rowOne: this.props.rowOne, rowTwo: this.props.rowTwo}, ['dd-MM-yyyy', 'MM/dd/yyyy'], ',')){
@@ -131,8 +127,11 @@ class Preview extends Component {
   }
   proccessNumberFormat(){
       if(this.state){
-          this.row1 = this.changeNumberFormat(this.row1, this.noFormat);
-          this.row2 = this.changeNumberFormat(this.row2, this.noFormat);
+          this.headers = this.splitter(this.state.headers, this.delimiter);
+          let rowOne = this.splitter(this.state.rowOne, this.delimiter);
+          let rowTwo = this.splitter(this.state.rowTwo, this.delimiter);
+          this.row1 = this.changeNumberFormat(rowOne, this.noFormat);
+          this.row2 = this.changeNumberFormat(rowTwo, this.noFormat);
       }else{
           console.log('Error : this.state is undefined');
       }
