@@ -11,7 +11,7 @@ class ImportView extends Component {
         console.log(this.state);
         this.mappedJson="";
         this.jsonFormated="";     
-        this.jsonpreview = mappingsection.mappingData;
+        this.jsonpreview = mappingsection.mappingData.convertedJSON;
         this.stringJSon=JSON.stringify(this.jsonpreview,null,4);
         this.actions = bindActionCreators(PreviewActions, dispatch);
         
@@ -27,8 +27,8 @@ class ImportView extends Component {
         console.log("In componentWillReceiveProps");
         this.props = nextProps;
         let mappingsection = this.props.mappingsection;
-        if(mappingsection && mappingsection.mappingData){
-            this.jsonpreview = mappingsection.mappingData;
+        if(mappingsection && mappingsection.mappingData && mappingsection.mappingData.convertedJSON){
+            this.jsonpreview = mappingsection.mappingData.convertedJSON;
         }
         console.log("json"+this.jsonpreview);
     }

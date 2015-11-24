@@ -69,9 +69,9 @@ class Mapping extends Component {
         };
         this.headers = this.props.mappingsection.headers;
         this.mappedTables();
-        this.setColourToMappedItems();
       }
     }
+    this.setColourToMappedItems();
     //this.props.mappingsection.mappingName
   }
 
@@ -106,14 +106,17 @@ class Mapping extends Component {
   }
 
   setColourToMappedProperty() {
+    let selectedTab = this.util_getindexcommna(this.props.mappingsection.selectedTab);
+    let tableindex = selectedTab[0];
+    (false === isNaN(parseInt(tableindex))) ? tableindex= tableindex : tableindex = '';
     for (var i = 0; i < this.props.mappingsection.mappedData.length; i++) {
       for (var k = 0; k < this.props.mappingsection.properties.length; k++) {
-        if(this.props.mappingsection.mappedData[i].table === this.props.mappingsection.selectedTab && (this.props.mappingsection.properties[k].field === this.props.mappingsection.mappedData[i].field ||
+        if(this.props.mappingsection.mappedData[i].table === selectedTab[1] && this.props.mappingsection.mappedData[i].index === tableindex && (this.props.mappingsection.properties[k].field === this.props.mappingsection.mappedData[i].field ||
           this.props.mappingsection.properties[k].field === 'tenantId')) {
           this.props.mappingsection.properties[k].mapped = true;
         }
-      };
-    };
+      }
+    }
   }
 
   mappedTables() {
@@ -130,21 +133,23 @@ class Mapping extends Component {
       this.actions.showAddMappingMessage('Please select three columns');
     }
     else{
-          let propertyname;
-          let mappedField = {};
-          for(let index in this.props.mappingsection.attributeList){
-            if(this.props.mappingsection.selectedTab === index){
+      let propertyname;
+      let mappedField = {};
+      let selectedTab = this.util_getindexcommna(this.props.mappingsection.selectedTab);
+      let tableindex = selectedTab[0];
+      (false === isNaN(parseInt(tableindex))) ? tableindex=tableindex : tableindex = '';
+      for(let index in this.props.mappingsection.attributeList){
+            if(selectedTab[1] === index){
               for(let idx in this.props.mappingsection.attributeList[index]){
                 if(this.props.mappingsection.attributeList[index][idx].field === this.props.mappingsection.propertySelect){
-                  this.props.mappingsection.attributeList[index][idx]['mapped'] = true;
                   this.setHeaderSelected(this.props.mappingsection.headSelect,true);
                   mappedField = {
                     "userFieldName": this.props.mappingsection.headSelect,
                     "transformations": [],
-                    "table": this.props.mappingsection.selectedTab,
+                    "table": selectedTab[1],
                     "field": this.props.mappingsection.attributeList[index][idx].field,
                     "defaultValue": this.props.mappingsection.defaultValue,
-                    "index": this.props.mappingsection.attributeList[index][idx].index,
+                    "index": tableindex,
                     "instance": this.props.mappingsection.attributeList[index][idx].instance,
                     "isRequired": this.props.mappingsection.attributeList[index][idx].isRequired
                   };
@@ -152,23 +157,25 @@ class Mapping extends Component {
               }
             }
           }
-          if(this.props.mappingsection.selectedTab === 'product'){
-            propertyname = 'product.'+this.props.mappingsection.propertySelect;
-          }else{
-            propertyname = 'product.'+this.props.mappingsection.pickedTable+'.'+this.props.mappingsection.propertySelect;
-          }
-          if(this.props.mappingsection.defaultValue){
-            this.props.mappingsection.headSelect = '"'+this.props.mappingsection.defaultValue+'"';
-          }
-          this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: this.props.mappingsection.propertySelect, propertyname: propertyname});
-          this.props.mappingsection.mappedData.push(mappedField);
-          this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
-          this.props.mappingsection.headers = this.headers;
-          if(this.props.mappingsection.defaultValue){
-            this.props.mappingsection.defaultValue = '';
-            $('.default-value').removeClass('active');
-          }
-          this.actions.handleMappedChnages(this.props.mappingsection);
+      let name = this.util_getindexnumber(this.props.mappingsection.pickedTable);
+      if(selectedTab[1] === 'product'){
+        propertyname = 'product.'+this.props.mappingsection.propertySelect;
+      }else{
+        propertyname = 'product.'+name[1]+tableindex+'.'+this.props.mappingsection.propertySelect;
+      }
+      if(this.props.mappingsection.defaultValue){
+        this.props.mappingsection.headSelect = '"'+this.props.mappingsection.defaultValue+'"';
+      }
+      this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: this.props.mappingsection.propertySelect, propertyname: propertyname});
+      this.props.mappingsection.mappedData.push(mappedField);
+      this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
+      this.props.mappingsection.headers = this.headers;
+      if(this.props.mappingsection.defaultValue){
+        this.props.mappingsection.defaultValue = '';
+        $('.default-value').removeClass('active');
+      }
+      this.setColourToMappedProperty();
+      this.actions.handleMappedChnages(this.props.mappingsection);
     }
 
   }
@@ -182,22 +189,84 @@ class Mapping extends Component {
     $('.ok-icon').addClass('hide');
     $('.edit-icon').removeClass('hide');
   }
-  selectedTable(e) {
-    e.preventDefault();
-    let selectedTab = e.currentTarget.value;
-    this.props.mappingsection.selectedTab = selectedTab;
-    for(let key in this.props.mappingsection.attributeList) {
-      if(key === selectedTab){
-        this.props.mappingsection.properties = this.props.mappingsection.attributeList[key];
+  /*util_ functions are well tested*/
+  util_getindexcommna = function(tablename){
+    let table = tablename.split(","),index =0,found=false;
+
+    if(table.length >= 1){
+      return [parseInt(table[1]),table[0]];
+    }else{
+      return [NaN,table[0]];
+    }
+  };
+  util_getindexnumber = function(tablename){
+    let table = tablename.split(""),index =0;
+    for(index in table){
+      if(isNaN(table[index] === false)){
+        break;
       }
     }
+    return [parseInt(tablename.substr(index,tablename.length)),tablename.substr(0,index)];
+  }
+  selectedTable(e) {
+    let selectedTab;
+    if(typeof e === 'string'){
+      selectedTab = e;
+    }else{
+      e.preventDefault();
+      selectedTab = e.currentTarget.value;
+    }
+    this.hideremoveicon(false);
+    this.props.mappingsection.selectedTab = selectedTab;
+    let info = this.util_getindexcommna(selectedTab);
+    let tablename = info[1],info0 = parseInt(info[0]);
+    if(isNaN(info0) === true){
+      for(let key in this.props.mappingsection.attributeList) {
+        if(key === tablename){
+          this.props.mappingsection.properties = this.props.mappingsection.attributeList[tablename];
+          this.hideremoveicon(true);
+        }
+      }
+    }else{
+      for(let key in this.props.mappingsection.tables) {
+        if(key === tablename){
+          this.props.mappingsection.properties = this.props.mappingsection.tables[tablename][info[0]].properties;
+        }
+      }
+    }
+    (isNaN(info0))? info0 = '': info0 = info0;
+    this.props.mappingsection.pickedTable = info[1]+info0;
+    this.hideplusicon(true);
     this.actions.handleChanges(this.props.mappingsection);
   }
-
+  hideplusicon(value){
+    value ? $('#tablesadd').addClass('hide'): $('#tablesadd').removeClass('hide');
+  }
+  hideremoveicon(value){
+    value ? $('#tableremove').addClass('hide'): $('#tableremove').removeClass('hide');
+  }
+  removeInList(e){
+    let name = this.util_getindexnumber(this.props.mappingsection.pickedTable);
+    for(let table in this.props.mappingsection.tables){
+      if(table === name[1]){
+        this.props.mappingsection.tables[table].splice(name[0],1);
+      }
+    }
+    let tablename = name[1];
+    (isNaN(name[0]))? tablename += '': tablename += name[0];
+    for(var i=0;i<this.props.mappingsection.mappedData.length;i++){
+      if(tablename === this.props.mappingsection.mappedData[i].table){
+        this.props.mappingsection.mappedData.splice(i,1);
+        this.props.mappingsection.mappedFields.splice(i,1);
+      }
+    }
+    this.selectedTable('product');
+    e.preventDefault();
+  }
   addToList(e){
     for(let table in this.props.mappingsection.tables){
       if(table === this.props.mappingsection.pickedTable){
-        this.props.mappingsection.tables[table].push(this.props.mappingsection.pickedTable);
+        this.props.mappingsection.tables[table].push({"name":this.props.mappingsection.pickedTable,"index":this.props.mappingsection.tables[table].length,"properties": _.cloneDeep(this.props.mappingsection.attributeList[table])});
       }
     }
     this.actions.handleChanges(this.props.mappingsection);
@@ -206,6 +275,7 @@ class Mapping extends Component {
   }
   selectedProperty(e) {
     e.preventDefault();
+    this.setColourToMappedItems();
   }
 
   enteredDefaultVal(e) {
@@ -220,16 +290,20 @@ class Mapping extends Component {
   selectnewPropTable(e) {
     e.preventDefault();
     this.props.mappingsection.pickedTable = e.target.text;
+    this.hideplusicon(false);
+    this.hideremoveicon(true);
     this.actions.handleChanges(this.props.mappingsection);
   }
   mapAttribute(e) {
     if(this.props.mappingsection.headSelect=="")
-     alert("select column");
+      this.actions.showAddMappingMessage('Please select column');
     else{
          e.preventDefault();
-        for(let table in this.props.mappingsection.tables){
+      let table;
+        for(table in this.props.mappingsection.tables){
           if(table === 'attributeValues'){
-            this.props.mappingsection.tables[table].push('attributeValues');
+            this.props.mappingsection.tables[table].push({"name":table,"index":this.props.mappingsection.tables[table].length,"properties": _.cloneDeep(this.props.mappingsection.attributeList[table])});
+            break;
           }
         }
         this.setHeaderSelected(this.props.mappingsection.headSelect, true);
@@ -238,46 +312,45 @@ class Mapping extends Component {
           "transformations": [],
           "field": 'value',
           "defaultValue": this.props.mappingsection.defaultValue,
-          "index": '',
+          "index": (this.props.mappingsection.tables[table].length-1),
           "instance": '',
           "table": 'attributeValues',
           "isRequired": true
-        }
+        };
         this.props.mappingsection.mappedData.push(mapField1);
-        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues.value'});
+        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues'+(this.props.mappingsection.tables[table].length-1).toString()+'.value'});
         const mapField2 = {
           "userFieldName": this.props.mappingsection.headSelect,
           "transformations": [],
           "field": 'attribute',
           "defaultValue": this.props.mappingsection.defaultValue,
-          "index": '',
+          "index": (this.props.mappingsection.tables[table].length-1),
           "instance": '',
           "table": 'attributeValues',
           "isRequired": true
-        }
+        };
         this.props.mappingsection.mappedData.push(mapField2);
-        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"' : '"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues.attribute'});
+        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"' : '"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues'+(this.props.mappingsection.tables[table].length-1).toString()+'.attribute'});
         if (this.props.mappingsection.defaultValue) {
           this.props.mappingsection.defaultValue = '';
           $('.default-value').removeClass('active');
         }
-        this.setColourToMappedItems();
         this.actions.handleChanges(this.props.mappingsection);
     }
 }
   removeRow(index) {
     // get the table element and remove color
-    let fieldname = this.props.mappingsection.mappedData[index].field;
-    let rowindex = _.findIndex(this.props.mappingsection.attributeList[this.props.mappingsection.mappedData[index].table], function(chr) {
-      return  chr.field == fieldname;
-    });
-    this.props.mappingsection.attributeList[this.props.mappingsection.mappedData[index].table][rowindex]['mapped'] = false;
+    let fieldname = this.props.mappingsection.mappedData[index].field,tableindex= this.props.mappingsection.mappedData[index].index;
+    let table = this.props.mappingsection.tables[this.props.mappingsection.mappedData[index].table];
+    let rowindex = _.findIndex(table[tableindex].properties, function(chr) {
+        return  chr.field == fieldname;
+      });
+    table[tableindex].properties[rowindex].mapped = false;
     //get the column element and remove color
     this.setHeaderSelected(this.props.mappingsection.mappedData[index].userFieldName,false);
     this.props.mappingsection.headers = this.headers;
     this.props.mappingsection.mappedFields.splice(index,1);
     this.props.mappingsection.mappedData.splice(index,1);
-    this.setColourToMappedItems();
     this.actions.handleMappedChnages(this.props.mappingsection);
 
   }
@@ -301,7 +374,11 @@ class Mapping extends Component {
       let ch = [];
       if(tb[key].length){
         for (let i = 0; i < tb[key].length; i++) {
-          ch.push(<option key={key} onClick={this.selectedTable.bind(this)} value={tb[key][i]}>{tb[key][i]}</option>);
+          if(tb[key][i] && tb[key][i].index >=0)
+          ch.push(<option key={tb[key][i].index}onClick={this.selectedTable.bind(this)} value={tb[key][i].name+','+tb[key][i].index}>{tb[key][i].name}{tb[key][i].index}</option>);
+          else{
+            console.log('Error at showing multipletables in tables');
+          }
         }
       }
       if(key === 'product'){
@@ -510,15 +587,14 @@ class Mapping extends Component {
                     this.props.mappingsection.pickedTable === "Select" &&
                     <span ng-hide="pickedTable">Select</span>
                   }
-
                   <span className="caret"></span>
                 </button>
                 <ul className="dropdown-menu" role="menu" id="subtableList" onClick={this.selectnewPropTable.bind(this)}>
                   {this.renderChild()}
                 </ul>
               </div>
-              <a href="#" className="btn btn-default btn-sm" onClick={this.addToList.bind(this)}><span className="glyphicon glyphicon-plus"></span></a>
-              <a href="#" className="btn btn-default btn-sm" ng-click="removeProperty()"><span className="glyphicon glyphicon-remove"></span></a>
+              <a href="#" id="tablesadd" className="btn btn-default btn-sm" onClick={this.addToList.bind(this)}><span className="glyphicon glyphicon-plus"></span></a>
+              <a href="#" id="tableremove" className="btn btn-default btn-sm" onClick={this.removeInList.bind(this)}><span className="glyphicon glyphicon-remove"></span></a>
               <div ng-include="'app/partials/confirmationDialogBox.html'"></div>
           </div>
           <div className="col-md-3">
