@@ -255,9 +255,11 @@ class Mapping extends Component {
     let tablename = name[1];
     (isNaN(name[0]))? tablename += '': tablename += name[0];
     for(var i=0;i<this.props.mappingsection.mappedData.length;i++){
-      if(tablename === this.props.mappingsection.mappedData[i].table){
-        this.props.mappingsection.mappedData.splice(i,1);
-        this.props.mappingsection.mappedFields.splice(i,1);
+      if(name[1] === this.props.mappingsection.mappedData[i].table){
+        if((isNaN(name[0])) === false && name[0] === this.props.mappingsection.mappedData[i].index){
+          this.props.mappingsection.mappedData.splice(i,1);
+          this.props.mappingsection.mappedFields.splice(i,1);
+        }
       }
     }
     this.selectedTable('product');
