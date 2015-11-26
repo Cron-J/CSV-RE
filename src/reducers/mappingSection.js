@@ -665,11 +665,36 @@ export default createReducer(initialState, {
     var arr = [];
     for (var i = 0; i < response.mappingInfo.length; i++) {
       arr[i] = {};
-      arr[i].column = response.mappingInfo[i].table !== 'attributeValues' && response.mappingInfo[i].defaultValue?
-      '"'+response.mappingInfo[i].defaultValue+'"' : response.mappingInfo[i].userFieldName;
-      arr[i].propertyname = response.mappingInfo[i].table === 'product' ?
-       'product.' + response.mappingInfo[i].field :
-      'product.' + response.mappingInfo[i].table + '.' + response.mappingInfo[i].field;
+      if (response.mappingInfo[i].defaultValue) {
+        if (response.mappingInfo[i].table === 'attributeValues') {
+          if (response.mappingInfo[i].field === 'value' && response.mappingInfo[i+1].field === 'attribute') {
+            arr[i].column = response.mappingInfo[i].userFieldName;
+          } else {
+            arr[i].column = '"'+response.mappingInfo[i].defaultValue+'"';
+          }
+        } else {
+          arr[i].column = '"'+response.mappingInfo[i].defaultValue+'"';
+        }
+      } else {
+        if (response.mappingInfo[i].table === 'attributeValues') {
+          if (response.mappingInfo[i].field === 'attribute') {
+            arr[i].column = '"'+response.mappingInfo[i].userFieldName+'"';
+          } else {
+            arr[i].column = response.mappingInfo[i].userFieldName;
+          }
+        } else {
+          arr[i].column = response.mappingInfo[i].userFieldName;
+        }
+      }
+      if (response.mappingInfo[i].table === 'product') {
+        arr[i].propertyname = 'product.' + response.mappingInfo[i].field;
+      } else {
+        if (response.mappingInfo[i].index >= 0) {
+          arr[i].propertyname = 'product.' + response.mappingInfo[i].table + response.mappingInfo[i].index + '.' + response.mappingInfo[i].field;
+        } else {
+          arr[i].propertyname = 'product.' + response.mappingInfo[i].table+ '.' + response.mappingInfo[i].field;
+        }
+      }
       arr[i].propertydec = response.mappingInfo[i].field;
     };
     var res = [];
@@ -692,7 +717,8 @@ export default createReducer(initialState, {
       mappedFields: arr,
       mappedData: res,
       tenantId: response.tenantId,
-      selectedTab: 'product'
+      selectedTab: 'product',
+      pickedTable: ''
     };
   },
   [types.UPDATEMAPPINGSUCCESS](state, action) {
