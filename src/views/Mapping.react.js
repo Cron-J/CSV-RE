@@ -509,9 +509,7 @@ class Mapping extends Component {
         'mappingName': this.props.mappingsection.mappingName
       };
       this.actions.saveMappedData(finalData);
-      if (!this.props.mappingsection.id) {
-        this.actions.redirectImport();
-      }
+      this.actions.redirectImport();
     }
   }
   render() {
