@@ -163,8 +163,21 @@ class Mapping extends Component {
 
   mappedTables() {
     for (var i = 0; i < this.props.mappingsection.mappedData.length; i++) {
-      if(this.props.mappingsection.mappedData[i].table) {
-        this.props.mappingsection.tables[this.props.mappingsection.mappedData[i].table].push(this.props.mappingsection.mappedData[i].table);
+      if(this.props.mappingsection.mappedData[i].table !== 'product') {
+        var obj = {
+          index: this.props.mappingsection.mappedData[i].index,
+          name: this.props.mappingsection.mappedData[i].table,
+          properties: _.cloneDeep(this.props.mappingsection.attributeList[this.props.mappingsection.mappedData[i].table])
+        };
+        var exist = false;
+        for (var j = 0; j < this.props.mappingsection.tables[this.props.mappingsection.mappedData[i].table].length; j++) {
+          if(this.props.mappingsection.tables[this.props.mappingsection.mappedData[i].table][j].index === this.props.mappingsection.mappedData[i].index) {
+            exist = true;
+          }
+        };
+        if(exist === false){
+          this.props.mappingsection.tables[this.props.mappingsection.mappedData[i].table].push(obj);
+        }
       }
     }
   }
@@ -548,9 +561,7 @@ class Mapping extends Component {
         'mappingName': this.props.mappingsection.mappingName
       };
       this.actions.saveMappedData(finalData);
-      if (!this.props.mappingsection.id) {
-        this.actions.redirectImport();
-      }
+      this.actions.redirectImport();
     }
   }
   render() {

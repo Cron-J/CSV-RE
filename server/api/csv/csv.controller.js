@@ -82,7 +82,6 @@ var changeFormat = function (item, format){
                 item = date+"-"+month+"-"+year;
         }
     }
-
     if(!isNaN(item)) {
         if(format.numberFormat == '#,##'){
             var str = item.slice(0, -2)+','+item.slice(-2);
@@ -124,7 +123,7 @@ var checkAlDuplicate = function(name, arr) {
             return false;
     }
 };
-var checkPDuplicate = function(name, arr) {
+var checkPDuplicate = function(named, arr) {
     for (var i = 0; i < arr.length; i++) {
         if (arr[i].pricetype == name)
             return false;
@@ -607,50 +606,61 @@ var tableschema = {'product': {
   API to create the Mapping.
 */
 exports.create =  function(req,res){
-  var findTableInSchema = function(product,obj,mapper,schema){
-    /* {
-     "userFieldName": "Product No",
-     "transformations": [],
-     "table": "product",
-     "field": "supplierId",
-     "defaultValue": "",
-     "index": true,
-     "instance": "String"
-     },*/
-      var assign = function (product,tablename,mapperfield,mapperuserfieldname,schema,obj) {
-          for(let key in schema){
-              if(key === tablename && schema[key][mapperfield]){
-                  product[mapperfield] = obj[mapperuserfieldname];
-              }
-          }
-          return product;
-      };
-      product = assign(product,mapper.table,mapper.field,mapper.userFieldName,schema,obj);
-      for(let headtable in schema){
-          let table = product[mapper.table];
-          if(table && table.length > 0 && table[mapper.index]){
-              table[mapper.index] = assign(table[mapper.index],mapper.table,mapper.field,mapper.userFieldName,schema[headtable],obj);
-          }else{
-              let child = {};
-              child = assign(child,mapper.table,mapper.field,mapper.userFieldName,schema[headtable],obj);
-              if(Object.keys(child).length !== 0){
-                  if(table === undefined){
-                      product[mapper.table] = [child];
-                  }else{
-                      table[mapper.index] = child;
-                  }
-              }}
-      }
-      return product;
-  };
-  var csv_mapping = function (obj,mappinginfo) {
-      var product = {},schema = tableschema;
-      for(let i=0;i<mappinginfo.length;i++){
-          let mapper = mappinginfo[i];
-          product = findTableInSchema(product,obj,mapper,schema);
-      }
-      return product;
-  };
+    let findTableInSchema = function(product,obj,mapper,schema){
+        /* {
+         "userFieldName": "Product No",
+         "transformations": [],
+         "table": "product",
+         "field": "supplierId",
+         "defaultValue": "",
+         "index": true,
+         "instance": "String"
+         },*/
+        let assign = function (product,tablename,mapperfield,mapperuserfieldname,defaultValue,schema,obj) {
+            for(let key in schema){
+                //if(key === tablename && defaultValue && defaultValue.length > 0){
+                //    product[mapperfield] = defaultValue;
+                //}
+                if(key === tablename && schema[key][mapperfield]){
+                    let value = obj[mapperuserfieldname];
+                    if(value === '' && defaultValue && defaultValue.length > 0){
+                        product[mapperfield] = defaultValue;
+                    }else{
+                        product[mapperfield] = obj[mapperuserfieldname];
+                    }
+                }
+            }
+            return product;
+        };
+        product = assign(product,mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema,obj);
+        for(let headtable in schema){
+            let table = product[mapper.table];
+            let mapperindex = mapper.index;
+            if(table && table.length > 0 && table[mapperindex]){
+                table[mapperindex] = assign(table[mapperindex],mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema[headtable],obj);
+            }else{
+                let child = {};
+                child = assign(child,mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema[headtable],obj);
+                if(Object.keys(child).length !== 0){
+                    if(table === undefined){
+                        product[mapper.table] = {};
+                        product[mapper.table][mapperindex] = child;
+                    }else{
+                        table[mapperindex] = child;
+                    }
+                }}
+        }
+        return product;
+    };
+    let csv_mapping = function (obj,mappinginfo) {
+        let product = {},schema = tableschema;
+        for(let i=0;i<mappinginfo.length;i++){
+            let mapper = mappinginfo[i];
+            console.log(mapper);
+            product = findTableInSchema(product,obj,mapper,schema);
+        }
+        return product;
+    };
   models.mapping.create({
     attributeId: req.body.attributeId,
     tenantId: req.body.tenantId,
@@ -667,11 +677,15 @@ exports.create =  function(req,res){
               var csvConverter = new Converter({
                   constructResult: true
               });
+              //res.send(mappings);
+              //return;
               //end_parsed will be emitted once parsing finished
               csvConverter.on("end_parsed", function(jsonObj) {
-                  var convertedJSON = [],error = {};
+                 var convertedJSON = [],error = {};
+                 var times=0;
+                  jsonObj && jsonObj.length < 2 ?times = jsonObj.length: times = 2;
                   if(jsonObj){
-                      for(var i=0;i<jsonObj.length;i++){
+                      for(var i=0;i<times;i++){
                           convertedJSON.push(csv_mapping(jsonObj[i],mappings.mappingInfo));
                       }
                   }else{

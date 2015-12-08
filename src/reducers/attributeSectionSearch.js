@@ -26,12 +26,12 @@ export default createReducer(initialState, {
   [types.STOREPREVIEW](state, action) {
     const response = action.payload;
     return {
-        ...state,
-        delimiter : response[0],
-        dFormat : response[1],
-        noFormat : response[2],
-        noHeader : response[3]
-      }
+      ...state,
+      delimiter : response[0],
+      dFormat : response[1],
+      noFormat : response[2],
+      noHeader : response[3]
+    }
     },
   [types.HANDLESEARCH](state, action) {
     const { data } = action.payload;

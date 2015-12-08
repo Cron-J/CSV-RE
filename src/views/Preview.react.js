@@ -123,7 +123,7 @@ class Preview extends Component {
     console.log("list="+list);
     if (list) {
       for (var i = 0; i < list.length; i++) {
-        if (isNaN(list[i])) {
+        if (isNaN(list[i]) && list[i].match(' ') == false) {
           var d = new Date(list[i]);
           if (d != 'Invalid Date') {
             if('dd-MM-yyyy' == this.guessDateFormat.bind(this, {fileName: this.props.fileName, headers: this.props.headers, rowOne: this.props.rowOne, rowTwo: this.props.rowTwo}, ['dd-MM-yyyy', 'MM/dd/yyyy'], ',')){

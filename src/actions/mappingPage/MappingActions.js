@@ -36,6 +36,20 @@ function updateMappedData(data) {
     payload: {
       response: api.updateMapping(data).then(response => response),
       data
+    },
+    meta: {
+      transition: () => ({
+        onSuccess: (response) =>({
+          func: () =>{
+            return messageActions.showmessages('sucessfully mapping has updated', 'success');
+          }
+        }),
+        onFail: (error) =>({
+          func: () =>{
+            return messageActions.showmessages(error, 'error');
+          }
+        })
+      })
     }
   };
 }
@@ -84,6 +98,7 @@ export function showAddMappingMessage(error){
     }
   }
 }
+
 
 export function redirectPreview(data) {
   return  {
