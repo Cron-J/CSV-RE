@@ -3,8 +3,11 @@ import api from 'utils/api/mappingSection';
 import * as messageActions from '../../common/messageComponent/actions/messageActions';
 
 export function handleChanges(data) {
-  console.log('data in action',data);
   return { type: types.HANDLEATTRIBUTELISTCHANGES, payload: { data } };
+}
+
+export function removeInList(data){
+  return { type: types.HANDLETABLEINLIST, payload: { data }};
 }
 
 export function handleMappedChnages(data) {
@@ -20,7 +23,6 @@ export function saveMappedData(data) {
 }
 
 function createMappedData(data) {
-  console.log("mapped data 1", data);
   return {
     types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
     payload: {
@@ -29,7 +31,6 @@ function createMappedData(data) {
   };
 }
 function updateMappedData(data) {
-  console.log("mapped data 1", data);
   return {
     types: [types.UPDATEMAPPING, types.UPDATEMAPPINGSUCCESS, types.UPDATEMAPPINGFAIL],
     payload: {

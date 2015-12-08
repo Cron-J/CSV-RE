@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import * as MappingActions from 'actions/mappingPage/MappingActions';
 import { connect } from 'react-redux';
+import Transformation from './Transformation.react';
 import _ from 'lodash';
 //import Growl from 'react-growl';
 //import 'react-notifications/lib/notifications.css';
@@ -11,7 +12,6 @@ class Mapping extends Component {
     super(props);
     const { mappingsection, homesection, selectmapping, dispatch } = this.props;
    //this.props.mappingsection = mappingsection;
-    console.log("mapping",this.props);
     this.actions = bindActionCreators(MappingActions, dispatch);
     //this.growler= null;
     const params = this.props.params;
@@ -52,13 +52,54 @@ class Mapping extends Component {
   }
 
   componentWillMount() {
+    console.log('----llll----', this.props);
     if(this.props.mappingsection.tables === undefined || (this.props.mappingsection.tables && this.props.mappingsection.tables.length === 0)){
       this.actions.attributeList();
+    }
+    let synonymsList = this.props.attributesectionsearch.synonymsList;
+    let mappedField = {};
+    if(this.props.attributesectionsearch.autoMap){
+      for(let i in this.props.mappingsection.headers){
+        for( let index in synonymsList){
+          for(let indx in synonymsList[index].synonyms){
+            let c =  this.props.mappingsection.headers[i].value;        
+            console.log('HEADER', c.toLowerCase());
+            if(synonymsList[index].synonyms[indx] === c.toLowerCase()){
+              mappedField = {
+                "userFieldName": c,
+                "transformations": [],
+                "table": synonymsList[index].tableName,
+                "field": index,
+                "defaultValue": '',
+                "index": '',
+                "instance": '',
+                "isRequired": ''
+              };
+              this.props.mappingsection.mappedData.push(mappedField);
+              //this.props.mappingsection.mappedFields = this.props.mappingsection.mappedData;
+              this.props.mappingsection.selectedTable = c;
+              let name = this.util_getindexnumber(this.props.mappingsection.pickedTable);
+              let propertyname;
+      if(synonymsList[index].tableName === 'product'){
+        propertyname = 'product.'+index;
+      }else{
+        propertyname = 'product.'+name[1]+synonymsList[index].tableName+'.'+c;
+      }
+    
+              this.props.mappingsection.mappedFields.push({column:c,propertydec: index, propertyname: propertyname});
+              console.log('Header Matched', mappedField);
+            }
+          }
+        }
+        break;
+      }
+       
+      
+      this.actions.handleMappedChnages(this.props.mappingsection);
     }
   }
 
   componentWillReceiveProps(nextProps){
-    console.log(nextProps);
     this.props = nextProps;
     if (typeof this.props.params.id !== 'undefined') {
       if(this.props.mappingsection.headers.length >  0) {
@@ -72,6 +113,7 @@ class Mapping extends Component {
       }
     }
     this.setColourToMappedItems();
+
     //this.props.mappingsection.mappingName
   }
 
@@ -175,6 +217,9 @@ class Mapping extends Component {
         $('.default-value').removeClass('active');
       }
       this.setColourToMappedProperty();
+      this.props.mappingsection.propertySelect = '';
+      this.props.mappingsection.selectedTab = '';
+      this.props.mappingsection.headSelect = '';
       this.actions.handleMappedChnages(this.props.mappingsection);
     }
 
@@ -189,6 +234,7 @@ class Mapping extends Component {
     $('.ok-icon').addClass('hide');
     $('.edit-icon').removeClass('hide');
   }
+
   /*util_ functions are well tested*/
   util_getindexcommna = function(tablename){
     let table = tablename.split(","),index =0,found=false;
@@ -201,12 +247,16 @@ class Mapping extends Component {
   };
   util_getindexnumber = function(tablename){
     let table = tablename.split(""),index =0;
+    let test = tablename.match(/\d+/);
+    test = (test && test.length>0) ? test.toString() : 0;
     for(index in table){
       if(isNaN(table[index] === false)){
+        console.log(index);
         break;
       }
     }
-    return [parseInt(tablename.substr(index,tablename.length)),tablename.substr(0,index)];
+    let result = [test,tablename.substr(0,table.length-test.length)];
+    return result;
   }
   selectedTable(e) {
     let selectedTab;
@@ -256,14 +306,16 @@ class Mapping extends Component {
     (isNaN(name[0]))? tablename += '': tablename += name[0];
     for(var i=0;i<this.props.mappingsection.mappedData.length;i++){
       if(name[1] === this.props.mappingsection.mappedData[i].table){
-        if((isNaN(name[0])) === false && name[0] === this.props.mappingsection.mappedData[i].index){
+        if((isNaN(name[0])) === false && name[0] == this.props.mappingsection.mappedData[i].index){
           this.props.mappingsection.mappedData.splice(i,1);
           this.props.mappingsection.mappedFields.splice(i,1);
+
         }
       }
     }
     this.selectedTable('product');
-    e.preventDefault();
+    this.actions.removeInList(this.props.mappingsection);
+
   }
   addToList(e){
     for(let table in this.props.mappingsection.tables){
@@ -344,10 +396,12 @@ class Mapping extends Component {
     // get the table element and remove color
     let fieldname = this.props.mappingsection.mappedData[index].field,tableindex= this.props.mappingsection.mappedData[index].index;
     let table = this.props.mappingsection.tables[this.props.mappingsection.mappedData[index].table];
+    /*console.log('====table[tableindex].properties====', table[tableindex]);
+    console.log("==");
     let rowindex = _.findIndex(table[tableindex].properties, function(chr) {
         return  chr.field == fieldname;
       });
-    table[tableindex].properties[rowindex].mapped = false;
+    table[tableindex].properties[rowindex].mapped = false;*/
     //get the column element and remove color
     this.setHeaderSelected(this.props.mappingsection.mappedData[index].userFieldName,false);
     this.props.mappingsection.headers = this.headers;
@@ -369,15 +423,13 @@ class Mapping extends Component {
   renderChild1() {
     const child = [];
     let tb = this.props.mappingsection.tables;
-    console.log("--tb---");
     console.log(tb);
     for(let key in tb){
-      console.log("in loop");
       let ch = [];
       if(tb[key].length){
         for (let i = 0; i < tb[key].length; i++) {
           if(tb[key][i] && tb[key][i].index >=0)
-          ch.push(<option key={tb[key][i].index}onClick={this.selectedTable.bind(this)} value={tb[key][i].name+','+tb[key][i].index}>{tb[key][i].name}{tb[key][i].index}</option>);
+          ch.push(<option key={tb[key][i].index}onClick={this.selectedTable.bind(this)} value={tb[key][i].name+','+i}>{tb[key][i].name}{i}</option>);
           else{
             console.log('Error at showing multipletables in tables');
           }
@@ -604,7 +656,7 @@ class Mapping extends Component {
         </div>
         <div className="button-container">
           {
-            this.props.mappingsection.mappedFields && this.props.mappingsection.mappedFields.length > 0 ?
+            this.props.mappingsection.mappedData && this.props.mappingsection.mappedData.length > 0 ?
             <div >
               <table className="table" cellSpacing="0">
                 <thead>
@@ -635,7 +687,9 @@ class Mapping extends Component {
             <button className="btn btn-primary "  onClick={this.secondStep.bind(this)}>Back</button>
             <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Save Mapping & Proceed</button>
+          <Transformation />
           </div>
+
          }
         </div>
 	    </div>
@@ -644,6 +698,7 @@ class Mapping extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log('--mapping section state--', state);
   const { mappingsection, attributesectionsearch, homesection, selectmapping } = state;
   return {
     mappingsection, attributesectionsearch, homesection, selectmapping
@@ -654,7 +709,8 @@ Mapping.propTypes = {
   mappingsection: React.PropTypes.object,
   params: React.PropTypes.object,
   dispatch: React.PropTypes.func.isRequired,
-  attributesectionsearch: React.PropTypes.object
+  attributesectionsearch: React.PropTypes.object,
+  transformations: React.PropTypes.object
 };
 
 export default connect(mapStateToProps)(Mapping);

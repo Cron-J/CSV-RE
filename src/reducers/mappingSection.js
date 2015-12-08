@@ -25,12 +25,18 @@ const initialState = {
 
 export default createReducer(initialState, {
   [types.HANDLESELECTEDDEFAULTVALUE](state, action) {
-      console.log('handle selected default value reducer',action.payload);
       const data = action.payload.response;
       return {
       ...state,
           fileproperties : action.payload.properties,
           defaultValue:''
+      }
+  },
+  [types.HANDLETABLEINLIST](state, action) {
+      const data = action.payload.data;
+      return {
+      ...state,
+      tables: data.tables
       }
   },
   [types.SHOWMESSAGE](state,action){

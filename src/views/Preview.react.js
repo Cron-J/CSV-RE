@@ -3,11 +3,11 @@ import { bindActionCreators } from 'redux';
 import { Link } from 'react-router';
 import * as PreviewActions from 'actions/previewPage/PreviewActions';
 import { connect } from 'react-redux';
+import {Modal , Button} from 'react-bootstrap';
 class Preview extends Component {
   constructor(props) {
     super(props);
-    const { state, dispatch } = this.props;
-    console.log('edit mode', state);
+    const { state, mappingsection, homesection, selectmapping, dispatch } = this.props;
     this.uploadpage = state.homesection;
     this.previewPage = state.attributesectionsearch;
     this.actions = bindActionCreators(PreviewActions, dispatch);
@@ -28,8 +28,9 @@ class Preview extends Component {
     this.noFormat = this.previewPage.noFormat;
     this.proccessNumberFormat();
     this.proccessDateFormat();
-  }
 
+  }
+  
   componentWillMount() {
     // if (this.uploadpage) {
       let uploadpage = this.uploadpage;
@@ -40,6 +41,9 @@ class Preview extends Component {
       else{
           this.dateFormat(this,'MM/dd/yyyy');
       }
+      console.log('componentWillMount', this.props);
+      this.props.attributesectionsearch.synonymsList = this.actions.handleSynonymsList();
+      this.actions.handleSynonyms(this.props.attributesectionsearch);
   }
   componentDidMount(){
     
@@ -50,6 +54,25 @@ class Preview extends Component {
       this.customHeader = this.previewPage.customHeader;
       this.proccessNumberFormat();
       this.proccessDateFormat();
+    }
+
+    close(data) {
+      console.log('data', data);
+      this.props.attributesectionsearch.showModal = false;
+      this.props.attributesectionsearch.autoMap = (data) ? true : false;
+      if(this.dFormat==""||this.noFormat==""||this.delimiter==""){
+        console.log('please correct the settings to procced');
+      }
+      else{
+        this.actions.handleAutoUpdate(this.props.attributesectionsearch);
+        this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
+      }
+      this.setState({});
+    }
+
+    open() {
+      this.props.attributesectionsearch.showModal = true;
+      this.setState({});
     }
     createMappingSectionReplaceObject(){
         const { state, dispatch } = this.props;
@@ -63,14 +86,12 @@ class Preview extends Component {
         this.mappingsectionstate.pickedTable = '';
     }
     resetPreviewSetting(e) {
-    console.log('data');
     this.delimiter=",";
     this.dFormat = "MM/dd/yyyy";
     this.noFormat = "#,###.##";
     //this.delimiterFormat(e,",");
     //this.dateFormatt(e,"MM/dd/yyyy");
     this.noHeader = true;
-    console.log('handleresetmappingcalled');
     this.createMappingSectionReplaceObject();
     this.actions.handleResetMappingData([this.delimiter,this.dFormat,this.noFormat,this.noHeader],this.mappingsectionstate);
   }
@@ -264,7 +285,6 @@ class Preview extends Component {
       console.log('please correct the settings to procced');
     }
     else{
-      console.log('jrrrr');
      this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
     }
   }
@@ -426,11 +446,26 @@ class Preview extends Component {
               <div className="btn-set button-container pull-right">
                   <Link to="/"> <button className="btn btn-primary" onClick={this.firstStep.bind(this)}>Back</button></Link>
                   <span> </span>
-                  <button className="btn btn-primary" onClick={this.thirdStep.bind(this)}>Next</button>                
+                  <button className="btn btn-primary" onClick={this.open.bind(this)}>Next</button>                
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div>
+
+        <Modal show={this.props.attributesectionsearch.showModal} onHide={this.close.bind(this)}>
+
+          <Modal.Body>
+
+            <h4>Do you want to do auto mapping ?</h4>
+            
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className="btn-primary" onClick={this.close.bind(this, true)}>Yes</Button>
+            <Button className="btn-primary" onClick={this.close.bind(this, false)}>No</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
       </div>
     );
@@ -438,8 +473,9 @@ class Preview extends Component {
 }
 
 function mapStateToProps(state) {
+  const { mappingsection, attributesectionsearch, homesection, selectmapping } = state;
   return {
-    state
+    mappingsection, attributesectionsearch, homesection, selectmapping , state
   };
 }
 

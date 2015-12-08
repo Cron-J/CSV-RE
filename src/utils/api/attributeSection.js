@@ -30,7 +30,6 @@ const utils = {
       method: 'DELETE'
     });
   }
-
 };
 
 export default utils;

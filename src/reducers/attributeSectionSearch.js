@@ -18,7 +18,9 @@ const initialState = {
   dFormat : 'MM/dd/yyyy',
   delimiter : ',',
   noHeader : true,
-  customHeader:[]
+  customHeader:[],
+  showModal: false,
+  synonymsList: ''
 };
 export default createReducer(initialState, {
   [types.STOREPREVIEW](state, action) {
@@ -75,6 +77,13 @@ export default createReducer(initialState, {
       ...state
     };
   },
+  [types.GETSYNONYMSLISTSUCCESS](state, action) {
+    const { data } = action.payload.response;
+    return {
+      ...state,
+      synonymsList: action.payload.response.result
+    };
+  },
   [types.HANDLEDELETESUCCESS](state, action) {
     const { response, id } = action.payload;
     const finaldata = state.finaldata;
@@ -92,5 +101,5 @@ export default createReducer(initialState, {
     return {
       ...state
     };
-  }
+  },
 });

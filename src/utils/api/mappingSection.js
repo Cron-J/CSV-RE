@@ -47,6 +47,14 @@ const utils = {
       json: true,
       body: data
     })
+  },
+
+  synonymsList: () => {
+    return request({
+      url: 'http://localhost:4000/api/csv/getSynonyms',
+      method: 'GET',
+      json: true
+    })
   }
 
 };
