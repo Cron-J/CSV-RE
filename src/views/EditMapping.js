@@ -29,7 +29,6 @@ class EditMapping extends Component{
     this.actions.redirectToHome();
   }
  	render(){
- 		console.log('list', this.props.selectmapping);
  		var mappingDropdown = [];
 		for (var i = 0; i < this.props.selectmapping.list.length; i++) {
   		mappingDropdown.push(<option key={i} value={this.props.selectmapping.list[i].id}>{this.props.selectmapping.list[i].mappingName}</option>);
@@ -44,7 +43,7 @@ class EditMapping extends Component{
               <select name="mappingName" id="number" className="form-control"
               value={this.props.selectmapping.mapName}
               onChange={this.selectedMapping.bind(this)}  required>
-                <option value="">select format</option>
+                <option value="">Select Mapping</option>
                 {mappingDropdown}
               </select>
   					</div>

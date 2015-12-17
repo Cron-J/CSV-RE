@@ -71,8 +71,12 @@ class Preview extends Component {
     }
 
     open() {
-      this.props.attributesectionsearch.showModal = true;
-      this.setState({});
+      if(!this.props.mappingsection.autoMappedOnce){
+        this.props.attributesectionsearch.showModal = true;
+        this.setState({});
+      }else{
+        this.actions.redirectMapping([this.delimiter,this.dFormat,this.noFormat,this.noHeader]);
+      }
     }
     createMappingSectionReplaceObject(){
         const { state, dispatch } = this.props;

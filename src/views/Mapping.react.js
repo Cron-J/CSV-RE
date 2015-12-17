@@ -52,18 +52,20 @@ class Mapping extends Component {
   }
 
   componentWillMount() {
-    console.log('----llll----', this.props);
     if(this.props.mappingsection.tables === undefined || (this.props.mappingsection.tables && this.props.mappingsection.tables.length === 0)){
       this.actions.attributeList();
+    }else{
+      //alert('hhhhhhh');
+      //this.actions.attributeList();
     }
+    
     let synonymsList = this.props.attributesectionsearch.synonymsList;
     let mappedField = {};
-    if(this.props.attributesectionsearch.autoMap){
+    if(this.props.attributesectionsearch.autoMap && !this.props.mappingsection.mapped && !this.props.mappingsection.autoMappedOnce){
       for(let i in this.props.mappingsection.headers){
         for( let index in synonymsList){
           for(let indx in synonymsList[index].synonyms){
-            let c =  this.props.mappingsection.headers[i].value;        
-            console.log('HEADER', c.toLowerCase());
+            let c =  this.props.mappingsection.headers[i].value;
             if(synonymsList[index].synonyms[indx] === c.toLowerCase()){
               mappedField = {
                 "userFieldName": c,
@@ -86,7 +88,7 @@ class Mapping extends Component {
         propertyname = 'product.'+name[1]+synonymsList[index].tableName+'.'+c;
       }
     
-              this.props.mappingsection.mappedFields.push({column:c,propertydec: index, propertyname: propertyname});
+              this.props.mappingsection.mappedFields.push({transformations:[],column:c,propertydec: index, propertyname: propertyname});
               console.log('Header Matched', mappedField);
             }
           }
@@ -94,7 +96,8 @@ class Mapping extends Component {
         break;
       }
        
-      
+      this.props.mappingsection.mapped = true;
+      this.props.mappingsection.autoMappedOnce =  true;
       this.actions.handleMappedChnages(this.props.mappingsection);
     }
   }
@@ -221,7 +224,7 @@ class Mapping extends Component {
       if(this.props.mappingsection.defaultValue){
         this.props.mappingsection.headSelect = '"'+this.props.mappingsection.defaultValue+'"';
       }
-      this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: this.props.mappingsection.propertySelect, propertyname: propertyname});
+      this.props.mappingsection.mappedFields.push({'transformations':[], column:this.props.mappingsection.headSelect,propertydec: this.props.mappingsection.propertySelect, propertyname: propertyname});
       this.props.mappingsection.mappedData.push(mappedField);
       this.props.mappingsection.selectedTable = this.props.mappingsection.selectedTab;
       this.props.mappingsection.headers = this.headers;
@@ -351,6 +354,7 @@ class Mapping extends Component {
     else
       $('.default-value').removeClass('active');
     this.props.mappingsection.defaultValue = e.currentTarget.value;
+    this.props.mappingsection.headSelect = e.currentTarget.value;
     this.actions.handleChanges(this.props.mappingsection);
   }
 
@@ -385,7 +389,7 @@ class Mapping extends Component {
           "isRequired": true
         };
         this.props.mappingsection.mappedData.push(mapField1);
-        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues'+(this.props.mappingsection.tables[table].length-1).toString()+'.value'});
+        this.props.mappingsection.mappedFields.push({'transformations':[], column:this.props.mappingsection.headSelect,propertydec: 'value', propertyname: 'product.attributeValues'+(this.props.mappingsection.tables[table].length-1).toString()+'.value'});
         const mapField2 = {
           "userFieldName": this.props.mappingsection.headSelect,
           "transformations": [],
@@ -397,7 +401,7 @@ class Mapping extends Component {
           "isRequired": true
         };
         this.props.mappingsection.mappedData.push(mapField2);
-        this.props.mappingsection.mappedFields.push({column:this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"' : '"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues'+(this.props.mappingsection.tables[table].length-1).toString()+'.attribute'});
+        this.props.mappingsection.mappedFields.push({'transformations':[], column:this.props.mappingsection.defaultValue? '"'+this.props.mappingsection.defaultValue+'"' : '"'+this.props.mappingsection.headSelect+'"',propertydec: 'attribute', propertyname: 'product.attributeValues'+(this.props.mappingsection.tables[table].length-1).toString()+'.attribute'});
         if (this.props.mappingsection.defaultValue) {
           this.props.mappingsection.defaultValue = '';
           $('.default-value').removeClass('active');
@@ -436,13 +440,12 @@ class Mapping extends Component {
   renderChild1() {
     const child = [];
     let tb = this.props.mappingsection.tables;
-    console.log(tb);
     for(let key in tb){
       let ch = [];
       if(tb[key].length){
         for (let i = 0; i < tb[key].length; i++) {
           if(tb[key][i] && tb[key][i].index >=0)
-          ch.push(<option key={tb[key][i].index}onClick={this.selectedTable.bind(this)} value={tb[key][i].name+','+i}>{tb[key][i].name}{i}</option>);
+          ch.push(<option key={tb[key][i].index}onClick={this.selectedTable.bind(this)} value={tb[key][i].name+','+i}>{tb[key][i].name}{'('+i+')'}</option>);
           else{
             console.log('Error at showing multipletables in tables');
           }
@@ -477,8 +480,6 @@ class Mapping extends Component {
   tableAttribute() {
     let headers = this.headers;
     const attributesList = [];
-    console.log("--header--");
-    console.log(headers);
     for(let index in headers){
       if(headers[index].mapped){
         attributesList.push(<option key={index} className="green-color" onClick={this.selectHead.bind(this)} value={headers[index].value}>{headers[index].value}</option>);
@@ -508,15 +509,46 @@ class Mapping extends Component {
     }
     return propertiesList;
   }
+  transChange(value,index){
+    this.props.mappingsection.mappedFields[index].transformations = value;
+    this.props.mappingsection.mappedData[index].transformations = value;
+    this.actions.handleMappedChnages(this.props.mappingsection);
+  }
+  getparams(params, isempty) {
+            let param = '';
+            if(isempty !== '' && params.length > 0){
+                param = ','
+            }
+            param += params[0] && params[0].value ? params[0].value : '';
+            for(var i=1;i<params.length;i++){
+                param += ','+params[i].value;
+            }
+            return param;
+        };
+  getnexttransformation(tranformationarray,next){
+
+    let tranfomationfunc = '';
+    if(tranformationarray[next]){
+        if(tranformationarray[next+1]){
+            tranfomationfunc = this.getnexttransformation(tranformationarray,next+1);
+        }
+        return tranfomationfunc = tranformationarray[next].name + '('+tranfomationfunc+this.getparams(tranformationarray[next].params,tranfomationfunc)+')';
+    }
+  };
 
   mappedDataInTable() {
     const MD = this.props.mappingsection.mappedFields;
     const MDHTML = [];
     if(MD.length>0){
       for(let key in MD){
+        let tranformation;
+        if(MD[key].transformations.length>0){
+          tranformation = this.getnexttransformation(MD[key].transformations,0);
+        }
       MDHTML.push(
           <tr>
-            <td>{MD[key].column}</td>
+            <td className="inline-place">{MD[key].column}</td>
+            <td><Transformation appliedTrans={MD[key].transformations} selectedMappTrans={key} transformationChnaged={this.transChange.bind(this)} /><span className="margin5px">{tranformation}</span></td>
             <td>{MD[key].propertyname}</td>
             <td>{MD[key].propertydec}</td>
             <td>{key}</td>
@@ -566,7 +598,7 @@ class Mapping extends Component {
   }
   render() {
     return (
-	    <div className="container">
+      <div className="container">
         <div className="upload-container">
           <legend>Mapping</legend>
         </div>
@@ -590,7 +622,7 @@ class Mapping extends Component {
         </div>
         <div className="row">
           <div className="col-md-3">
-             <h4><a href="#" prev-default>Columns from input file</a> <a className="btn btn-default"><span className="glyphicon glyphicon-question-sign"></span></a></h4>
+             <h4><a href="#" prev-default>Columns from import file</a> <a className="btn btn-default"><span className="glyphicon glyphicon-question-sign"></span></a></h4>
           </div>
           <div className="col-md-4 col-md-offset-2">
              <h4>Tables <a className="btn btn-default"><span className="glyphicon glyphicon-question-sign"></span></a></h4>
@@ -610,7 +642,7 @@ class Mapping extends Component {
                 <a href="" className="btn btn-default" onClick={this.mapping.bind(this)}>Map <span className="glyphicon glyphicon-chevron-right"></span></a>
              </div>
              <br/>
-             <div className="btn-group btn-group-justified" ng-if="attributeList.automap">
+             <div className="btn-group btn-group-justified">
                 <a className="btn btn-default" onClick={this.mapAttribute.bind(this)}>Auto Add Attribute <span className="glyphicon glyphicon-chevron-right"></span></a>
              </div>
           </div>
@@ -660,7 +692,6 @@ class Mapping extends Component {
               </div>
               <a href="#" id="tablesadd" className="btn btn-default btn-sm" onClick={this.addToList.bind(this)}><span className="glyphicon glyphicon-plus"></span></a>
               <a href="#" id="tableremove" className="btn btn-default btn-sm" onClick={this.removeInList.bind(this)}><span className="glyphicon glyphicon-remove"></span></a>
-              <div ng-include="'app/partials/confirmationDialogBox.html'"></div>
           </div>
           <div className="col-md-3">
           </div>
@@ -672,7 +703,8 @@ class Mapping extends Component {
               <table className="table" cellSpacing="0">
                 <thead>
                   <tr>
-                    <th prev-default>Column from import file</th>
+                    <th prev-default>Imported Column</th>
+                    <th>Transformation</th>
                     <th>Property name</th>
                     <th>Property description</th>
                     <th>Index</th>
@@ -698,18 +730,16 @@ class Mapping extends Component {
             <button className="btn btn-primary "  onClick={this.secondStep.bind(this)}>Back</button>
             <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Save Mapping & Proceed</button>
-          <Transformation />
           </div>
 
          }
         </div>
-	    </div>
+      </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  console.log('--mapping section state--', state);
   const { mappingsection, attributesectionsearch, homesection, selectmapping } = state;
   return {
     mappingsection, attributesectionsearch, homesection, selectmapping

@@ -6,6 +6,7 @@ import * as MappingActions from 'actions/mappingPage/MappingActions';
 import * as homeActions from 'actions/homePage/HomeActions'
 import { connect } from 'react-redux';
 import request from 'superagent';
+import FileUploader from './FileUploader.react';
 
 
 class Home extends Component {
@@ -135,29 +136,20 @@ class Home extends Component {
     render() {
         return (
             <div className="container">
-              <div className="row">
-                  <div className="col-lg-12"  onDragLeave={this.onDragLeave.bind(this)} onDragOver={this.onfileOver.bind(this)}>
-                      <Dropzone className="dropzoneContainer" onDrop={this.onDrop.bind(this)} >
-                          <div className="dropzoneMessage">
-                          Click here to choose .CSV file <b>or</b> Drop .CSV file here
-                          </div>
-                      </Dropzone>
-                  </div>
-              </div>
-          { 
-            this.message==='please select csv file' &&
-            <div className="errorMessage">
-             {this.message}
-            </div>
+              <FileUploader />
+              { 
+                this.message==='please select csv file' &&
+                <div className="errorMessage">
+                  {this.message}
+                </div>
               }
 
-          {
-            this.message==='Uploaded file:' &&
-            <div className="displayMessage">
-                <b>{this.message}</b>{this.name}<b className="marginleft5">Size</b>:{this.size}<b className="marginleft5">Type</b>: {this.type}
-            </div>
-
-          }
+              {
+                this.message==='Uploaded file:' &&
+                <div className="displayMessage">
+                  <b>{this.message}</b>{this.name}<b className="marginleft5">Size</b>:{this.size}<b className="marginleft5">Type</b>: {this.type}
+                </div>
+              }
         
          
          { this.message==='Uploaded file:' &&

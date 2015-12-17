@@ -3,6 +3,7 @@ var models = require('../../models'),
     async = require('async'),
     common = require('../../utils/common.js'),
     staticData = require('../../utils/staticData.js'),
+    trans = require('../../utils/transformation.js'),
     cc = require('currency-codes'),
     fs = require('fs'),
     Converter = require("csvtojson").Converter;
@@ -33,7 +34,6 @@ exports.index =  function(req,res){
 
 exports.getMappingList = function(req,res){
   models.mapping.findAll({}).then(function(result){
-    console.log('==Result==', result);
     res.status(200).json(result);
   }).catch(function(error){
     console.log("==Error==", error);
@@ -42,7 +42,6 @@ exports.getMappingList = function(req,res){
 // Get Mapping
 exports.getMapping = function(req, res) {
   models.mapping.find({where: {id: req.params.id}}).then(function(result){
-    console.log('==Result==', result);
     res.status(200).json(result);
   }).catch(function(error){
     console.log("==Error==", error);
@@ -616,31 +615,67 @@ exports.create =  function(req,res){
          "index": true,
          "instance": "String"
          },*/
-        let assign = function (product,tablename,mapperfield,mapperuserfieldname,defaultValue,schema,obj) {
+        var getparams =function (params, isempty) {
+          let param = '';
+          if(isempty !== '' && params.length > 0){
+            param = ','
+          }
+          param += params[0] && params[0].value ? params[0].value : '';
+          for(var i=1;i<params.length;i++){
+            param += ','+params[i].value;
+          }
+          return param;
+        };
+        var getnexttransformation =function (tranformationarray,next){
+          let tranfomationfunc = '';
+          if(tranformationarray[next]){
+            if(tranformationarray[next+1]){
+              tranfomationfunc = getnexttransformation(tranformationarray,next+1);
+            }
+            return tranfomationfunc = tranformationarray[next].name + '('+tranfomationfunc+getparams(tranformationarray[next].params,tranfomationfunc)+')';
+          }
+        };
+        var transformationsRefactor = function(transformations, value){
+          let da;
+          for(var i=0; i<transformations.length; i++){
+            if(transformations[i].name === "upperCase"){
+              da = trans.upperCase(value);
+            }
+            if(transformations[i].name === "lowerCase"){
+              da = trans.lowerCase(value);
+            }
+            if(transformations[i].name === "substr"){
+              da = trans.subString(value,transformations[i].params[0],transformations[i].params[1]);
+            }        
+          }
+          return da;
+        }
+        let assign = function (product,tablename,mapperfield,mapperuserfieldname,defaultValue,schema,obj,transformations) {
+            let t = getnexttransformation(transformations,0);
             for(let key in schema){
-                //if(key === tablename && defaultValue && defaultValue.length > 0){
-                //    product[mapperfield] = defaultValue;
-                //}
                 if(key === tablename && schema[key][mapperfield]){
                     let value = obj[mapperuserfieldname];
+                    value = transformationsRefactor(transformations, value);
                     if(value === '' && defaultValue && defaultValue.length > 0){
                         product[mapperfield] = defaultValue;
+                        product[mapperfield] = transformationsRefactor(transformations, product[mapperfield]);
                     }else{
                         product[mapperfield] = obj[mapperuserfieldname];
+                        product[mapperfield] = transformationsRefactor(transformations, product[mapperfield]);
                     }
                 }
             }
             return product;
         };
-        product = assign(product,mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema,obj);
+        product = assign(product,mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema,obj,mapper.transformations);
         for(let headtable in schema){
             let table = product[mapper.table];
             let mapperindex = mapper.index;
             if(table && table.length > 0 && table[mapperindex]){
-                table[mapperindex] = assign(table[mapperindex],mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema[headtable],obj);
+                table[mapperindex] = assign(table[mapperindex],mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema[headtable],obj,mapper.transformations);
             }else{
                 let child = {};
-                child = assign(child,mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema[headtable],obj);
+                child = assign(child,mapper.table,mapper.field,mapper.userFieldName,mapper.defaultValue,schema[headtable],obj,mapper.transformations);
                 if(Object.keys(child).length !== 0){
                     if(table === undefined){
                         product[mapper.table] = {};
@@ -652,11 +687,11 @@ exports.create =  function(req,res){
         }
         return product;
     };
+    
     let csv_mapping = function (obj,mappinginfo) {
         let product = {},schema = tableschema;
         for(let i=0;i<mappinginfo.length;i++){
             let mapper = mappinginfo[i];
-            console.log(mapper);
             product = findTableInSchema(product,obj,mapper,schema);
         }
         return product;

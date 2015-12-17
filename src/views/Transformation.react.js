@@ -90,7 +90,6 @@ class Tranformation extends Component {
         this.notifychanges();
     }
     notifychanges(){
-        alert(4);
         this.props.propertyChanged(this.props.transform);
     }
     toggleSelect(value) {
@@ -102,16 +101,13 @@ class Tranformation extends Component {
             console.log('t', transformations[i].name);
             console.log('v', value);
             if(transformations[i].name === value.value){
-                alert(1);
                 tranformationparams = transformations[i].params.length;
                 this.props.transform.tranformationsApplied.push(_.cloneDeep(transformations[i]));
                 break;
             }
-            alert(2);
         }
         this.props.transform.selectboxvalue = value;
         this.props.transform.showselectbox = tranformationparams <= 0;
-        alert(3);
         this.setState(this.props.transform);
         this.notifychanges();
     }
@@ -178,8 +174,14 @@ const MyLargeModal = React.createClass({
         return this.state;
     },
     render() {
-        console.log('===pppp===', this.state);
-        let temp = this.state.tranformationsApplied;
+        let temp;
+        if(this.props.aplTrans.length>0){
+          temp = this.props.aplTrans;
+          this.state.tranformationsApplied=this.props.aplTrans;
+        }else{
+           temp = this.state.tranformationsApplied; 
+        }
+         
         let string = '';
         this.getparams = function(params, isempty) {
             let param = '';
@@ -201,12 +203,12 @@ const MyLargeModal = React.createClass({
                 return tranfomationfunc = tranformationarray[next].name + '('+tranfomationfunc+this.getparams(tranformationarray[next].params,tranfomationfunc)+')';
             }
         };
-       this.tranformation = this.getnexttransformation(temp,0);
+        this.tranformation = this.getnexttransformation(temp,0);
         return (
             <span>
                 <Modal {...this.props} bsSize="large" aria-labelledby="contained-modal-title-lg">
                     <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title-lg">Add Transformations</Modal.Title>
+                        <Modal.Title id="contained-modal-title-lg">Add/Edit Transformations</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Tranformation transform={this.state} propertyChanged={this.propertyChanged.bind(this)}/>
@@ -215,13 +217,12 @@ const MyLargeModal = React.createClass({
                         <Button onClick={this.props.onHide}>Close</Button>
                     </Modal.Footer>
                 </Modal>
-                <span className="margin5px">{this.tranformation}</span>
             </span>
         );
     },
     propertyChanged(value) {
-        console.log(value);
         this.setState({transform : value});
+        this.props.tranformationPropertyChanged({transform : value});
     }
 });
 
@@ -235,17 +236,19 @@ const App = React.createClass({
         return (
             <span>
             <ButtonToolbar>
-                <Button bsStyle="default" onClick={()=>this.setState({ lgShow: true })}>
+                <Button bsStyle="default" className="btn-padding"  onClick={()=>this.setState({ lgShow: true })}>
                     <span className="glyphicon glyphicon-edit" aria-hidden="true"></span>
                 </Button>
-                <MyLargeModal show={this.state.lgShow} onHide={lgClose} />
+                <MyLargeModal aplTrans={this.props.appliedTrans} show={this.state.lgShow} onHide={lgClose} tranformationPropertyChanged={this.propertyChange.bind(this)} />
             </ButtonToolbar>
             </span>
         );
+    },
+    propertyChange(value){
+      this.props.transformationChnaged(value.transform.tranformationsApplied, this.props.selectedMappTrans);
     }
 });
 function mapStateToProps(state) {
-  console.log('--transformation section state--', state);
   const { mappingsection, attributesectionsearch, homesection, selectmapping, transformation} = state;
   return {
     mappingsection, attributesectionsearch, homesection, selectmapping, transformation
