@@ -52,13 +52,12 @@ class Mapping extends Component {
   }
 
   componentWillMount() {
-    console.log('----llll----', this.props);
-    if(this.props.mappingsection.tables === undefined || (this.props.mappingsection.tables && this.props.mappingsection.tables.length === 0)){
+    if(this.props.mappingsection.tables !== undefined || (this.props.mappingsection.tables && this.props.mappingsection.tables.length === 0)){
       this.actions.attributeList();
     }
     let synonymsList = this.props.attributesectionsearch.synonymsList;
     let mappedField = {};
-    if(this.props.attributesectionsearch.autoMap){
+    if(this.props.attributesectionsearch.autoMap && !this.props.mappingsection.mapped){
       for(let i in this.props.mappingsection.headers){
         for( let index in synonymsList){
           for(let indx in synonymsList[index].synonyms){
@@ -86,7 +85,7 @@ class Mapping extends Component {
         propertyname = 'product.'+name[1]+synonymsList[index].tableName+'.'+c;
       }
     
-              this.props.mappingsection.mappedFields.push({column:c,propertydec: index, propertyname: propertyname});
+              this.props.mappingsection.mappedFields.push({transformations:[],column:c,propertydec: index, propertyname: propertyname});
               console.log('Header Matched', mappedField);
             }
           }
@@ -94,7 +93,7 @@ class Mapping extends Component {
         break;
       }
        
-      
+      this.props.mappingsection.mapped = true;
       this.actions.handleMappedChnages(this.props.mappingsection);
     }
   }
@@ -508,15 +507,46 @@ class Mapping extends Component {
     }
     return propertiesList;
   }
+  transChange(value,index){
+    this.props.mappingsection.mappedFields[index].transformations = value;
+    this.props.mappingsection.mappedData[index].transformations = value;
+    this.actions.handleMappedChnages(this.props.mappingsection);
+  }
+  getparams(params, isempty) {
+            let param = '';
+            if(isempty !== '' && params.length > 0){
+                param = ','
+            }
+            param += params[0] && params[0].value ? params[0].value : '';
+            for(var i=1;i<params.length;i++){
+                param += ','+params[i].value;
+            }
+            return param;
+        };
+  getnexttransformation(tranformationarray,next){
+
+    let tranfomationfunc = '';
+    if(tranformationarray[next]){
+        if(tranformationarray[next+1]){
+            tranfomationfunc = this.getnexttransformation(tranformationarray,next+1);
+        }
+        return tranfomationfunc = tranformationarray[next].name + '('+tranfomationfunc+this.getparams(tranformationarray[next].params,tranfomationfunc)+')';
+    }
+  };
 
   mappedDataInTable() {
     const MD = this.props.mappingsection.mappedFields;
     const MDHTML = [];
     if(MD.length>0){
       for(let key in MD){
+        let tranformation;
+        console.log('yes here', MD[key].transformations);
+        if(MD[key].transformations.length>0){
+          tranformation = this.getnexttransformation(MD[key].transformations,0);
+        }
       MDHTML.push(
           <tr>
-            <td>{MD[key].column}</td>
+            <td className="inline-place">{MD[key].column}<Transformation selectedMappTrans={key} transformationChnaged={this.transChange.bind(this)} /><span className="margin5px">{tranformation}</span></td>
             <td>{MD[key].propertyname}</td>
             <td>{MD[key].propertydec}</td>
             <td>{key}</td>
@@ -566,7 +596,7 @@ class Mapping extends Component {
   }
   render() {
     return (
-	    <div className="container">
+      <div className="container">
         <div className="upload-container">
           <legend>Mapping</legend>
         </div>
@@ -698,12 +728,11 @@ class Mapping extends Component {
             <button className="btn btn-primary "  onClick={this.secondStep.bind(this)}>Back</button>
             <span> </span>
             <button className="btn btn-primary"  onClick={this.saveMappingStep.bind(this)}>Save Mapping & Proceed</button>
-          <Transformation />
           </div>
 
          }
         </div>
-	    </div>
+      </div>
     );
   }
 }
