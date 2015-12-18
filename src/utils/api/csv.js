@@ -13,11 +13,12 @@ const utils = {
   *
   * @calls action on success or failure
   */
-  getAttributeList: (file) => {
+  uploadCSV: (file) => {
+    console.log('file-->', file);
     return request({
       url: 'http://localhost:4000/api/csv/uploadCSV',
       method: 'POST',
-
+      body: file.form
     });
   }
 }

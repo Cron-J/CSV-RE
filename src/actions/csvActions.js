@@ -2,12 +2,6 @@ import * as types from 'constants/ActionTypes';
 import * as messageActions from '../common/messagecomponent/actions/messageActions';
 import api from 'utils/api/csv';
 
-api.test().then(function(data){
-  console.log(data);
-}).catch(function(err){
-  console.log(err);
-});
-
 export function changeView(view) {
   return { type: types.HANDLECHANGEVIEW, payload: { view } };
 }
@@ -16,7 +10,7 @@ export function startFileupload(file) {
   return {
     type: types.HANDLECSVUPLOAD,
     payload: {
-      file
+      response: api.uploadCSV(file).then(response => response),
     }
   };
 }
@@ -25,7 +19,7 @@ export function uploadFile(file) {
   return {
     types: [types.DUMMY, types.HANDLECSVUPLOADSUCCESS, types.HANDLECSVUPLOADFAIL],
     payload: {
-      response: api.addAttributeSection(data).then(response => response),
+      response: api.uploadCSV(data).then(response => response),
       data
     },
     meta: {
