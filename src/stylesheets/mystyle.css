@@ -1058,3 +1058,13 @@ div .border1px {
         -webkit-transform: rotate(1turn);
     }
 }
+.inline-place {
+    display: inline-flex;
+}
+.btn-padding {
+
+    padding: 1px 6px;
+}
+.applied-transformation {
+    padding: 0px 5px 5px 5px;
+}

@@ -19,7 +19,9 @@ const initialState = {
   selectedTab : '',
   mappingName : '',
   tenantId: '',
-  mappingInfo: []
+  mappingInfo: [],
+  mapped: false,
+  autoMappedOnce: false
 };
 
 
@@ -90,7 +92,6 @@ export default createReducer(initialState, {
   },
   [types.HANDLEATTRIBUTELISTSUCCESS](state, action) {
     const { response } = action.payload;
-    //let product = response.product;
     let product = {'product': {
         "tenantId": {
             "index": true,
@@ -633,7 +634,8 @@ export default createReducer(initialState, {
       mappedFields: data.mappedFields,
       selectedTable: data.selectedTable,
       headers: data.headers,
-      defaultValue: data.defaultValue
+      defaultValue: data.defaultValue,
+      mapped: data.mapped
     }
   },
   [types.SAVEMAPPEDDATA](state,action) {
@@ -659,7 +661,7 @@ export default createReducer(initialState, {
   },
   [types.GETCSVDATASUCCESS](state, action) {
     const { response } = action.payload;
-    var arr = response.headers.split(', ');
+    var arr = response.headers.split(',');
     return {
     ...state,
         headers: arr
@@ -667,10 +669,10 @@ export default createReducer(initialState, {
   },
   [types.GETMAPINFOSUCCESS](state, action) {
     const { response } = action.payload;
-    console.log('edit map', response);
     var arr = [];
     for (var i = 0; i < response.mappingInfo.length; i++) {
       arr[i] = {};
+      arr[i].transformations = response.mappingInfo[i].transformations;
       if (response.mappingInfo[i].defaultValue) {
         if (response.mappingInfo[i].table === 'attributeValues') {
           if (response.mappingInfo[i].field === 'value' && response.mappingInfo[i+1].field === 'attribute') {

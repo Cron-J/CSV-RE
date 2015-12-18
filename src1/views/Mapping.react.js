@@ -61,7 +61,7 @@ class Mapping extends Component {
       for(let i in this.props.mappingsection.headers){
         for( let index in synonymsList){
           for(let indx in synonymsList[index].synonyms){
-            let c =  this.props.mappingsection.headers[i].value;        
+            let c =  this.props.mappingsection.headers[i].value;
             console.log('HEADER', c.toLowerCase());
             if(synonymsList[index].synonyms[indx] === c.toLowerCase()){
               mappedField = {
@@ -84,7 +84,7 @@ class Mapping extends Component {
       }else{
         propertyname = 'product.'+name[1]+synonymsList[index].tableName+'.'+c;
       }
-    
+
               this.props.mappingsection.mappedFields.push({transformations:[],column:c,propertydec: index, propertyname: propertyname});
               console.log('Header Matched', mappedField);
             }
@@ -92,7 +92,7 @@ class Mapping extends Component {
         }
         break;
       }
-       
+
       this.props.mappingsection.mapped = true;
       this.actions.handleMappedChnages(this.props.mappingsection);
     }
@@ -141,7 +141,7 @@ class Mapping extends Component {
       for (var j = 0; j < this.headers.length; j++) {
         if (this.props.mappingsection.mappedData[i].userFieldName === this.headers[j].value) {
           this.headers[j].mapped = true;
-        }  
+        }
       };
     }
   }
@@ -606,7 +606,7 @@ class Mapping extends Component {
             <div className="col-sm-3">
               <input name="jobId" className="form-control"
               value={this.props.mappingsection.mappingName}
-              onChange={this.mappingNameHandler.bind(this)} 
+              onChange={this.mappingNameHandler.bind(this)}
               placeholder="Choose Mapping Name" id="mapName" type="text"
               required disabled={this.edit} />
             { this.props.mappingsection.mappingName === undefined &&
@@ -714,7 +714,7 @@ class Mapping extends Component {
                 </tbody>
               </table>
             </div> : <p>No mapped details</p>
-          }    
+          }
           <hr />
           { this.props.mappingsection.id ?
           <div className="pull-right">
