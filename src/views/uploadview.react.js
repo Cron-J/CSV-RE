@@ -14,10 +14,11 @@ class UploadView extends React.Component {
     }
   }
   render() {
+    console.log('upload view -->', this.props.data);
     return (
       <div className="container">
         <div className="row">
-          <Fileuploader onFileupload={this.onupload} fileFormat={this.props.data.fileFormats} />
+          <Fileuploader fileinfo={this.props.data.fileinfo} onFileupload={this.onupload} fileFormat={this.props.data.fileFormats} />
         </div>
       </div>
     );

@@ -10,17 +10,37 @@ export function startFileupload(file) {
   return {
     type: types.HANDLECSVUPLOAD,
     payload: {
-      response: api.uploadCSV(file).then(response => response),
+      file
     }
   };
 }
 
-export function uploadFile(file) {
+export function nextview() {
+  return {
+    type: types.HANDLECSVNEXTVIEW
+  };
+}
+
+export function previousview() {
+  return {
+    type: types.HANDLECSVPREVIOUSVIEW
+  };
+}
+
+export function uploadFile(file, uploaded) {
+  if (uploaded) {
+    return nextview();
+  } else {
+    return _uploadFile(file);
+  }
+}
+
+export function _uploadFile(file) {
   return {
     types: [types.DUMMY, types.HANDLECSVUPLOADSUCCESS, types.HANDLECSVUPLOADFAIL],
     payload: {
-      response: api.uploadCSV(data).then(response => response),
-      data
+      response: api.uploadCSV(file).then(response => response),
+      file
     },
     meta: {
       transition: () => ({
@@ -31,7 +51,7 @@ export function uploadFile(file) {
         }),
         onSuccess: (response) =>({
           func: () => {
-            return messageActions.showmessages('File uploading success', 'success');
+            return nextview();
           }
         }),
         onFail: (response) =>({

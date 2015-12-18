@@ -1,4 +1,8 @@
 import request from 'request-promise';
+import promise from 'promise';
+import superagent from 'superagent';
+import superagentpromise from 'superagent-promise';
+const request1 = superagentpromise(superagent, promise);
 
 const utils = {
   test: () => {
@@ -14,12 +18,9 @@ const utils = {
   * @calls action on success or failure
   */
   uploadCSV: (file) => {
-    console.log('file-->', file);
-    return request({
-      url: 'http://localhost:4000/api/csv/uploadCSV',
-      method: 'POST',
-      body: file.form
-    });
+    let req = request1.post('http://localhost:4000/api/csv/uploadCSV');
+    req.attach(file.name, file);
+    return req.end();
   }
 }
 export default utils;

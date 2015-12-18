@@ -45,6 +45,25 @@ class Home extends React.Component {
         break;
     }
   }
+  triggerNavigationSubmit = () => {
+    switch(this.props.csv.currentview) {
+      case this.upload:
+        this.actions.uploadFile(this.props.csv.upload.fileinfo, this.props.csv.upload.uploaded);
+        break;
+      case this.preview:
+
+        break;
+      case this.mapping:
+
+        break;
+      case this.import:
+
+        break;
+      default:
+
+        break;
+    }
+  }
   onDataSubmit = (data) => {
     this.triggeractions(data);
   }
@@ -65,6 +84,14 @@ class Home extends React.Component {
     default:
       return '';
       break;
+    }
+  }
+  onPrevNext = (nextorprev) => {
+    // next-1 prev-0
+    if (nextorprev === 1) {
+      this.triggerNavigationSubmit();
+    } else {
+      this.actions.previousview();
     }
   }
   render() {
@@ -92,7 +119,7 @@ class Home extends React.Component {
           </div>
         </div>
         <div className="row">
-          <CSVNavigation block={this.props.csv.block} />
+          <CSVNavigation onPrev={this.onPrevNext.bind(this, 0)} onNext={this.onPrevNext.bind(this, 1)} block={this.props.csv.block} />
         </div>
       </div>
     );

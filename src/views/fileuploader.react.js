@@ -1,12 +1,10 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
-import FormData from 'form-data';
-
 
 class Fileuploader extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {error: '', fileInfo: {name: '', size: 0}, isuploaded: false};
+    this.state = {error: ''};
   }
   componentWillReceiveProps(nextProps) {
     this.props = nextProps;
@@ -17,21 +15,16 @@ class Fileuploader extends React.Component {
       extension= files[0].name.split('.').pop();
       extension=extension.toLowerCase();
       if (this.props.fileFormat.indexOf('.' + extension) < 0) {
-        this.setState({error: 'Invalid File Format', isuploaded:false, fileInfo: {name: '', size: 0}});
+        this.setState({error: 'Invalid File Format'});
       } else {
-        this.setState({error: '', isuploaded: true, fileInfo: {
-          name: files[0].name,
-          size: files[0].size
-        }});
-        const fd = new FormData();
-        fd.append( 'file', this.refs.uploadForm.refs.fileInput.getDOMNode().files[0]);
-        this.props.onFileupload({fileinfo: files[0], form: fd});
+        this.setState({error: ''});
+        this.props.onFileupload(files[0]);
       }
     }
   }
   renderInfo = () => {
-    if (this.state.isuploaded) {
-      return <div><b>Name :</b>{this.state.fileInfo.name}<b className="marginleft5">Size :</b>{this.state.fileInfo.size}</div>;
+    if (this.props.fileinfo.name && this.props.fileinfo.name.length > 0) {
+      return <div><b>Name :</b>{this.props.fileinfo.name}<b className="marginleft5">Size :</b>{this.props.fileinfo.size}</div>;
     }
       return '';
   }
@@ -41,7 +34,7 @@ class Fileuploader extends React.Component {
       <div className="container">
         <div className="row">
           <form>
-            <Dropzone ref="uploadForm" className="dropzoneContainer" multiple={false} onDrop={this.onDrop.bind(this)} >
+            <Dropzone className="dropzoneContainer" multiple={false} onDrop={this.onDrop.bind(this)} >
                 <div className="dropzoneMessage">
                   Click here / Drop the <b>{fileFormats}</b> file
                 </div>
@@ -61,6 +54,7 @@ class Fileuploader extends React.Component {
 
 Fileuploader.propTypes = {
   fileFormat: React.PropTypes.arrayOf(React.PropTypes.string),
+  fileinfo: React.PropTypes.object,
   error: React.PropTypes.string,
   onFileupload: React.PropTypes.func
 };
