@@ -12,7 +12,9 @@ const config = new Map();
 // looking up all *.spec.js files, if you edit dir_src you _must_ also edit
 // the path in ~/karma.entry.js.
 config.set('dir_src',  'src');
+config.set('common', 'common');
 config.set('dir_dist', 'dist');
+config.set('public', 'public');
 
 config.set('server_host',  'localhost');
 config.set('server_port',  process.env.PORT || 4000);
@@ -78,7 +80,9 @@ const paths = (() => {
   return {
     project : project,
     src     : project.bind(null, config.get('dir_src')),
-    dist    : project.bind(null, config.get('dir_dist'))
+    dist    : project.bind(null, config.get('dir_dist')),
+    common  : project.bind(null, config.get('common')),
+    publicpath  : project.bind(null, config.get('public'))
   };
 })();
 

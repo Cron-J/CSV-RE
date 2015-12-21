@@ -14,7 +14,6 @@ class UploadView extends React.Component {
     }
   }
   render() {
-    console.log('upload view -->', this.props.data);
     return (
       <div className="container">
         <div className="row">

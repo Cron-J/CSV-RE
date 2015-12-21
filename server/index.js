@@ -13,7 +13,8 @@ const app   = new Express();
 //app.use(new MulterImpl({}).init());
 // temporary allow for CROS
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  console.log(req.headers.origin);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
   res.header("Access-Control-Allow-Headers", "Origin,Cache-Control, public, max-age=31557600, X-Requested-With, Content-Type, Accept");

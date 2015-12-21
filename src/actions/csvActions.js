@@ -35,6 +35,24 @@ export function uploadFile(file, uploaded) {
   }
 }
 
+export function changeHeader(check) {
+  return {
+    type: types.HANDLECSVPREVIEWHEADERCHANGE,
+    payload: {
+      check
+    }
+  };
+}
+
+export function changeDelimiter(delimiter) {
+  return {
+    type: types.HANDLECSVPREVIEWDELIMITER,
+    payload: {
+      delimiter
+    }
+  };
+}
+
 export function _uploadFile(file) {
   return {
     types: [types.DUMMY, types.HANDLECSVUPLOADSUCCESS, types.HANDLECSVUPLOADFAIL],
