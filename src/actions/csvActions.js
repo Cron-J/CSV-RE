@@ -53,6 +53,24 @@ export function changeDelimiter(delimiter) {
   };
 }
 
+export function changeNumber(numberformat) {
+  return {
+    type: types.HANDLECSVPREVIEWNUMBER,
+    payload: {
+      numberformat
+    }
+  };
+}
+
+export function changeDate(dateformat) {
+  return {
+    type: types.HANDLECSVPREVIEWDATE,
+    payload: {
+      dateformat
+    }
+  };
+}
+
 export function _uploadFile(file) {
   return {
     types: [types.DUMMY, types.HANDLECSVUPLOADSUCCESS, types.HANDLECSVUPLOADFAIL],

@@ -73,13 +73,19 @@ class Home extends React.Component {
   onchangeDelimiter = (delimiter) => {
     this.actions.changeDelimiter(delimiter);
   }
+  onchangeDate = (dateformat) => {
+    this.actions.changeDate(dateformat);
+  }
+  onchangeNumber = (numberformat) => {
+    this.actions.changeNumber(numberformat);
+  }
   renderView = () => {
     switch(this.props.csv.currentview) {
     case this.upload:
       return <UploadView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;
       break;
     case this.preview:
-      return <PreviewView data={this.props.csv[this.preview]} changeDelimiter={this.onchangeDelimiter} changeHeader={this.onpreviewHeaderChange}/>;
+      return <PreviewView data={this.props.csv[this.preview]} onChangeNumber={this.onchangeNumber} onChangeDate={this.onchangeDate} onChangeDelimiter={this.onchangeDelimiter} onChangeHeader={this.onpreviewHeaderChange}/>;
       break;
     case this.mapping:
       return <MappingView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;

@@ -1,5 +1,6 @@
 import * as types from 'constants/ActionTypes';
 import { createReducer } from 'redux-create-reducer';
+import moment from 'moment';
 
 const initialState = {
   upload: {
@@ -17,18 +18,19 @@ const initialState = {
     resultdata: {},
     originaldata: {},
     delimiter: ',',
-    dateFormat: 'MM/dd/yyyy',
+    dateFormat: 'MM/DD/YYYY',
     numberFormat: '#,###.##',
     noHeader: false,
     setters: {
       dateformat: [
-        {value: 'dd-MM-yyyy', label: 'dd-MM-yyyy'}, 
-        {value: 'MM/dd/yyyy', label: 'MM/dd/yyyy'}
+        {value: 'DD-MM-YYYY', label: 'DD-MM-YYYY'}, 
+        {value: 'MM/DD/YYYY', label: 'MM/DD/YYYY'}
       ],
       numberformat: [
         {value: '#,###.##', label: '#,###.##'},
         {value: '#.##', label: '#.##'},
-        {value: '#,##', label: '#,##'}
+        {value: '#,##', label: '#,##'},
+        {value: '#.###,##', label: '#.###,##'}
       ],
       delimiterformat: [
         {value: ',', label: 'Comma(,)'},
@@ -80,7 +82,58 @@ function isSuccess(currentview, view, state) {
   }
 }
 
-function formatPreviewData(responsedata, delimiter) {
+function formatDate(data, fromdateformat, todateformat) {
+  const momentdate = moment(data, fromdateformat);
+  if (momentdate.format(fromdateformat) === data) {
+    return momentdate.format(todateformat);
+  }
+  return data;
+}
+
+function formatNumber(data, numberformat) {
+  switch(numberformat) {
+  case '#,##':
+    if(data.indexOf(',')<0) {
+      data = data + ',00';
+    }
+    break;
+  case '#.##':
+    if(numberformat.indexOf('.')<0)
+      data = data + '.00';
+    break;
+  case '#,###.##':
+    if (data.toString().length > 5) {
+      data = (data*100 / 100);
+      var str = data.toString().split('.');  
+      if (str[0].length >= 4) {
+          str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+      }
+      if (str[1] && str[1].length >= 4) {
+          str[1] = str[1].replace(/(\d{3})/g, '$1 ');
+      }
+      data = str.join('.');
+      if(data.indexOf('.') < 0) {
+          data = data + '.00';
+      }
+    }
+    break;
+  case '#.###,##':
+    let str = data.toString();
+    if (str.length > 5) {
+      str = data.slice(0, -5) + '.' + data.slice(-3) + '.' + data.slice(-3); 
+      data = str;
+      if(data.indexOf(',') < 0) {
+        data = data + ',00';
+      }
+    }
+    break;
+  default:
+    break;
+  }
+  return data;
+}
+
+function formatPreviewData(responsedata, delimiter, numberformat, fromdateformat, todateformat) {
   const dataarray = [];
   const headers = responsedata['headers'].split(delimiter);
   for (let key in responsedata) {
@@ -89,7 +142,11 @@ function formatPreviewData(responsedata, delimiter) {
       let keyCount = 0;
       const data  = responsedata[key].split(delimiter);
       for (let i = 0; i < data.length; i++) {
-        object[headers[keyCount]] = data[i];
+        let finaldata = formatDate(data[i], fromdateformat, todateformat);
+        if (!isNaN(data[i])) {
+          finaldata = formatNumber(data[i], numberformat);
+        }
+        object[headers[keyCount]] = finaldata;
         keyCount++;  
       }
       dataarray.push(object);
@@ -145,8 +202,8 @@ function formatPreviewHeader(previewdata, check) {
   return newpreviewdata;
 }
 
-function formatPreview (data, delimiter, headercheck) {
-  const previewdata = formatPreviewData(data, delimiter);
+function formatPreview (data, delimiter, headercheck, numberformat, fromdateformat, todateformat) {
+  const previewdata = formatPreviewData(data, delimiter, numberformat, fromdateformat, todateformat);
   return formatPreviewHeader(previewdata, headercheck);
 }
 
@@ -179,7 +236,7 @@ export default createReducer(initialState, {
     const index = state.order.indexOf(state.currentview);
     let view = state.currentview;
     preview.originaldata = response.body;
-    preview.resultdata = formatPreview(response.body, preview.delimiter, preview.noHeader);
+    preview.resultdata = formatPreview(response.body, preview.delimiter, preview.noHeader, preview.numberFormat, preview.dateFormat, preview.dateFormat);
     upload.uploaded = true;
     if (index > -1) {
       view = state.order[index+1];
@@ -225,7 +282,7 @@ export default createReducer(initialState, {
   [types.HANDLECSVPREVIEWHEADERCHANGE] (state, action) {
     const {check} = action.payload;
     const preview = state.preview;
-    preview.resultdata = formatPreview(preview.originaldata, preview.delimiter, check);
+    preview.resultdata = formatPreview(preview.originaldata, preview.delimiter, check, preview.numberFormat, preview.dateFormat, preview.dateFormat);
     preview.noHeader = check;
     return {
       ...state,
@@ -236,10 +293,30 @@ export default createReducer(initialState, {
     const {delimiter} = action.payload;
     const preview = state.preview;
     preview.delimiter = delimiter;
-    preview.resultdata = formatPreview(preview.originaldata, delimiter, preview.noHeader);
+    preview.resultdata = formatPreview(preview.originaldata, delimiter, preview.noHeader, preview.numberFormat, preview.dateFormat, preview.dateFormat);
     return {
       ...state,
       preview: preview
     }
+  },
+  [types.HANDLECSVPREVIEWDATE] (state, action) {
+    const {dateformat} = action.payload;
+    const preview = state.preview;
+    preview.resultdata = formatPreview(preview.originaldata, preview.delimiter, preview.noHeader, preview.numberFormat, preview.dateFormat, dateformat);
+    preview.dateFormat = dateformat;
+    return {
+      ...state,
+      preview
+    };
+  },
+  [types.HANDLECSVPREVIEWNUMBER] (state, action) {
+    const {numberformat} = action.payload;
+    const preview = state.preview;
+    preview.numberFormat = numberformat;
+    preview.resultdata = formatPreview(preview.originaldata, preview.delimiter, preview.noHeader, numberformat, preview.dateFormat, preview.dateFormat);
+    return {
+      ...state,
+      preview
+    };
   }
 });

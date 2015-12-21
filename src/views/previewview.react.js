@@ -10,16 +10,23 @@ class PreviewView extends Component {
     this.props = nextProps;
   }
   changeHeader = (e) => {
-    if (this.props.changeHeader) {
-      this.props.changeHeader(e.target.checked);
+    if (this.props.onChangeHeader) {
+      this.props.onChangeHeader(e.target.checked);
     }
   }
-  changeDateFormat = () => {
-
+  changeDateFormat = (e) => {
+    if (this.props.onChangeDate) {
+      this.props.onChangeDate(e.target.value);
+    }
+  }
+  changeNumberFormat =(e) => {
+    if (this.props.onChangeNumber) {
+      this.props.onChangeNumber(e.target.value);
+    }
   }
   changeDelimiterFormat = (e) => {
-    if (this.props.changeDelimiter) {
-      this.props.changeDelimiter(e.target.value);
+    if (this.props.onChangeDelimiter) {
+      this.props.onChangeDelimiter(e.target.value);
     }
   }
   _renderDateOptions = () => {
@@ -110,8 +117,10 @@ class PreviewView extends Component {
 
 PreviewView.propTypes = {
     data: React.PropTypes.object,
-    changeHeader: React.PropTypes.func,
-    changeDelimiter: React.PropTypes.func
+    onChangeHeader: React.PropTypes.func,
+    onChangeDelimiter: React.PropTypes.func,
+    onChangeDate: React.PropTypes.func,
+    onChangeNumber: React.PropTypes.func
 };
 
 
