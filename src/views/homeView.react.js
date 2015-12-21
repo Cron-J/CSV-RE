@@ -51,7 +51,7 @@ class Home extends React.Component {
         this.actions.uploadFile(this.props.csv.upload.fileinfo, this.props.csv.upload.uploaded);
         break;
       case this.preview:
-
+        this.actions.nextview();
         break;
       case this.mapping:
 

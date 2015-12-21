@@ -71,7 +71,7 @@ function isSuccess(currentview, view, state) {
       return false;
       break;
     case 'mapping':
-      if (state.preview.id || state.order.indexOf(currentview) > state.order.indexOf(view)) {
+      if (state.preview.resultdata.data || state.order.indexOf(currentview) > state.order.indexOf(view)) {
         return true;
       }
       return false;
@@ -216,7 +216,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       currentview: view,
-      block: blockers(view, state.upload)
+      block: blockers(view, state[view])
     };
   },
   [types.HANDLECSVUPLOAD] (state, action) {
