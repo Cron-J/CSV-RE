@@ -71,6 +71,13 @@ export function changeDate(dateformat) {
   };
 }
 
+export function resetPreviewSetting() {
+  console.log('---action---');
+  return {
+    type: types.HANDLEPREVIEWSETTING
+  };
+}
+
 export function _uploadFile(file) {
   return {
     types: [types.DUMMY, types.HANDLECSVUPLOADSUCCESS, types.HANDLECSVUPLOADFAIL],

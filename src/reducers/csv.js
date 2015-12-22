@@ -318,5 +318,18 @@ export default createReducer(initialState, {
       ...state,
       preview
     };
+  },
+  [types.HANDLEPREVIEWSETTING] (state, action) {
+    console.log('---reducer---');
+    const preview = state.preview;
+    preview.numberFormat = '#,###.##';
+    preview.dateFormat = 'MM/DD/YYYY';
+    preview.delimiter = ',';
+    preview.noHeader= false;
+    preview.resultdata = formatPreview(preview.originaldata, preview.delimiter, preview.noHeader, preview.numberFormat, preview.dateFormat, preview.dateFormat);
+    return {
+      ...state,
+      preview
+    };
   }
 });

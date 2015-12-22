@@ -79,13 +79,17 @@ class Home extends React.Component {
   onchangeNumber = (numberformat) => {
     this.actions.changeNumber(numberformat);
   }
+  previewSetting = () => {
+    console.log('---home---');
+    this.actions.resetPreviewSetting();
+  }
   renderView = () => {
     switch(this.props.csv.currentview) {
     case this.upload:
       return <UploadView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;
       break;
     case this.preview:
-      return <PreviewView data={this.props.csv[this.preview]} onChangeNumber={this.onchangeNumber} onChangeDate={this.onchangeDate} onChangeDelimiter={this.onchangeDelimiter} onChangeHeader={this.onpreviewHeaderChange}/>;
+      return <PreviewView data={this.props.csv[this.preview]} previewSetting={this.previewSetting} onChangeNumber={this.onchangeNumber} onChangeDate={this.onchangeDate} onChangeDelimiter={this.onchangeDelimiter} onChangeHeader={this.onpreviewHeaderChange}/>;
       break;
     case this.mapping:
       return <MappingView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;
@@ -140,6 +144,7 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
     const { csv } = state;
+    console.log('--state--', state);
     return {
         csv
     };

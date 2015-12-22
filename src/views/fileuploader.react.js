@@ -24,7 +24,8 @@ class Fileuploader extends React.Component {
   }
   renderInfo = () => {
     if (this.props.fileinfo.name && this.props.fileinfo.name.length > 0) {
-      return <div><b>Name :</b>{this.props.fileinfo.name}<b className="marginleft5">Size :</b>{this.props.fileinfo.size}</div>;
+      return <div><b>File Selected:</b>{this.props.fileinfo.name}<b className="marginleft5">Size</b>:{this.props.fileinfo.size}<b className="marginleft5">Type</b>:{this.props.fileinfo.type}</div>;
+
     }
       return '';
   }
@@ -43,6 +44,7 @@ class Fileuploader extends React.Component {
           <div className="errorMessage">
             {this.state.error || this.props.error}
           </div>
+          
           <div className="displayMessage">
             {this.renderInfo()}
           </div>
