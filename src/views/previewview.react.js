@@ -29,6 +29,10 @@ class PreviewView extends Component {
       this.props.onChangeDelimiter(e.target.value);
     }
   }
+  resetPreviewSetting = (e) => {
+    console.log('ooooo');
+    this.props.previewSetting();
+  }
   _renderDateOptions = () => {
     const options = [];
     for (let i = 0; i < this.props.data.setters.dateformat.length; i++) {
@@ -102,6 +106,9 @@ class PreviewView extends Component {
                       </select>
                     </div>
                   </div>
+                  <div className="row btn-margin btn-Allignment">
+                  <button className="btn btn-primary" onClick={this.resetPreviewSetting.bind(this)}>Reset Preview Settings</button>
+                </div>
                 </div>
               </div>
             </div>
@@ -120,7 +127,8 @@ PreviewView.propTypes = {
     onChangeHeader: React.PropTypes.func,
     onChangeDelimiter: React.PropTypes.func,
     onChangeDate: React.PropTypes.func,
-    onChangeNumber: React.PropTypes.func
+    onChangeNumber: React.PropTypes.func,
+    previewSetting: React.PropTypes.func
 };
 
 

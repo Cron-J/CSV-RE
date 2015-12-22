@@ -80,6 +80,10 @@ class Home extends React.Component {
   onchangeNumber = (numberformat) => {
     this.actions.changeNumber(numberformat);
   }
+  previewSetting = () => {
+    console.log('---home---');
+    this.actions.resetPreviewSetting();
+  }
   //mapping
   onColumnChange = (column) => {
     this.actions.changeColumn(column);
@@ -105,7 +109,7 @@ class Home extends React.Component {
       return <UploadView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;
       break;
     case this.preview:
-      return <PreviewView data={this.props.csv[this.preview]} onChangeNumber={this.onchangeNumber} onChangeDate={this.onchangeDate} onChangeDelimiter={this.onchangeDelimiter} onChangeHeader={this.onpreviewHeaderChange}/>;
+      return <PreviewView data={this.props.csv[this.preview]} previewSetting={this.previewSetting} onChangeNumber={this.onchangeNumber} onChangeDate={this.onchangeDate} onChangeDelimiter={this.onchangeDelimiter} onChangeHeader={this.onpreviewHeaderChange}/>;
       break;
     case this.mapping:
       return <MappingView data={{
@@ -169,6 +173,7 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
     const { csv } = state;
+    console.log('--state--', state);
     return {
         csv
     };

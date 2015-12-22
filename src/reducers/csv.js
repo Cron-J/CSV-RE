@@ -338,6 +338,18 @@ export default createReducer(initialState, {
       preview
     };
   },
+  [types.HANDLEPREVIEWSETTING] (state, action) {
+    const preview = state.preview;
+    preview.numberFormat = '#,###.##';
+    preview.dateFormat = 'MM/DD/YYYY';
+    preview.delimiter = ',';
+    preview.noHeader= true;
+    preview.resultdata = formatPreview(preview.originaldata, preview.delimiter, preview.noHeader, preview.numberFormat, preview.dateFormat, preview.dateFormat);
+    return {
+      ...state,
+      preview
+    };
+  },
   [types.HANDLECSVLOADTABLES] (state) {
     const mapping = state.mapping;
     mapping.defaultTables = _.map(tables, function(val, key){
