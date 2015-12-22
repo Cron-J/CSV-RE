@@ -21,9 +21,30 @@ export function nextview() {
   };
 }
 
+export function addMapping() {
+  return {
+    type: types.HANDLECSVMAPADD
+  }
+}
+
+export function removeMapping() {
+  return {
+    type: types.HANDLECSVMAPREMOVE
+  }
+}
+
 export function previousview() {
   return {
     type: types.HANDLECSVPREVIOUSVIEW
+  };
+}
+
+export function changeTableIndex(table) {
+  return {
+    type: types.HANDLECSVMAPTABLEINDEXCHANGE,
+    payload: {
+      table
+    }
   };
 }
 

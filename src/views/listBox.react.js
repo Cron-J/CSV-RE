@@ -13,16 +13,18 @@ class ListBox extends Component {
   	}
     e.preventDefault();
   }
-  renderChild = (data, value, padding) => {
+  renderChild = (selectionlevel, data, value, level) => {
   	let children = [];
   	if (data) {
 	  	for (let i = 0; i < data.length; i++) {
-	  		if (data[i].value === value) {
-	  			children.push(<option value={data[i].value} style={{fontSize: 17, fontStyle: 'italic', paddingLeft: padding}}>{data[i].label}</option>);
-	  		} else {
-	  			children.push(<option value={data[i].value} style={{paddingLeft: padding}}>{data[i].label}</option>);
-	  		}
-        children = children.concat(this.renderChild(data[i].children, value, padding+9));
+        const style = {};
+        style.paddingLeft = level * 9;
+        if (data[i].value === value && (selectionlevel === level || !selectionlevel)) {
+          style.fontSize = 17;
+          style.fontStyle = 'italic';
+        }
+        children.push(<option value={data[i].value} style={style}>{data[i].label}</option>);
+        children = children.concat(this.renderChild(selectionlevel, data[i].children, value, level+1));
 	  	}
   	}
   	return children;
@@ -30,7 +32,7 @@ class ListBox extends Component {
   render() {
     return (
     	<select value={this.props.value} className="mapping-select" size="20" onClick={this.selectItem}>
-        {this.renderChild(this.props.data, this.props.value, 0)}
+        {this.renderChild(this.props.selectionlevel, this.props.data, this.props.value, 0)}
       </select>
    	);
   }
@@ -39,7 +41,8 @@ class ListBox extends Component {
 ListBox.propTypes = {
   data: React.PropTypes.arrayOf(React.PropTypes.string),
   value: React.PropTypes.string,
-  onItemSelect: React.PropTypes.func
+  onItemSelect: React.PropTypes.func,
+  selectionlevel: React.PropTypes.number
 };
 
 export default ListBox;

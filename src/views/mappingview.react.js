@@ -24,9 +24,9 @@ class MappingView extends Component {
       this.props.onColumnChange(column);
     }
   }
-  onTableChange = (table) => {
-    if (this.props.onTableChange) {
-      this.props.onTableChange(table);
+  onTableSelect = (table) => {
+    if (this.props.onTableSelect) {
+      this.props.onTableSelect(table);
     }
   }
   onPropertyChange = (property) => {
@@ -34,14 +34,24 @@ class MappingView extends Component {
       this.props.onPropertyChange(property);
     }
   }
+  onMapSelect = (value) => {
+    if (this.props.onTableChange) {
+      this.props.onTableChange(value);
+    }
+  }
+  onAdd = () => {
+    this.props.onMappingAdd();
+  }
+  onRemove = () => {
+    this.props.onMappingRemove();
+  }
   isMapValid = () => {
     const map = this.props.data.map;
-    if (map.currentColumn.length > 0 && map.currentTable.length > 0  && map.currentProperty.length > 0) {
+    if (map.currentColumn.length > 0 && map.tableObject.length > 0  && map.currentProperty.length > 0) {
       return false;
     }
     return true;
   }
-
   render() {
     return (
       <div className="container">
@@ -92,7 +102,7 @@ class MappingView extends Component {
             </ButtonToolbar>
           </div>
           <div className="col-md-4">
-            <ListBox value={this.props.data.map.currentTable} data={this.props.data.map.tables} onItemSelect={this.onTableChange}/>
+            <ListBox selectionlevel={1} value={this.props.data.map.tableObject} data={this.props.data.map.tables} onItemSelect={this.onTableSelect}/>
           </div>
           <div className="col-md-3">
             <ListBox value={this.props.data.map.currentProperty} data={this.props.data.map.properties} onItemSelect={this.onPropertyChange}/>
@@ -104,7 +114,7 @@ class MappingView extends Component {
           <div className="col-md-2">
           </div>
           <div className="col-md-4">
-            <MapSelection  />
+            <MapSelection remove={this.props.data.map.remove} tableobject={this.props.data.map.tableObject} onAdd={this.onAdd} onRemove={this.onRemove} onSelect={this.onMapSelect} value={this.props.data.map.currentTable} data={this.props.data.map.defaultTables} />
           </div>
           <div className="col-md-3">
           </div>
@@ -117,8 +127,11 @@ class MappingView extends Component {
 MappingView.propTypes = {
   data: React.PropTypes.object,
   onColumnChange: React.PropTypes.func,
+  onTableSelect: React.PropTypes.func,
   onPropertyChange: React.PropTypes.func,
-  onTableChange: React.PropTypes.func
+  onTableChange: React.PropTypes.func,
+  onMappingAdd: React.PropTypes.func,
+  onMappingRemove: React.PropTypes.func
 };
 
 export default MappingView;
