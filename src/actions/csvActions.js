@@ -35,6 +35,46 @@ export function uploadFile(file, uploaded) {
   }
 }
 
+export function loadTables() {
+  return {
+    type: types.HANDLECSVLOADTABLES,
+    meta: {
+      transition: () => ({
+        func: () => {
+          return nextview();
+        }
+      })
+    }
+  };
+}
+
+export function changeColumn(column) {
+  return {
+    type: types.HANDLECSVMAPCOLUMNCHANGE,
+    payload: {
+      column
+    }
+  };
+}
+
+export function changeTable(table) {
+  return {
+    type: types.HANDLECSVMAPTABLECHANGE,
+    payload: {
+      table
+    }
+  };
+}
+
+export function changeProperty(property) {
+  return {
+    type: types.HANDLECSVMAPPROPERTYCHANGE,
+    payload: {
+      property
+    }
+  };
+}
+
 export function changeHeader(check) {
   return {
     type: types.HANDLECSVPREVIEWHEADERCHANGE,

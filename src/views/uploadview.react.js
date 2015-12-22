@@ -6,7 +6,7 @@ class UploadView extends React.Component {
       super(props);
   }
   componentWillReceiveProps(nextProps) {
-    this.props = nextProps.data;
+    this.props = nextProps;
   }
   onupload = (file) => {
     if (this.props.onDataSubmit) {
