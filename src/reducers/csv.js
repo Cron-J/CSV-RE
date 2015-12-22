@@ -1,6 +1,8 @@
 import * as types from 'constants/ActionTypes';
 import { createReducer } from 'redux-create-reducer';
 import moment from 'moment';
+import tables from '../utils/appfunc/tablelist';
+import _ from 'underscore';
 
 const initialState = {
   upload: {
@@ -20,7 +22,7 @@ const initialState = {
     delimiter: ',',
     dateFormat: 'MM/DD/YYYY',
     numberFormat: '#,###.##',
-    noHeader: false,
+    noHeader: true,
     setters: {
       dateformat: [
         {value: 'DD-MM-YYYY', label: 'DD-MM-YYYY'}, 
@@ -39,7 +41,14 @@ const initialState = {
       ]
     }
   },
-  map: {},
+  mapping: {
+    columns: [],
+    tables: [],
+    properties: [],
+    currentColumn: '',
+    currentTable: '',
+    currentProperty: '',
+  },
   importer: {},
   currentview: 'upload',
   order: ['upload', 'preview', 'mapping', 'import']
@@ -160,7 +169,7 @@ function formatPreviewHeader(previewdata, check) {
   let headers = [];
   const newdata = [];
 
-  if (check) {
+  if (!check) {
     const headerdataobject = {};
 
     for (let i = 0; i < newpreviewdata.headers.length; i++) {
@@ -317,6 +326,50 @@ export default createReducer(initialState, {
     return {
       ...state,
       preview
+    };
+  },
+  [types.HANDLECSVLOADTABLES] (state) {
+    const mapping = state.mapping;
+    mapping.tables = _.map(tables, function(val, key){
+      return {label: key, value: key, children: []};
+    });
+    mapping.columns = _.map(state.preview.resultdata.headers, function(val){
+      return {label: val, value: val};
+    });
+    return {
+      ...state,
+      mapping
+    }
+  },
+  [types.HANDLECSVMAPCOLUMNCHANGE] (state, action) {
+    const {column} = action.payload;
+    const mapping = state.mapping;
+    mapping.currentColumn = column;
+    return {
+        ...state,
+        mapping
+    };
+  },
+  [types.HANDLECSVMAPTABLECHANGE] (state, action) {
+    const {table} = action.payload;
+    const mapping = state.mapping;
+    mapping.currentTable = table;
+    mapping.currentProperty = '';
+    mapping.properties =  _.map(tables[table], function(val, key){
+      return {label: key, value: key};
+    });
+    return {
+        ...state,
+        mapping
+    };
+  },
+  [types.HANDLECSVMAPPROPERTYCHANGE] (state, action) {
+    const {property} = action.payload;
+    const mapping = state.mapping;
+    mapping.currentProperty = property;
+    return {
+        ...state,
+        mapping
     };
   }
 });

@@ -600,6 +600,8 @@ select.mapping-select {
     border: 1px solid #ccc;
     width: 100%;
     visibility: visible;
+    min-height: 400px;
+    max-height: 400px;
 }
 
 select.mapping-select option {

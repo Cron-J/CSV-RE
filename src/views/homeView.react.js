@@ -51,7 +51,7 @@ class Home extends React.Component {
         this.actions.uploadFile(this.props.csv.upload.fileinfo, this.props.csv.upload.uploaded);
         break;
       case this.preview:
-        this.actions.nextview();
+        this.actions.loadTables();
         break;
       case this.mapping:
 
@@ -70,6 +70,7 @@ class Home extends React.Component {
   onpreviewHeaderChange = (check) => {
     this.actions.changeHeader(check);
   }
+  // preview
   onchangeDelimiter = (delimiter) => {
     this.actions.changeDelimiter(delimiter);
   }
@@ -78,6 +79,16 @@ class Home extends React.Component {
   }
   onchangeNumber = (numberformat) => {
     this.actions.changeNumber(numberformat);
+  }
+  //mapping
+  onColumnChange = (column) => {
+    this.actions.changeColumn(column);
+  }
+  onTableChange = (table) => {
+    this.actions.changeTable(table); 
+  }
+  onPropertyChange = (property) => {
+    this.actions.changeProperty(property);
   }
   renderView = () => {
     switch(this.props.csv.currentview) {
@@ -88,7 +99,13 @@ class Home extends React.Component {
       return <PreviewView data={this.props.csv[this.preview]} onChangeNumber={this.onchangeNumber} onChangeDate={this.onchangeDate} onChangeDelimiter={this.onchangeDelimiter} onChangeHeader={this.onpreviewHeaderChange}/>;
       break;
     case this.mapping:
-      return <MappingView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;
+      return <MappingView data={{
+        map: this.props.csv[this.mapping]
+      }} 
+      onColumnChange={this.onColumnChange}
+      onPropertyChange={this.onPropertyChange}
+      onTableChange={this.onTableChange}
+      onDataSubmit={this.onDataSubmit}/>;
       break;
     case this.import:
       return <ImportView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;

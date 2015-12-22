@@ -1,4 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import {Button, ButtonToolbar, Glyphicon} from 'react-bootstrap';
+import ListBox from './listBox.react';
+import MapSelection from './mapSelection.react';
 
 class MappingView extends Component {
   constructor(props) {
@@ -7,12 +10,104 @@ class MappingView extends Component {
   componentWillReceiveProps(nextProps) {
     this.props = nextProps;
   }
+  onMappingNameChange = () => {
+
+  }
+  onMap = () => {
+    alert('onMap');
+  }
+  onMapAttribute = () => {
+    alert('onMapattribute');
+  }
+  onColumnChange = (column) => {
+    if (this.props.onColumnChange) {
+      this.props.onColumnChange(column);
+    }
+  }
+  onTableChange = (table) => {
+    if (this.props.onTableChange) {
+      this.props.onTableChange(table);
+    }
+  }
+  onPropertyChange = (property) => {
+    if (this.props.onPropertyChange) {
+      this.props.onPropertyChange(property);
+    }
+  }
+  isMapValid = () => {
+    const map = this.props.data.map;
+    if (map.currentColumn.length > 0 && map.currentTable.length > 0  && map.currentProperty.length > 0) {
+      return false;
+    }
+    return true;
+  }
 
   render() {
     return (
       <div className="container">
         <div className="row">
-          Mapping
+          <div className="upload-container">
+            <legend>Mapping</legend>
+          </div>
+          <form className="form-horizontal" role="form" name="mapForm">
+            <div className="form-group">
+              <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
+              <div className="col-sm-3">
+                <input name="mapname" className="form-control"
+                value={this.props.data.mappingName}
+                onChange={this.onMappingNameChange}
+                placeholder="Choose Mapping Name" type="text"
+                required disabled={this.props.data.viewOnly} />
+              </div>
+            </div>
+          </form>
+          <div className="bs-callout bs-callout-info">
+            <p><span className="text-info"><b>Required properties</b> are displayed in blue.</span><br/><span className="text-success"><b>Mapped properties</b> are marked with green color.</span></p>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-3">
+             <h4>Columns from input file <a className="btn btn-default"><span className="glyphicon glyphicon-question-sign"></span></a></h4>
+          </div>
+          <div className="col-md-4 col-md-offset-2">
+            <h4>Tables <a className="btn btn-default"><span className="glyphicon glyphicon-question-sign"></span></a></h4>
+          </div>
+          <div className="col-md-3">
+             <h4>Properties <a className="btn btn-default"><span className="glyphicon glyphicon-question-sign"></span></a></h4>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-3">
+            <ListBox value={this.props.data.map.currentColumn} data={this.props.data.map.columns} onItemSelect={this.onColumnChange}/>
+          </div>
+          <div className="col-md-2">
+            <ButtonToolbar>
+              <Button disabled={this.isMapValid()} bsStyle="default" onClick={this.onMap}>
+                Map <Glyphicon glyph="chevron-right"/> 
+              </Button>
+              <br /><br />
+              <Button bsStyle="default" onClick={this.onMapAttribute}>
+                Auto Add Attribute <Glyphicon glyph="chevron-right"/> 
+              </Button>
+            </ButtonToolbar>
+          </div>
+          <div className="col-md-4">
+            <ListBox value={this.props.data.map.currentTable} data={this.props.data.map.tables} onItemSelect={this.onTableChange}/>
+          </div>
+          <div className="col-md-3">
+            <ListBox value={this.props.data.map.currentProperty} data={this.props.data.map.properties} onItemSelect={this.onPropertyChange}/>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-3">
+          </div>
+          <div className="col-md-2">
+          </div>
+          <div className="col-md-4">
+            <MapSelection  />
+          </div>
+          <div className="col-md-3">
+          </div>
         </div>
       </div>
     );
@@ -20,7 +115,10 @@ class MappingView extends Component {
 }
 
 MappingView.propTypes = {
-
+  data: React.PropTypes.object,
+  onColumnChange: React.PropTypes.func,
+  onPropertyChange: React.PropTypes.func,
+  onTableChange: React.PropTypes.func
 };
 
 export default MappingView;
