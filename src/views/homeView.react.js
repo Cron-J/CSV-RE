@@ -90,8 +90,17 @@ class Home extends React.Component {
   onTableChange = (table) => {
     this.actions.changeTable(table); 
   }
+  onTableSelect = (table) => {
+    this.actions.changeTableIndex(table);
+  }
   onPropertyChange = (property) => {
     this.actions.changeProperty(property);
+  }
+  onMappingAdd = () => {
+    this.actions.addMapping();
+  }
+  onMappingRemove = () => {
+    this.actions.removeMapping();
   }
   renderView = () => {
     switch(this.props.csv.currentview) {
@@ -104,7 +113,10 @@ class Home extends React.Component {
     case this.mapping:
       return <MappingView data={{
         map: this.props.csv[this.mapping]
-      }} 
+      }}
+      onMappingRemove={this.onMappingRemove}
+      onTableSelect = {this.onTableSelect}
+      onMappingAdd={this.onMappingAdd}
       onColumnChange={this.onColumnChange}
       onPropertyChange={this.onPropertyChange}
       onTableChange={this.onTableChange}

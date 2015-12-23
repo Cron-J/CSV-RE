@@ -42,9 +42,12 @@ const initialState = {
     }
   },
   mapping: {
+    defaultTables: [],
+    remove: false,
     columns: [],
     tables: [],
     properties: [],
+    tableObject: '',
     currentColumn: '',
     currentTable: '',
     currentProperty: '',
@@ -216,6 +219,13 @@ function formatPreview (data, delimiter, headercheck, numberformat, fromdateform
   return formatPreviewHeader(previewdata, headercheck);
 }
 
+function getPropertiesoftable(tablename) {
+  const props =  _.map(tables[tablename], function(val, key){
+    return {label: key, value: key};
+  });
+  return props;
+}
+
 export default createReducer(initialState, {
   [types.HANDLECHANGEVIEW](state, action) {
     let { view } = action.payload;
@@ -342,12 +352,19 @@ export default createReducer(initialState, {
   },
   [types.HANDLECSVLOADTABLES] (state) {
     const mapping = state.mapping;
+    mapping.defaultTables = _.map(tables, function(val, key){
+      return {label: key, value: key};
+    });
     mapping.tables = _.map(tables, function(val, key){
       return {label: key, value: key, children: []};
     });
     mapping.columns = _.map(state.preview.resultdata.headers, function(val){
       return {label: val, value: val};
     });
+    let firsttable = '';
+    for (firsttable in tables) break;
+    mapping.currentTable = firsttable;
+    mapping.properties =  getPropertiesoftable(firsttable);
     return {
       ...state,
       mapping
@@ -366,10 +383,10 @@ export default createReducer(initialState, {
     const {table} = action.payload;
     const mapping = state.mapping;
     mapping.currentTable = table;
+    mapping.tableObject = '';
     mapping.currentProperty = '';
-    mapping.properties =  _.map(tables[table], function(val, key){
-      return {label: key, value: key};
-    });
+    mapping.remove = false;
+    mapping.properties =  getPropertiesoftable(table);
     return {
         ...state,
         mapping
@@ -382,6 +399,68 @@ export default createReducer(initialState, {
     return {
         ...state,
         mapping
+    };
+  },
+  [types.HANDLECSVMAPADD] (state) {
+    const mapping = state.mapping;
+    let index = -1;
+    let valueobject = {};
+    for (let i = 0; i < mapping.tables.length; i++) {
+      if (mapping.tables[i].value === mapping.currentTable) {
+        index = i;
+        valueobject = mapping.tables[i];
+        break;
+      }
+    }
+    if (index > -1) {
+      const length = mapping.tables[index].children.length;
+      const tablename = mapping.currentTable + '(' + length + ')';
+      valueobject.children.push({label: tablename, value: tablename});
+      mapping.tables[index] = valueobject;
+      mapping.tableObject = tablename;
+      mapping.remove = true;
+    }
+    return {
+      ...state,
+      mapping
+    };
+  },
+  [types.HANDLECSVMAPREMOVE] (state) {
+    const mapping = state.mapping;
+    for (let i = 0; i < mapping.tables.length; i++) {
+      for (let j = 0; j < mapping.tables[i].children.length; j++) {
+        if (mapping.tables[i].children[j].value === mapping.tableObject) {
+          mapping.tables[i].children.splice(j, 1);
+          break;
+        }
+      }
+    }
+    mapping.tableObject = '';
+    mapping.remove = false;
+    return {
+      ...state,
+      mapping
+    };
+  },
+  [types.HANDLECSVMAPTABLEINDEXCHANGE] (state, action) {
+    const {table} = action.payload;
+    const mapping = state.mapping;
+    let isPrimarytable = false;
+    for (let i = 0; i < mapping.tables.length; i++) {
+      if (mapping.tables[i].value === table) {
+        isPrimarytable = true;
+        break;
+      }
+    }
+    if (!isPrimarytable) {
+      mapping.tableObject = table;
+      mapping.remove = true;
+    } else {
+      mapping.remove = false;
+    }
+    return {
+      ...state,
+      mapping
     };
   }
 });
