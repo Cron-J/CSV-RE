@@ -119,7 +119,7 @@ class MappingView extends Component {
           <div className="col-md-3">
           </div>
         </div>
-        {this.props.data.map.mappingData[0].table}
+        {JSON.stringify(this.props.data.map.mappingData)}
       </div>
     );
   }

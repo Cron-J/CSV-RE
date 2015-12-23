@@ -509,7 +509,6 @@ export default createReducer(initialState, {
     let mapping = state.mapping;
     mapping = mapData(mapping);
     mapping.currentColumn=''; 
-    mapping.currentTable='';
     mapping.currentProperty='';
     return {
       ...state,
@@ -520,7 +519,6 @@ export default createReducer(initialState, {
     let mapping = state.mapping;
     mapping = attributeMapping(mapping);
     mapping.currentColumn=''; 
-    mapping.currentTable='';
     mapping.currentProperty='';
     return {
       ...state,

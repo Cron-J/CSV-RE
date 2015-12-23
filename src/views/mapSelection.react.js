@@ -37,9 +37,9 @@ class MapSelection extends React.Component {
   }
   renderButton = () => {
     if (this.props.remove) {
-      return <Button bsSize="xsmall" bsStyle="primary" onClick={this.onRemove}><Glyphicon glyph="remove"/></Button>;
+      return <Button bsSize="small" bsStyle="primary" onClick={this.onRemove}><Glyphicon glyph="remove"/></Button>;
     } 
-    return <Button bsSize="xsmall" bsStyle="primary" onClick={this.onAdd}><Glyphicon glyph="plus"/></Button>;
+    return <Button bsSize="small" bsStyle="primary" onClick={this.onAdd}><Glyphicon glyph="plus"/></Button>;
   }
   renderValue = () => {
     if (this.props.tableobject && this.props.tableobject.length > 0) {
@@ -50,8 +50,8 @@ class MapSelection extends React.Component {
   render() {
     return (
       <div>
-        <div className="col-md-6">
-          <Input type="select" placeholder="select table" value={this.renderValue} onChange={this.onSelectionChange}>
+        <div className="col-md-8">
+          <Input type="select" placeholder="select table" value={this.renderValue()} onChange={this.onSelectionChange}>
             {this.renderoptions()}
           </Input>
         </div>
