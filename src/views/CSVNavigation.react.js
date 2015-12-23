@@ -9,7 +9,6 @@ class CSVNavigation extends React.Component {
     this.props = nextProps;
   }
   checkDisability = (buttontype) => {
-    console.log("buttontype", buttontype);
     if (this.props.block.indexOf(buttontype) > -1 ){
       return true;
     }

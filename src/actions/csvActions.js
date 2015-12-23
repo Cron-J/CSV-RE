@@ -112,7 +112,6 @@ export function changeDate(dateformat) {
 }
 
 export function resetPreviewSetting() {
-  console.log('---action---');
   return {
     type: types.HANDLEPREVIEWSETTING
   };
