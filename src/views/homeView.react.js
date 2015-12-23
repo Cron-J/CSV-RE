@@ -102,6 +102,12 @@ class Home extends React.Component {
   onMappingRemove = () => {
     this.actions.removeMapping();
   }
+  onMappData = () => {
+    this.actions.dataMapping();
+  }
+  onMapAttribute = () => {
+    this.actions.attributeMapping();
+  }
   renderView = () => {
     switch(this.props.csv.currentview) {
     case this.upload:
@@ -120,7 +126,9 @@ class Home extends React.Component {
       onColumnChange={this.onColumnChange}
       onPropertyChange={this.onPropertyChange}
       onTableChange={this.onTableChange}
-      onDataSubmit={this.onDataSubmit}/>;
+      onDataSubmit={this.onDataSubmit}
+      onMappData={this.onMappData}
+      onMapAttribute={this.onMapAttribute}/>;
       break;
     case this.import:
       return <ImportView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;
@@ -171,6 +179,7 @@ class Home extends React.Component {
 }
 
 function mapStateToProps(state) {
+    console.log('---state---', state);
     const { csv } = state;
     return {
         csv

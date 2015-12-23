@@ -30,7 +30,6 @@ class PreviewView extends Component {
     }
   }
   resetPreviewSetting = (e) => {
-    console.log('ooooo');
     this.props.previewSetting();
   }
   _renderDateOptions = () => {

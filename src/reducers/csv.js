@@ -51,6 +51,8 @@ const initialState = {
     currentColumn: '',
     currentTable: '',
     currentProperty: '',
+    defaultValue: '',
+    mappingData: []
   },
   importer: {},
   currentview: 'upload',
@@ -224,6 +226,46 @@ function getPropertiesoftable(tablename) {
     return {label: key, value: key};
   });
   return props;
+}
+
+function mapData(mapping){
+  mapping.mappingData.push({
+      "userFieldName": mapping.currentColumn,
+      "transformations": [],
+      "table": mapping.currentTable,
+      "field": mapping.currentProperty,
+      "defaultValue": '',
+      "index": '',
+      "instance": '',
+      "isRequired": ''
+    });
+  return mapping;
+}
+
+function attributeMapping(mapping) {
+  const mapField1 = {
+    "userFieldName": mapping.currentColumn,
+    "transformations": [],
+    "field": 'value',
+    "defaultValue": mapping.defaultValue,
+    "index": '',
+    "instance": '',
+    "table": 'attributeValues',
+    "isRequired": true
+  };
+  const mapField2 = {
+    "userFieldName": '"'+mapping.currentColumn+'"',
+    "transformations": [],
+    "field": 'attribute',
+    "defaultValue": mapping.defaultValue,
+    "index": '',
+    "instance": '',
+    "table": 'attributeValues',
+    "isRequired": true
+  };
+  mapping.mappingData.push(mapField1);
+  mapping.mappingData.push(mapField2);
+  return mapping;
 }
 
 export default createReducer(initialState, {
@@ -462,5 +504,27 @@ export default createReducer(initialState, {
       ...state,
       mapping
     };
+  },
+  [types.HANDLECSVMAPPING] (state, action) {
+    let mapping = state.mapping;
+    mapping = mapData(mapping);
+    mapping.currentColumn=''; 
+    mapping.currentTable='';
+    mapping.currentProperty='';
+    return {
+      ...state,
+      mapping
+    }
+  },
+  [types.HANDLEATTRIBUTEMAPPING] (state, action) {
+    let mapping = state.mapping;
+    mapping = attributeMapping(mapping);
+    mapping.currentColumn=''; 
+    mapping.currentTable='';
+    mapping.currentProperty='';
+    return {
+      ...state,
+      mapping
+    }
   }
 });

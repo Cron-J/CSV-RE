@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "postgres",
-    "password": "cronj",
+    "password": "Admin123#",
     "database": "mapping_data",
     "host": "localhost",
     "dialect": "postgres"

@@ -14,10 +14,10 @@ class MappingView extends Component {
 
   }
   onMap = () => {
-    alert('onMap');
+    this.props.onMappData();
   }
   onMapAttribute = () => {
-    alert('onMapattribute');
+    this.props.onMapAttribute();
   }
   onColumnChange = (column) => {
     if (this.props.onColumnChange) {
@@ -119,6 +119,7 @@ class MappingView extends Component {
           <div className="col-md-3">
           </div>
         </div>
+        {this.props.data.map.mappingData[0].table}
       </div>
     );
   }
@@ -131,7 +132,9 @@ MappingView.propTypes = {
   onPropertyChange: React.PropTypes.func,
   onTableChange: React.PropTypes.func,
   onMappingAdd: React.PropTypes.func,
-  onMappingRemove: React.PropTypes.func
+  onMappingRemove: React.PropTypes.func,
+  onMappData: React.PropTypes.func,
+  onMapAttribute: React.PropTypes.func
 };
 
 export default MappingView;

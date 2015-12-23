@@ -21,6 +21,18 @@ export function nextview() {
   };
 }
 
+export function attributeMapping() {
+  return {
+    type: types.HANDLEATTRIBUTEMAPPING
+  };
+}
+
+export function dataMapping() {
+  return {
+    type: types.HANDLECSVMAPPING
+  };
+}
+
 export function addMapping() {
   return {
     type: types.HANDLECSVMAPADD
