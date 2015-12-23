@@ -70,14 +70,7 @@ export function uploadFile(file, uploaded) {
 
 export function loadTables() {
   return {
-    type: types.HANDLECSVLOADTABLES,
-    meta: {
-      transition: () => ({
-        func: () => {
-          return nextview();
-        }
-      })
-    }
+    type: types.HANDLECSVLOADTABLES
   };
 }
 

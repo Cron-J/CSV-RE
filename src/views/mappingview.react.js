@@ -109,7 +109,7 @@ class MappingView extends Component {
             </ButtonToolbar>
           </div>
           <div className="col-md-4">
-            <ListBox selectionlevel={1} value={this.props.data.map.tableObject} data={this.props.data.map.tables} onItemSelect={this.onTableSelect}/>
+            <ListBox selectionlevel={[0, 2]} value={this.props.data.map.tableObject} data={this.props.data.map.tables} onItemSelect={this.onTableSelect}/>
           </div>
           <div className="col-md-3">
             <ListBox value={this.props.data.map.currentProperty} data={this.props.data.map.properties} onItemSelect={this.onPropertyChange}/>
@@ -121,7 +121,7 @@ class MappingView extends Component {
           <div className="col-md-2">
           </div>
           <div className="col-md-4">
-            <MapSelection remove={this.props.data.map.remove} tableobject={this.props.data.map.tableObject} onAdd={this.onAdd} onRemove={this.onRemove} onSelect={this.onMapSelect} value={this.props.data.map.currentTable} data={this.props.data.map.defaultTables} />
+            <MapSelection remove={this.props.data.map.remove} tableobject={this.props.data.map.tableObject} onAdd={this.onAdd} onRemove={this.onRemove} onSelect={this.onMapSelect} value={this.props.data.map.currentTable} data={this.props.data.map.childTables} />
           </div>
           <div className="col-md-3">
           </div>
