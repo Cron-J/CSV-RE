@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import {Button, ButtonToolbar, Glyphicon} from 'react-bootstrap';
+import {Button, ButtonToolbar, Glyphicon, Input} from 'react-bootstrap';
 import ListBox from './listBox.react';
 import MapSelection from './mapSelection.react';
 
@@ -11,7 +11,7 @@ class MappingView extends Component {
     this.props = nextProps;
   }
   onMappingNameChange = () => {
-
+    console.log('kk');
   }
   onMap = () => {
     this.props.onMappData();
@@ -59,6 +59,16 @@ class MappingView extends Component {
     }
     return true;
   }
+  onDefaultValueChange = (e) => {
+    if(e.currentTarget.value.length>0)
+      $('.default-value').addClass('active');
+    else
+      $('.default-value').removeClass('active');
+    this.props.onDefaultValueChange(e.currentTarget.value)
+  }
+  clickForEdit = () => {
+    console.log('clickForEdit');
+  }
   render() {
     return (
       <div className="container">
@@ -97,6 +107,7 @@ class MappingView extends Component {
           <div className="col-md-3">
             <ListBox value={this.props.data.map.currentColumn} data={this.props.data.map.columns} onItemSelect={this.onColumnChange}/>
           </div>
+          
           <div className="col-md-2">
             <ButtonToolbar>
               <Button disabled={this.isMapValid()} bsStyle="default" onClick={this.onMap}>
@@ -117,6 +128,17 @@ class MappingView extends Component {
         </div>
         <div className="row">
           <div className="col-md-3">
+            <div className="btn-group ">
+              <button type="button" className="btn btn-default default-value"  data-toggle="button"><span>Default value</span><span></span></button>
+              <a className="btn btn-default edit-icon"  onClick={this.clickForEdit}><span className="glyphicon glyphicon-pencil"></span></a>
+              <a className="btn btn-default hide ok-icon"><span className="glyphicon glyphicon-ok"></span></a>
+              <a className="btn btn-default"><span className="glyphicon glyphicon-question-sign"></span></a>
+            </div>
+            <form role="form">
+              <div className="form-group">
+                <input type="text" className="form-control" onChange={this.onDefaultValueChange}></input>
+              </div>
+            </form>
           </div>
           <div className="col-md-2">
           </div>
@@ -124,9 +146,9 @@ class MappingView extends Component {
             <MapSelection remove={this.props.data.map.remove} tableobject={this.props.data.map.tableObject} onAdd={this.onAdd} onRemove={this.onRemove} onSelect={this.onMapSelect} value={this.props.data.map.currentTable} data={this.props.data.map.defaultTables} />
           </div>
           <div className="col-md-3">
+            
           </div>
         </div>
-        {JSON.stringify(this.props.data.map.mappingData)}
       </div>
     );
   }
@@ -141,7 +163,8 @@ MappingView.propTypes = {
   onMappingAdd: React.PropTypes.func,
   onMappingRemove: React.PropTypes.func,
   onMappData: React.PropTypes.func,
-  onMapAttribute: React.PropTypes.func
+  onMapAttribute: React.PropTypes.func,
+  onDefaultValueChange: React.PropTypes.func
 };
 
 export default MappingView;

@@ -108,6 +108,9 @@ class Home extends React.Component {
   onMapAttribute = () => {
     this.actions.attributeMapping();
   }
+  onDefaultValueChange = (defaultValue) => {
+    this.actions.defaultValueChange(defaultValue);
+  }
   renderView = () => {
     switch(this.props.csv.currentview) {
     case this.upload:
@@ -128,7 +131,8 @@ class Home extends React.Component {
       onTableChange={this.onTableChange}
       onDataSubmit={this.onDataSubmit}
       onMappData={this.onMappData}
-      onMapAttribute={this.onMapAttribute}/>;
+      onMapAttribute={this.onMapAttribute}
+      onDefaultValueChange={this.onDefaultValueChange}/>;
       break;
     case this.import:
       return <ImportView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;

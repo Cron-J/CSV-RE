@@ -234,7 +234,7 @@ function mapData(mapping){
       "transformations": [],
       "table": mapping.currentTable,
       "field": mapping.currentProperty,
-      "defaultValue": '',
+      "defaultValue": mapping.defaultValue,
       "index": '',
       "instance": '',
       "isRequired": ''
@@ -522,6 +522,15 @@ export default createReducer(initialState, {
     mapping.currentColumn=''; 
     mapping.currentTable='';
     mapping.currentProperty='';
+    return {
+      ...state,
+      mapping
+    }
+  },
+  [types.HANDLEDEFAULTVALUECHANGE] (state, action) {
+    const mapping = state.mapping;
+    mapping.defaultValue = action.payload.defaultValue;
+    mapping.currentColumn = action.payload.defaultValue;
     return {
       ...state,
       mapping
