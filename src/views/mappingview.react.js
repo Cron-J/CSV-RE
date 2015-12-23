@@ -52,6 +52,13 @@ class MappingView extends Component {
     }
     return true;
   }
+  isAutoAttributeMapValid = () => {
+    const map = this.props.data.map;
+    if (map.currentColumn.length > 0) {
+      return false;
+    }
+    return true;
+  }
   render() {
     return (
       <div className="container">
@@ -96,7 +103,7 @@ class MappingView extends Component {
                 Map <Glyphicon glyph="chevron-right"/> 
               </Button>
               <br /><br />
-              <Button bsStyle="default" onClick={this.onMapAttribute}>
+              <Button disabled={this.isAutoAttributeMapValid()} bsStyle="default" onClick={this.onMapAttribute}>
                 Auto Add Attribute <Glyphicon glyph="chevron-right"/> 
               </Button>
             </ButtonToolbar>
@@ -119,7 +126,7 @@ class MappingView extends Component {
           <div className="col-md-3">
           </div>
         </div>
-        {this.props.data.map.mappingData[0].table}
+        {JSON.stringify(this.props.data.map.mappingData)}
       </div>
     );
   }
