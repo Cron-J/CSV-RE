@@ -81,7 +81,6 @@ class Home extends React.Component {
     this.actions.changeNumber(numberformat);
   }
   previewSetting = () => {
-    console.log('---home---');
     this.actions.resetPreviewSetting();
   }
   //mapping
@@ -173,7 +172,6 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
     const { csv } = state;
-    console.log('--state--', state);
     return {
         csv
     };
