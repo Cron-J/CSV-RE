@@ -27,6 +27,14 @@ export function attributeMapping() {
   };
 }
 
+export function defaultValueChange(defaultValue) {
+  return {
+    type: types.HANDLEDEFAULTVALUECHANGE,
+    payload: {
+      defaultValue
+    }
+  };
+}
 export function dataMapping() {
   return {
     type: types.HANDLECSVMAPPING
