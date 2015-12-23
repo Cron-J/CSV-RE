@@ -553,10 +553,10 @@ export default createReducer(initialState, {
   },
   [types.HANDLECSVMAPPING] (state, action) {
     let mapping = state.mapping;
-    mapData(mapping);
+    mapping = mapData(mapping);
     mapping.currentColumn=''; 
     mapping.currentProperty='';
-    console.log('mapping data-->', mapping.mappingData);
+    mapping.defaultValue = '';
     return {
       ...state,
       mapping
@@ -575,7 +575,6 @@ export default createReducer(initialState, {
   [types.HANDLEDEFAULTVALUECHANGE] (state, action) {
     const mapping = state.mapping;
     mapping.defaultValue = action.payload.defaultValue;
-    mapping.currentColumn = action.payload.defaultValue;
     return {
       ...state,
       mapping
