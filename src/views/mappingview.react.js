@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {Button, ButtonToolbar, Glyphicon, Input} from 'react-bootstrap';
 import ListBox from './listBox.react';
 import MapSelection from './mapSelection.react';
-import CustomTable from './customTable.react';
+import MappingTable from './mappingtable.react';
 
 class MappingView extends Component {
   constructor(props) {
@@ -67,6 +67,11 @@ class MappingView extends Component {
   }
   clickForEdit = () => {
     console.log('clickForEdit');
+  }
+  onMapdataRemove = (rowid) => {
+    if (this.props.onMapDataRemove) {
+      this.props.onMapDataRemove(rowid);
+    }
   }
   render() {
     return (
@@ -148,16 +153,7 @@ class MappingView extends Component {
           </div>
         </div>
         <div className="row">
-          <CustomTable headers={[
-              "userFieldName",
-              "transformations",
-              "table",
-              "field",
-              "defaultValue",
-              "index",
-              "instance",
-              "isRequired",
-            ]} data={this.props.data.map.mappingData} />
+          <MappingTable onRemove={this.onMapdataRemove} data={this.props.data.map.mappingData} />
         </div>
       </div>
     );
@@ -173,6 +169,7 @@ MappingView.propTypes = {
   onMappingAdd: React.PropTypes.func,
   onMappingRemove: React.PropTypes.func,
   onMappData: React.PropTypes.func,
+  onMapDataRemove: React.PropTypes.func,
   onMapAttribute: React.PropTypes.func,
   onDefaultValueChange: React.PropTypes.func
 };

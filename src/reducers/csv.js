@@ -267,7 +267,7 @@ function mapData(mapping){
       "table": mapping.currentTable,
       "field": mapping.currentProperty,
       "defaultValue": mapping.defaultValue,
-      "index": '',
+      "index": mapping.mappingData.length + 1,
       "instance": '',
       "isRequired": ''
     });
@@ -280,7 +280,7 @@ function attributeMapping(mapping) {
     "transformations": [],
     "field": 'value',
     "defaultValue": mapping.defaultValue,
-    "index": '',
+    "index": mapping.mappingData.length + 1,
     "instance": '',
     "table": 'attributeValues',
     "isRequired": true
@@ -290,7 +290,7 @@ function attributeMapping(mapping) {
     "transformations": [],
     "field": 'attribute',
     "defaultValue": mapping.defaultValue,
-    "index": '',
+    "index": mapping.mappingData.length + 2,
     "instance": '',
     "table": 'attributeValues',
     "isRequired": true
@@ -575,6 +575,22 @@ export default createReducer(initialState, {
   [types.HANDLEDEFAULTVALUECHANGE] (state, action) {
     const mapping = state.mapping;
     mapping.defaultValue = action.payload.defaultValue;
+    return {
+      ...state,
+      mapping
+    }
+  },
+  [types.HANDLECSVMAPDATAREMOVE] (state, action) {
+    const { rowid } = action.payload;
+    const mapping = state.mapping;
+    let index = -1;
+    for (let i = 0; i < mapping.mappingData.length; i++) {
+      if (mapping.mappingData[i].index === rowid) {
+        index = i;
+        break;
+      }
+    }
+    mapping.mappingData.splice(index, 1);
     return {
       ...state,
       mapping

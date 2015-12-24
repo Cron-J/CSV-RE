@@ -105,6 +105,9 @@ class Home extends React.Component {
   onMappData = () => {
     this.actions.dataMapping();
   }
+  onMapDataRemove = (rowid) => {
+    this.actions.removeMapData(rowid);
+  }
   onMapAttribute = () => {
     this.actions.attributeMapping();
   }
@@ -132,6 +135,7 @@ class Home extends React.Component {
       onDataSubmit={this.onDataSubmit}
       onMappData={this.onMappData}
       onMapAttribute={this.onMapAttribute}
+      onMapDataRemove = {this.onMapDataRemove}
       onDefaultValueChange={this.onDefaultValueChange}/>;
       break;
     case this.import:

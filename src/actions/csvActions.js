@@ -53,6 +53,15 @@ export function removeMapping() {
   }
 }
 
+export function removeMapData(rowid) {
+  return {
+    type: types.HANDLECSVMAPDATAREMOVE,
+    payload: {
+      rowid
+    }
+  }
+}
+
 export function previousview() {
   return {
     type: types.HANDLECSVPREVIOUSVIEW
