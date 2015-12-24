@@ -652,7 +652,7 @@ export default createReducer(initialState, {
       ...state,
       mapping
     };
-  }
+  },
   [types.HANDLECSVMAPTRANSFORMATION] (state, action) {
     const {rowid, transformation} = action.payload;
     const mapping = state.mapping;
