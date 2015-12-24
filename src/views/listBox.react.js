@@ -8,10 +8,11 @@ class ListBox extends Component {
     this.props = nextProps;
   }
   selectItem = (e) => {
-    e.preventDefault();
   	if (this.props.onItemSelect) {
   		this.props.onItemSelect(e.target.value);
-  	}
+  	} else {
+      e.preventDefault();
+    }
   }
   isSelectionValid = (level) => {
     if (this.props.selectionlevel) {

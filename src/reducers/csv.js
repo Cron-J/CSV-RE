@@ -561,7 +561,8 @@ export default createReducer(initialState, {
     };
   },
   [types.HANDLECSVMAPTABLEINDEXCHANGE] (state, action) {
-    const {table} = action.payload;
+    let {table} = action.payload;
+    table = table ? table : '';
     const mapping = state.mapping;
     let isPrimarytable = false;
     for (let i = 0; i < mapping.tables.length; i++) {
@@ -575,7 +576,7 @@ export default createReducer(initialState, {
       mapping.tableObject = table;
       const tableName = getTableName(mapping.childTables, table);
       getPropertiesoftable(tableName, mapping);
-      mapping.remove = true;
+      mapping.remove = table.length > 0 ? true : false;
     } else {
       mapping.tableObject = mapping.tables[0].value;
       getPropertiesoftable(mapping.tableObject, mapping);
