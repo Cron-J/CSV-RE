@@ -53,7 +53,10 @@ const initialState = {
     currentTable: '',
     currentProperty: '',
     defaultValue: '',
-    mappingData: []
+    mappingData: [],
+    mappedColumn: [],
+    mappedProperty: [],
+    requiredProperty: [],
   },
   synonymsList: [],
   importer: {},
@@ -235,20 +238,24 @@ function getProps (table, tablename, callback) {
   }
 }
 
-function getPropertiesoftable(tablename) {
+function getPropertiesoftable(tablename, mapping) {
   let table = {};
   let props = [];
+  let required = [];
   getProps(tables, tablename, function(tableObject){
     table = tableObject
   });
   
   _.each(table, function(val, key){
+    if (val.isRequired) {
+      required.push(key);
+    }
     if (key != 'children') {
       props.push({label: key, value: key});
     }
   });
-
-  return props;
+  mapping.properties = props;
+  mapping.requiredProperty = required;
 }
 
 function getTableName (childTables, tablename) {
@@ -263,6 +270,9 @@ function getTableName (childTables, tablename) {
 }
 
 function mapData(mapping){
+  mapping.mappedColumn.push(mapping.currentColumn);
+  mapping.mappedProperty.push(mapping.currentProperty);
+
   mapping.mappingData.push({
       "userFieldName": mapping.currentColumn,
       "transformations": [],
@@ -471,7 +481,7 @@ export default createReducer(initialState, {
     state.currentview = state.order[state.order.indexOf(state.currentview) + 1];
     
     mapping.currentTable = firsttable;
-    mapping.properties =  getPropertiesoftable(firsttable);
+    getPropertiesoftable(firsttable, mapping);
     return {
       ...state,
       mapping
@@ -493,7 +503,7 @@ export default createReducer(initialState, {
     mapping.tableObject = '';
     mapping.currentProperty = '';
     mapping.remove = false;
-    mapping.properties =  getPropertiesoftable(table);
+    getPropertiesoftable(table, mapping);
     return {
         ...state,
         mapping
@@ -564,11 +574,11 @@ export default createReducer(initialState, {
     if (!isPrimarytable) {
       mapping.tableObject = table;
       const tableName = getTableName(mapping.childTables, table);
-      mapping.properties = getPropertiesoftable(tableName);
+      getPropertiesoftable(tableName, mapping);
       mapping.remove = true;
     } else {
       mapping.tableObject = mapping.tables[0].value;
-      mapping.properties = getPropertiesoftable(mapping.tableObject);
+      getPropertiesoftable(mapping.tableObject, mapping);
       mapping.remove = false;
     }
     
@@ -642,5 +652,14 @@ export default createReducer(initialState, {
       ...state,
       mapping
     };
+  }
+  [types.HANDLECSVMAPTRANSFORMATION] (state, action) {
+    const {rowid, transformation} = action.payload;
+    const mapping = state.mapping;
+    mapping.mappingData[rowid].transformations = transformation;
+    return {
+      ...state,
+      mapping
+    }
   }
 });

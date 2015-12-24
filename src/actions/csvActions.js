@@ -124,6 +124,16 @@ export function removeMapData(rowid) {
   }
 }
 
+export function updateMapTransformation(rowid, transition) {
+  return {
+    type: types.HANDLECSVMAPTRANSFORMATION,
+    payload: {
+      rowid,
+      transition
+    }
+  }
+}
+
 export function previousview() {
   return {
     type: types.HANDLECSVPREVIOUSVIEW
