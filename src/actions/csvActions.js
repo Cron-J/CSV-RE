@@ -21,6 +21,15 @@ export function nextview() {
   };
 }
 
+export function handleSynonymsList() {
+  return {
+    types: [types.GETSYNONYMSLIST, types.GETSYNONYMSLISTSUCCESS, types.GETSYNONYMSLISTERROR],
+    payload: {
+      response: api.synonymsList().then(response => response)
+    }
+  };
+}
+
 export function attributeMapping() {
   return {
     type: types.HANDLEATTRIBUTEMAPPING

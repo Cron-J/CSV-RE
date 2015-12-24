@@ -183,7 +183,6 @@ class Home extends React.Component {
 }
 
 function mapStateToProps(state) {
-    console.log('---state---', state);
     const { csv } = state;
     return {
         csv

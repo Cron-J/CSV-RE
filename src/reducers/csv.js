@@ -535,5 +535,12 @@ export default createReducer(initialState, {
       ...state,
       mapping
     }
+  },
+  [types.GETSYNONYMSLISTSUCCESS](state, action) {
+    const { data } = action.payload.response;
+    return {
+      ...state,
+      synonymsList: action.payload.response.result
+    };
   }
 });

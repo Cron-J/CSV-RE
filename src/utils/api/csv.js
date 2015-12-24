@@ -21,6 +21,13 @@ const utils = {
     let req = request1.post('http://localhost:4000/api/csv/uploadCSV');
     req.attach(file.name, file);
     return req.end();
+  },
+  synonymsList: () => {
+    return request({
+      url: 'http://localhost:4000/api/csv/getSynonyms',
+      method: 'GET',
+      json: true
+    })
   }
 }
 export default utils;
