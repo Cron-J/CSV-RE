@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {Button, ButtonToolbar, Glyphicon, Input} from 'react-bootstrap';
 import ListBox from './listBox.react';
 import MapSelection from './mapSelection.react';
+import MappingTable from './mappingtable.react';
 
 class MappingView extends Component {
   constructor(props) {
@@ -60,14 +61,17 @@ class MappingView extends Component {
     return true;
   }
   onDefaultValueChange = (e) => {
-    if(e.currentTarget.value.length>0)
-      $('.default-value').addClass('active');
-    else
-      $('.default-value').removeClass('active');
-    this.props.onDefaultValueChange(e.currentTarget.value)
+    if (this.props.onDefaultValueChange) {
+      this.props.onDefaultValueChange(e.currentTarget.value);
+    }
   }
   clickForEdit = () => {
     console.log('clickForEdit');
+  }
+  onMapdataRemove = (rowid) => {
+    if (this.props.onMapDataRemove) {
+      this.props.onMapDataRemove(rowid);
+    }
   }
   render() {
     return (
@@ -120,7 +124,7 @@ class MappingView extends Component {
             </ButtonToolbar>
           </div>
           <div className="col-md-4">
-            <ListBox selectionlevel={1} value={this.props.data.map.tableObject} data={this.props.data.map.tables} onItemSelect={this.onTableSelect}/>
+            <ListBox selectionlevel={[0, 2]} value={this.props.data.map.tableObject} data={this.props.data.map.tables} onItemSelect={this.onTableSelect}/>
           </div>
           <div className="col-md-3">
             <ListBox value={this.props.data.map.currentProperty} data={this.props.data.map.properties} onItemSelect={this.onPropertyChange}/>
@@ -136,18 +140,20 @@ class MappingView extends Component {
             </div>
             <form role="form">
               <div className="form-group">
-                <input type="text" className="form-control" onChange={this.onDefaultValueChange}></input>
+                <input type="text" className="form-control" value={this.props.data.map.defaultValue} onChange={this.onDefaultValueChange}></input>
               </div>
             </form>
           </div>
           <div className="col-md-2">
           </div>
           <div className="col-md-4">
-            <MapSelection remove={this.props.data.map.remove} tableobject={this.props.data.map.tableObject} onAdd={this.onAdd} onRemove={this.onRemove} onSelect={this.onMapSelect} value={this.props.data.map.currentTable} data={this.props.data.map.defaultTables} />
+            <MapSelection remove={this.props.data.map.remove} tableobject={this.props.data.map.tableObject} onAdd={this.onAdd} onRemove={this.onRemove} onSelect={this.onMapSelect} value={this.props.data.map.currentTable} data={this.props.data.map.childTables} />
           </div>
           <div className="col-md-3">
-            
           </div>
+        </div>
+        <div className="row">
+          <MappingTable onRemove={this.onMapdataRemove} data={this.props.data.map.mappingData} />
         </div>
       </div>
     );
@@ -163,6 +169,7 @@ MappingView.propTypes = {
   onMappingAdd: React.PropTypes.func,
   onMappingRemove: React.PropTypes.func,
   onMappData: React.PropTypes.func,
+  onMapDataRemove: React.PropTypes.func,
   onMapAttribute: React.PropTypes.func,
   onDefaultValueChange: React.PropTypes.func
 };
