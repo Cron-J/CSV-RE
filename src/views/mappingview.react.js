@@ -46,6 +46,11 @@ class MappingView extends Component {
   onRemove = () => {
     this.props.onMappingRemove();
   }
+  onsaveTranformation = (row, transformation) => {
+    if (this.props.onsaveTranformation) {
+      this.props.onsaveTranformation(row, transformation);
+    }
+  }
   isMapValid = () => {
     const map = this.props.data.map;
     if (map.currentColumn.length > 0 && map.tableObject.length > 0  && map.currentProperty.length > 0) {
@@ -153,7 +158,7 @@ class MappingView extends Component {
           </div>
         </div>
         <div className="row">
-          <MappingTable onRemove={this.onMapdataRemove} data={this.props.data.map.mappingData} />
+          <MappingTable onsaveTranformation={this.onsaveTranformation} onRemove={this.onMapdataRemove} data={this.props.data.map.mappingData} />
         </div>
       </div>
     );
@@ -171,7 +176,8 @@ MappingView.propTypes = {
   onMappData: React.PropTypes.func,
   onMapDataRemove: React.PropTypes.func,
   onMapAttribute: React.PropTypes.func,
-  onDefaultValueChange: React.PropTypes.func
+  onDefaultValueChange: React.PropTypes.func,
+  onsaveTranformation: React.PropTypes.func
 };
 
 export default MappingView;

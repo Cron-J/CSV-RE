@@ -114,6 +114,9 @@ class Home extends React.Component {
   onDefaultValueChange = (defaultValue) => {
     this.actions.defaultValueChange(defaultValue);
   }
+  onsaveTranformation = (rowid, transformation) => {
+    this.actions.updateMapTransformation(rowid, transformation);
+  }
   renderView = () => {
     switch(this.props.csv.currentview) {
     case this.upload:
@@ -126,6 +129,7 @@ class Home extends React.Component {
       return <MappingView data={{
         map: this.props.csv[this.mapping]
       }}
+      onsaveTranformation = {this.onsaveTranformation}
       onMappingRemove={this.onMappingRemove}
       onTableSelect = {this.onTableSelect}
       onMappingAdd={this.onMappingAdd}
