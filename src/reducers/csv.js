@@ -583,14 +583,10 @@ export default createReducer(initialState, {
   [types.HANDLECSVMAPDATAREMOVE] (state, action) {
     const { rowid } = action.payload;
     const mapping = state.mapping;
-    let index = -1;
+    mapping.mappingData.splice(rowid-1, 1);
     for (let i = 0; i < mapping.mappingData.length; i++) {
-      if (mapping.mappingData[i].index === rowid) {
-        index = i;
-        break;
-      }
+      mapping.mappingData[i].index = i+1;
     }
-    mapping.mappingData.splice(index, 1);
     return {
       ...state,
       mapping
