@@ -7,12 +7,13 @@ import MappingTable from './mappingtable.react';
 class MappingView extends Component {
   constructor(props) {
       super(props);
+      this.props.onAutoMapping();
   }
   componentWillReceiveProps(nextProps) {
     this.props = nextProps;
   }
-  onMappingNameChange = () => {
-    console.log('kk');
+  onMappingNameChange = (e) => {
+    this.props.onChnageMappingName(e.currentTarget.value);
   }
   onMap = () => {
     this.props.onMappData();
@@ -65,12 +66,14 @@ class MappingView extends Component {
       this.props.onDefaultValueChange(e.currentTarget.value);
     }
   }
-  clickForEdit = () => {
-    console.log('clickForEdit');
-  }
   onMapdataRemove = (rowid) => {
     if (this.props.onMapDataRemove) {
       this.props.onMapDataRemove(rowid);
+    }
+  }
+  onSave = () => {
+    if(this.props.onSaveMappingData) {
+      this.props.onSaveMappingData(this.props.data.map);
     }
   }
   render() {
@@ -171,7 +174,9 @@ MappingView.propTypes = {
   onMappData: React.PropTypes.func,
   onMapDataRemove: React.PropTypes.func,
   onMapAttribute: React.PropTypes.func,
-  onDefaultValueChange: React.PropTypes.func
+  onDefaultValueChange: React.PropTypes.func,
+  onSaveMappingData: React.PropTypes.func,
+  onChnageMappingName: React.PropTypes.func
 };
 
 export default MappingView;

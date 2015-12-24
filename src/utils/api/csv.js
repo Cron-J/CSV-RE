@@ -28,6 +28,14 @@ const utils = {
       method: 'GET',
       json: true
     })
+  },
+  saveMappedData: (data) => {
+    return request({
+      url: "http://localhost:4000/api/csv",
+      method: 'POST',
+      json: true,
+      body: data
+    });
   }
 }
 export default utils;

@@ -42,6 +42,7 @@ const initialState = {
     }
   },
   mapping: {
+    mappingName: '',
     childTables: [],
     remove: false,
     columns: [],
@@ -54,6 +55,7 @@ const initialState = {
     defaultValue: '',
     mappingData: []
   },
+  synonymsList: [],
   importer: {},
   currentview: 'upload',
   order: ['upload', 'preview', 'mapping', 'import']
@@ -300,6 +302,30 @@ function attributeMapping(mapping) {
   return mapping;
 }
 
+function autoMapping(currentState) {
+  let synonymsList = currentState.synonymsList;
+    for(let i in currentState.mapping.columns){
+      for( let index in synonymsList){
+        for(let indx in synonymsList[index].synonyms){
+          let column =  currentState.mapping.columns[i].value;
+          if(synonymsList[index].synonyms[indx] === column.toLowerCase()){
+            currentState.mapping.mappingData.push({
+              "userFieldName": column,
+              "transformations": [],
+              "table": synonymsList[index].tableName,
+              "field": index,
+              "defaultValue": currentState.mapping.defaultValue,
+              "index": currentState.mapping.mappingData.length + 1,
+              "instance": '',
+              "isRequired": ''
+            });
+          }
+        }
+      }
+      break;
+    }
+  return currentState.mapping;
+}
 export default createReducer(initialState, {
   [types.HANDLECHANGEVIEW](state, action) {
     let { view } = action.payload;
@@ -592,11 +618,29 @@ export default createReducer(initialState, {
       mapping
     }
   },
-  [types.GETSYNONYMSLISTSUCCESS](state, action) {
+  [types.GETSYNONYMSLISTSUCCESS] (state, action) {
     const { data } = action.payload.response;
     return {
       ...state,
       synonymsList: action.payload.response.result
+    };
+  },
+  [types.HANDLEAUTOMAPPING] (state, action) {
+    const mapping = autoMapping(state);
+    return {
+      ...state,
+      mapping
+    };
+  },
+  [types.SAVEMAPPEDDATASUCCESS] (state, action) {
+    console.log('data saved');
+  },
+  [types.HANDLEMAPPINGNAME] (state, action) {
+    const mapping = state.mapping;
+    mapping.mappingName = action.payload.mappingName;
+    return {
+      ...state,
+      mapping
     };
   }
 });

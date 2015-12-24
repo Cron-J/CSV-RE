@@ -605,6 +605,9 @@ var tableschema = {'product': {
   API to create the Mapping.
 */
 exports.create =  function(req,res){
+    console.log('mapping data', req.body);
+}
+exports.createe =  function(req,res){
     let findTableInSchema = function(product,obj,mapper,schema){
         /* {
          "userFieldName": "Product No",

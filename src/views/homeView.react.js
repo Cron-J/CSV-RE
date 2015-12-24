@@ -14,13 +14,14 @@ class Home extends React.Component {
     super(props);
     const { dispatch } = this.props;
     this.actions = bindActionCreators(CSVActions, dispatch);
+    this.actions.handleSynonymsList();
     // views
     this.upload = 'upload';
     this.preview = 'preview';
     this.mapping = 'mapping';
     this.import = 'import';
   }
-  componentWillReceiveProps(nextProps) {
+  mponentWillReceiveProps(nextProps) {
     this.props = nextProps;
   }
   onNavigate = (view) => {
@@ -114,6 +115,15 @@ class Home extends React.Component {
   onDefaultValueChange = (defaultValue) => {
     this.actions.defaultValueChange(defaultValue);
   }
+  onAutoMapping = () => {
+    this.actions.autoMapping();
+  }
+  onSaveMappingData = (data) => {
+    this.actions.saveMappedData(data);
+  }
+  onChnageMappingName = (data) => {
+    this.actions.handleMappingName(data);
+  }
   renderView = () => {
     switch(this.props.csv.currentview) {
     case this.upload:
@@ -136,7 +146,10 @@ class Home extends React.Component {
       onMappData={this.onMappData}
       onMapAttribute={this.onMapAttribute}
       onMapDataRemove = {this.onMapDataRemove}
-      onDefaultValueChange={this.onDefaultValueChange}/>;
+      onDefaultValueChange={this.onDefaultValueChange}
+      onAutoMapping={this.onAutoMapping}
+      onSaveMappingData = {this.onSaveMappingData}
+      onChnageMappingName = {this.onChnageMappingName}/>;
       break;
     case this.import:
       return <ImportView data={this.props.csv[this.upload]} onDataSubmit={this.onDataSubmit}/>;
@@ -188,6 +201,7 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
     const { csv } = state;
+    console.log(state);
     return {
         csv
     };

@@ -15,12 +15,65 @@ export function startFileupload(file) {
   };
 }
 
+export function handleMappingName(mappingName) {
+  return {
+    type: types.HANDLEMAPPINGNAME,
+    payload: {
+      mappingName
+    }
+  };
+}
 export function nextview() {
   return {
     type: types.HANDLECSVNEXTVIEW
   };
 }
 
+export function saveMappedData(data) {
+  if(data.id) {
+    return updateMappedData(data);
+  } else {
+    return createMappedData(data);
+  }
+}
+
+function createMappedData(data) {
+  return {
+    types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
+    payload: {
+      response: api.saveMappedData(data).then(response => response)
+    }
+  };
+}
+function updateMappedData(data) {
+  return {
+    types: [types.UPDATEMAPPING, types.UPDATEMAPPINGSUCCESS, types.UPDATEMAPPINGFAIL],
+    payload: {
+      response: api.updateMapping(data).then(response => response),
+      data
+    },
+    meta: {
+      transition: () => ({
+        onSuccess: (response) =>({
+          func: () =>{
+            return messageActions.showmessages('sucessfully mapping has updated', 'success');
+          }
+        }),
+        onFail: (error) =>({
+          func: () =>{
+            return messageActions.showmessages(error, 'error');
+          }
+        })
+      })
+    }
+  };
+}
+
+export function autoMapping() {
+  return {
+    type: types.HANDLEAUTOMAPPING
+  };
+}
 export function handleSynonymsList() {
   return {
     types: [types.GETSYNONYMSLIST, types.GETSYNONYMSLISTSUCCESS, types.GETSYNONYMSLISTERROR],
