@@ -22,6 +22,12 @@ class ListBox extends Component {
     }
     return true;
   }
+  getHiglightStyle = (value) => {
+    if (this.props.highlightItems && this.props.highlightItems[value]) {
+      return this.props.highlightItems[value];
+    }
+    return {};
+  }
   renderChild = (data, value, level) => {
   	let children = [];
   	if (data) {
@@ -33,10 +39,12 @@ class ListBox extends Component {
           style.fontSize = 17;
           style.fontStyle = 'italic';
         }
+        const highlightstyle = this.getHiglightStyle(data[i].value);
+        const newstyle = {...style, ...highlightstyle}
         if (!isValidSelection) {
           children.push(<optgroup label={data[i].value}></optgroup>);
         } else {
-          children.push(<option value={data[i].value} style={style}>{data[i].label}</option>);
+          children.push(<option value={data[i].value} style={newstyle}>{data[i].label}</option>);
         }
         children = children.concat(this.renderChild(data[i].children, value, level+1));
 	  	}
@@ -56,7 +64,8 @@ ListBox.propTypes = {
   data: React.PropTypes.arrayOf(React.PropTypes.string),
   value: React.PropTypes.string,
   onItemSelect: React.PropTypes.func,
-  selectionlevel: React.PropTypes.arrayOf(React.PropTypes.number)
+  selectionlevel: React.PropTypes.arrayOf(React.PropTypes.number),
+  highlightItems: React.PropTypes.arrayOf(React.PropTypes.object)
 };
 
 export default ListBox;

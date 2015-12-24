@@ -3,6 +3,7 @@ import {Button, ButtonToolbar, Glyphicon, Input} from 'react-bootstrap';
 import ListBox from './listBox.react';
 import MapSelection from './mapSelection.react';
 import MappingTable from './mappingtable.react';
+import _ from 'underscore';
 
 class MappingView extends Component {
   constructor(props) {
@@ -78,6 +79,26 @@ class MappingView extends Component {
       this.props.onMapDataRemove(rowid);
     }
   }
+  renderColumnHiglight = () => {
+    let object = {};
+    _.each(this.props.data.map.mappedColumn, function(val, index){
+      object[val] = {color: '#3c763d'};
+    });
+    return object;
+  }
+  renderPropertyHighlight = () => {
+    let object = {};
+    const mappedProperty = this.props.data.map.mappedProperty;
+    _.each(this.props.data.map.mappedProperty, function(val, index){
+      object[val] = {color: '#3c763d'};
+    });
+    _.each(this.props.data.map.requiredProperty, function(val, index){
+      if (!mappedProperty[val]) {
+        object[val] = {color: '#31708f'};
+      }
+    });
+    return object;
+  }
   render() {
     return (
       <div className="container">
@@ -114,7 +135,7 @@ class MappingView extends Component {
         </div>
         <div className="row">
           <div className="col-md-3">
-            <ListBox value={this.props.data.map.currentColumn} data={this.props.data.map.columns} onItemSelect={this.onColumnChange}/>
+            <ListBox highlightItems={this.renderColumnHiglight()} value={this.props.data.map.currentColumn} data={this.props.data.map.columns} onItemSelect={this.onColumnChange}/>
           </div>
           
           <div className="col-md-2">
@@ -132,7 +153,7 @@ class MappingView extends Component {
             <ListBox selectionlevel={[0, 2]} value={this.props.data.map.tableObject} data={this.props.data.map.tables} onItemSelect={this.onTableSelect}/>
           </div>
           <div className="col-md-3">
-            <ListBox value={this.props.data.map.currentProperty} data={this.props.data.map.properties} onItemSelect={this.onPropertyChange}/>
+            <ListBox highlightItems={this.renderPropertyHighlight()} value={this.props.data.map.currentProperty} data={this.props.data.map.properties} onItemSelect={this.onPropertyChange}/>
           </div>
         </div>
         <div className="row">
