@@ -36,6 +36,28 @@ const utils = {
       json: true,
       body: data
     });
+  },
+  getMappingList: () => {
+    return request({
+      url: 'http://localhost:4000/api/csv/getMappingList',
+      method: 'GET',
+      json: true
+    });
+  },
+  getMapping: (id) => {
+    return request({
+      url: 'http://localhost:4000/api/csv/getMapping/' + id,
+      method: 'GET',
+      json: true
+    });
+  },
+  updateMapping: (data, id) => {
+    return request({
+      url: 'http://localhost:4000/api/csv/updateMapping/' + id + '/' + 1,
+      method: 'PUT',
+      json: true,
+      body: data
+    })
   }
 }
 export default utils;

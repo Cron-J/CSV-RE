@@ -8,7 +8,7 @@ import _ from 'underscore';
 class MappingView extends Component {
   constructor(props) {
       super(props);
-      this.props.onAutoMapping();
+      //this.props.onAutoMapping();
   }
   componentWillReceiveProps(nextProps) {
     this.props = nextProps;
@@ -17,6 +17,7 @@ class MappingView extends Component {
     this.props.onChnageMappingName(e.currentTarget.value);
   }
   onMap = () => {
+    $('.default-value').removeClass('active');
     this.props.onMappData();
   }
   onMapAttribute = () => {
@@ -68,6 +69,10 @@ class MappingView extends Component {
     return true;
   }
   onDefaultValueChange = (e) => {
+    if(e.currentTarget.value.length>0)
+      $('.default-value').addClass('active');
+    else
+      $('.default-value').removeClass('active');
     if (this.props.onDefaultValueChange) {
       this.props.onDefaultValueChange(e.currentTarget.value);
     }
@@ -79,7 +84,7 @@ class MappingView extends Component {
   }
   onSave = () => {
     if(this.props.onSaveMappingData) {
-      this.props.onSaveMappingData(this.props.data.map);
+      this.props.onSaveMappingData(this.props.data);
     }
   }
   renderColumnHiglight = () => {
@@ -114,7 +119,7 @@ class MappingView extends Component {
               <label htmlFor="x" className="col-sm-2 control-label">Mapping Name</label>
               <div className="col-sm-3">
                 <input name="mapname" className="form-control"
-                value={this.props.data.mappingName}
+                value={this.props.data.map.mappingName}
                 onChange={this.onMappingNameChange}
                 placeholder="Choose Mapping Name" type="text"
                 required disabled={this.props.data.viewOnly} />

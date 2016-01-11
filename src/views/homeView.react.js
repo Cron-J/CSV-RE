@@ -7,6 +7,7 @@ import CSVNavigation from './CSVNavigation.react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as CSVActions from '../actions/csvActions';
+import {Modal, Input, Button} from 'react-bootstrap';
 
 
 class Home extends React.Component {
@@ -15,11 +16,16 @@ class Home extends React.Component {
     const { dispatch } = this.props;
     this.actions = bindActionCreators(CSVActions, dispatch);
     this.actions.handleSynonymsList();
+    if(this.props.params.id){
+      this.actions.getMapInfo(this.props.params.id);
+      this.actions.loadTables();
+    }
     // views
     this.upload = 'upload';
     this.preview = 'preview';
     this.mapping = 'mapping';
     this.import = 'import';
+    this.show=false;
   }
   mponentWillReceiveProps(nextProps) {
     this.props = nextProps;
@@ -52,10 +58,10 @@ class Home extends React.Component {
         this.actions.uploadFile(this.props.csv.upload.fileinfo, this.props.csv.upload.uploaded);
         break;
       case this.preview:
-        this.actions.loadTables();
+        this.autoCheckModel();
         break;
       case this.mapping:
-
+         this.actions.saveMappedData(this.props);
         break;
       case this.import:
 
@@ -119,13 +125,24 @@ class Home extends React.Component {
     this.actions.autoMapping();
   }
   onSaveMappingData = (data) => {
-    this.actions.saveMappedData(data);
+    this.actions.saveMappedData(this.props);
   }
   onChnageMappingName = (data) => {
     this.actions.handleMappingName(data);
   }
   onsaveTranformation = (rowid, transformation) => {
     this.actions.updateMapTransformation(rowid, transformation);
+  }
+  autoCheckModel = () => {
+    this.show = true;
+    this.setState({});
+  }
+  close = (e) => {
+    this.actions.loadTables();
+    if(e.target.value == 'true'){
+      this.actions.autoMapping()
+    }
+    this.show = false;
   }
   renderView = () => {
     switch(this.props.csv.currentview) {
@@ -174,6 +191,18 @@ class Home extends React.Component {
   render() {
     return (
       <div className="container">
+      <Modal show={this.show} onHide={this.close.bind(this)}>
+
+          <Modal.Body>
+
+            <h4>Do you want to do auto mapping ?</h4>
+            
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className="btn-primary" onClick={this.close} value='true'>Yes</Button>
+            <Button className="btn-primary" onClick={this.close} value='false'>No</Button>
+          </Modal.Footer>
+        </Modal>
         <div className="row">
           <div className="btn-group btn-group-justified btn-group-wizard">
               <div onClick={this.onNavigate.bind(this, this.upload)} className={this.props.csv.currentview==='upload' ? "btn btn-wizard active" : 'btn btn-wizard'}  >
@@ -195,6 +224,7 @@ class Home extends React.Component {
             {this.renderView()}
           </div>
         </div>
+
         <div className="row">
           <CSVNavigation onPrev={this.onPrevNext.bind(this, 0)} onNext={this.onPrevNext.bind(this, 1)} block={this.props.csv.block} />
         </div>

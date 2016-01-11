@@ -13,6 +13,7 @@ var models = require('../../models'),
   API to get the list of attribute.
 */
 exports.uploadCSV = function(req,res){
+    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++');
     // This block is only relevant to users
     // interested in custom parameters - you
     // can delete/ignore it as you wish
@@ -34,6 +35,7 @@ exports.index =  function(req,res){
 
 exports.getMappingList = function(req,res){
   models.mapping.findAll({}).then(function(result){
+    console.log(result);
     res.status(200).json(result);
   }).catch(function(error){
     console.log("==Error==", error);
@@ -42,7 +44,13 @@ exports.getMappingList = function(req,res){
 // Get Mapping
 exports.getMapping = function(req, res) {
   models.mapping.find({where: {id: req.params.id}}).then(function(result){
-    res.status(200).json(result);
+    var upload_path = "uploads/"+result.fileName;
+    fs.readFile(upload_path, 'utf8', function(err, data) {
+      if (err) {
+        return console.log(err);
+      }      
+      res.json({'mapping':result,'file': csvJSON(data, result.fileName)});
+    });
   }).catch(function(error){
     console.log("==Error==", error);
   });
@@ -57,7 +65,6 @@ exports.getMappingCSVData = function(req, res) {
         if (err) {
             return console.log(err);
         }
-        console.log('data', data);
         res.status(200).json(csvJSON(data, result.dataValues.fileName));
     });
   }).catch(function(error){
@@ -604,10 +611,10 @@ var tableschema = {'product': {
 /*
   API to create the Mapping.
 */
-exports.create =  function(req,res){
+/*exports.create =  function(req,res){
     console.log('mapping data', req.body);
-}
-exports.createe =  function(req,res){
+}*/
+exports.create =  function(req,res){
     let findTableInSchema = function(product,obj,mapper,schema){
         /* {
          "userFieldName": "Product No",
@@ -699,17 +706,25 @@ exports.createe =  function(req,res){
         }
         return product;
     };
-  models.mapping.create({
+    /*models.mapping.create({
     attributeId: req.body.attributeId,
     tenantId: req.body.tenantId,
     fileName: req.body.fileName,
     mappingInfo: req.body.mappingInfo,
     delimeter: req.body.delimeter,
     mappingName : req.body.mappingName
+  }).then(function(result){*/
+  models.mapping.create({
+    attributeId: '2',
+    tenantId: '2',
+    fileName: req.body.upload.fileName,
+    mappingInfo: req.body.mapping.mappingData,
+    delimeter: req.body.preview.delimeter,
+    mappingName : req.body.mapping.mappingName
   }).then(function(result){
-      models.mapping.find({tenantId:req.body.tenantId, mappingName: req.body.mappingName}).then(function(mappings, err) {
+      models.mapping.find({tenantId:'2', mappingName: req.body.mapping.mappingName}).then(function(mappings, err) {
           if (!err) {
-              var upload_path = 'uploads/' + mappings.fileName;
+              var upload_path = 'uploads/' + req.body.upload.fileName;
               var fileStream = fs.createReadStream(upload_path);
               //new converter instance
               var csvConverter = new Converter({
@@ -724,7 +739,7 @@ exports.createe =  function(req,res){
                   jsonObj && jsonObj.length < 2 ?times = jsonObj.length: times = 2;
                   if(jsonObj){
                       for(var i=0;i<times;i++){
-                          convertedJSON.push(csv_mapping(jsonObj[i],mappings.mappingInfo));
+                          convertedJSON.push(csv_mapping(jsonObj[i],req.body.mapping.mappingData));
                       }
                   }else{
                       error.message = "Error : Couldnot process the CSV file.";
@@ -751,10 +766,9 @@ exports.update =  function(req,res){
     where: {tenantId:req.params.tenantId, id: req.params.id}
   }).then(function(mapping){
     mapping.updateAttributes({
-      tenantId: data.tenantId,
-      mappingInfo: data.mappingInfo,
-      delimeter: data.delimeter,
-      mappingName : data.mappingName
+      tenantId: req.params.tenantId,
+      mappingInfo: data.mapping.mappingData,
+      mappingName : data.mapping.mappingName
     }).then(function(mapping){
       res.json(204)
     });
@@ -788,6 +802,16 @@ exports.uploadFileData = function(req, res) {
     });
   }
 };
+
+exports.uploadFileData = function(req, res) {
+  var fileName = req.body.name;
+  fs.readFile(upload_path, 'utf8', function(err, data) {
+    if (err) {
+      return console.log(err);
+    }
+    res.status(200).json(csvJSON(data, fileName));
+  });
+}
 function csvJSON(csv, fileName) {
     var lines = csv.split("\n");
     var result = {};

@@ -51,6 +51,7 @@ const initialState = {
     tableObject: '',
     currentColumn: '',
     currentTable: '',
+    selectedTable: '',
     currentProperty: '',
     defaultValue: '',
     mappingData: [],
@@ -78,6 +79,13 @@ function blockers(view, data) {
   }
 }
 
+function mappedColPro(state){
+  for(let i=0; i<state.mappedData.length; i++){
+    state.mappedProperty.push(state.mappedData[i].field);
+    state.mappedColumn.push(state.mappedData[i].userFieldName);
+  }
+  return state;
+}
 function isSuccess(currentview, view, state) {
   switch (view) {
     case 'upload':
@@ -269,17 +277,26 @@ function getTableName (childTables, tablename) {
   return null;
 }
 
+function getChildTableAndIndex (tablename) {
+  let index = tablename.replace ( /[^\d.]/g, '' );
+  if(index.length>0)
+    return parseInt(index);
+  else
+    return 0;
+}
+
 function mapData(mapping){
   mapping.mappedColumn.push(mapping.currentColumn);
   mapping.mappedProperty.push(mapping.currentProperty);
-
+  let index = getChildTableAndIndex(mapping.selectedTable);
+  let currentTable = mapping.selectedTable.split('(');
   mapping.mappingData.push({
       "userFieldName": mapping.currentColumn,
       "transformations": [],
-      "table": mapping.currentTable,
+      "table": currentTable[0],
       "field": mapping.currentProperty,
       "defaultValue": mapping.defaultValue,
-      "index": mapping.mappingData.length + 1,
+      "index": index,
       "instance": '',
       "isRequired": ''
     });
@@ -287,12 +304,32 @@ function mapData(mapping){
 }
 
 function attributeMapping(mapping) {
+  mapping.currentTable = 'attributeValues'
+    let index = -1;
+    let childIndex = 0;
+    let valueobject = {};
+    for (let i = 0; i < mapping.childTables.length; i++) {
+      if (mapping.childTables[i].value === mapping.currentTable) {
+        index = i;
+        valueobject = mapping.childTables[i];
+        childIndex = valueobject.children.length;
+        break;
+      }
+    }
+    if (index > -1) {
+      const length = mapping.childTables[index].children.length;
+      const tablename = mapping.currentTable + '(' + length + ')';
+      valueobject.children.push({label: tablename, value: tablename});
+      mapping.childTables[index] = valueobject;
+      mapping.tableObject = tablename;
+      mapping.remove = true;
+    }
   const mapField1 = {
     "userFieldName": mapping.currentColumn,
     "transformations": [],
     "field": 'value',
     "defaultValue": mapping.defaultValue,
-    "index": mapping.mappingData.length + 1,
+    "index": childIndex,
     "instance": '',
     "table": 'attributeValues',
     "isRequired": true
@@ -302,7 +339,7 @@ function attributeMapping(mapping) {
     "transformations": [],
     "field": 'attribute',
     "defaultValue": mapping.defaultValue,
-    "index": mapping.mappingData.length + 2,
+    "index": childIndex,
     "instance": '',
     "table": 'attributeValues',
     "isRequired": true
@@ -336,6 +373,19 @@ function autoMapping(currentState) {
     }
   return currentState.mapping;
 }
+
+function childTab(currentState){
+  let mappingData = currentState.mapping.mappedData;
+  for(let i=0; i<mappingData.length; i++){
+    console.log('----.', currentState.mapping);
+    for(let index=0; index<currentState.mapping.tables[0].children.length; index++){
+      if(mappingData[i].table == currentState.mapping.tables[0].children[index].value){
+        currentState.mapping.tables[0].children[index].children.push({'value':currentState.mapping.tables[0].children[index].value+'('+currentState.mapping.tables[0].children[index].children.length+')','label':currentState.mapping.tables[0].children[index].value+'('+currentState.mapping.tables[0].children[index].children.length+')'});
+      }
+    }
+  }
+  return currentState.mapping.tables;
+}
 export default createReducer(initialState, {
   [types.HANDLECHANGEVIEW](state, action) {
     let { view } = action.payload;
@@ -359,10 +409,13 @@ export default createReducer(initialState, {
     };
   },
   [types.HANDLECSVUPLOADSUCCESS] (state, action) {
+    let fileName = action.payload.response.body.fileName;
     const {response} = action.payload;
+    console.log('afetr file upload response', response);
     const preview = state.preview;
     const upload = state.upload;
     const index = state.order.indexOf(state.currentview);
+    state.upload.fileName = fileName;
     let view = state.currentview;
     preview.originaldata = response.body;
     preview.resultdata = formatPreview(response.body, preview.delimiter, preview.noHeader, preview.numberFormat, preview.dateFormat, preview.dateFormat);
@@ -563,7 +616,9 @@ export default createReducer(initialState, {
   [types.HANDLECSVMAPTABLEINDEXCHANGE] (state, action) {
     let {table} = action.payload;
     table = table ? table : '';
+
     const mapping = state.mapping;
+    mapping.selectedTable = table;
     let isPrimarytable = false;
     for (let i = 0; i < mapping.tables.length; i++) {
       if (mapping.tables[i].value === table) {
@@ -601,6 +656,7 @@ export default createReducer(initialState, {
   },
   [types.HANDLEATTRIBUTEMAPPING] (state, action) {
     let mapping = state.mapping;
+
     mapping = attributeMapping(mapping);
     mapping.currentColumn=''; 
     mapping.currentProperty='';
@@ -612,6 +668,8 @@ export default createReducer(initialState, {
   [types.HANDLEDEFAULTVALUECHANGE] (state, action) {
     const mapping = state.mapping;
     mapping.defaultValue = action.payload.defaultValue;
+    mapping.currentColumn = '"'+action.payload.defaultValue+'"';
+
     return {
       ...state,
       mapping
@@ -644,7 +702,11 @@ export default createReducer(initialState, {
     };
   },
   [types.SAVEMAPPEDDATASUCCESS] (state, action) {
-    console.log('data saved');
+   
+    state.currentview = "import";
+    return {
+      ...state
+    }
   },
   [types.HANDLEMAPPINGNAME] (state, action) {
     const mapping = state.mapping;
@@ -662,5 +724,66 @@ export default createReducer(initialState, {
       ...state,
       mapping
     }
+  },
+  [types.LOADLISTSUCCESS] (state, action) {
+    const { response } = action.payload;
+    state.mappingList = response;
+    return {
+      ...state
+    };
+  },
+  [types.GETMAPINFOSUCCESS] (state, action) {    
+    let mapping = action.payload.response.mapping;
+    let file = action.payload.response.file;
+    let preview = state.preview;
+    state.preview.originaldata = file;
+    state.block = ['prev'];
+    const tableData = [];
+    let firsttable = '';
+    for (firsttable in tables) break;
+
+    const children = _.map(tables[firsttable].children, function(val, key) {
+      return {label: key, value: key, children: []};
+    });
+    tableData.push({label: firsttable, value: firsttable, children: children});
+
+    state.mapping.tables = tableData;
+    state.mapping.childTables = children;
+    state.mapping.mappingName = mapping.mappingName;
+    state.mapping.mappedData = mapping.mappingInfo;
+    state.mapping.mappingData = mapping.mappingInfo;
+    state.mapping = mappedColPro(state.mapping);
+    state.preview.resultdata = preview.resultdata = formatPreview(file, preview.delimiter, preview.noHeader, preview.numberFormat, preview.dateFormat, preview.dateFormat);
+    state.mapping.columns = _.map(state.preview.resultdata.headers, function(val){
+      return {label: val, value: val};
+    });
+    state.mapping.tables = childTab(state);
+    state.currentview = 'mapping';
+    return {
+      ...state
+    }
+  },
+  [types.LOADLISTFAIL] (state, action) {
+    return {
+      ...state
+    }
+  },
+  [types.HANDLEEDITCHANGEVIEW](state, action) {
+    let { view } = action.payload;
+    return {
+      ...state,
+      currentview: view,
+      block: blockers(view, state[view])
+    };
+  },
+  [types.GETMAPINFO] (state, action) {
+    return {
+      ...state
+    };
+  },
+  [types.GETMAPINFOFAIL] (state, action) {
+    return {
+      ...state
+    };
   }
 });

@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import {Input} from 'react-bootstrap';
+import {Modal, Input, Button} from 'react-bootstrap';
 import CustomTable from './customTable.react';
 
 class PreviewView extends Component {
   constructor(props) {
       super(props);
+      this.show=true;
   }
   componentWillReceiveProps(nextProps) {
     this.props = nextProps;

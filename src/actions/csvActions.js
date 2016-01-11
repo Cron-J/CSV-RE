@@ -6,6 +6,56 @@ export function changeView(view) {
   return { type: types.HANDLECHANGEVIEW, payload: { view } };
 }
 
+export function editChangeView(view) {
+  alert(view);
+  return { type: types.HANDLEEDITCHANGEVIEW, payload: { view } };
+}
+
+export function loadMappingList() {
+  return  {
+    types: [types.LOADLIST, types.LOADLISTSUCCESS, types.LOADLISTFAIL],
+    payload: {
+      response: api.getMappingList().then(response => response)
+    }
+  };
+}
+
+export function redirectEdit(id) {
+  return {
+    type: types.HANDLEREDIRECT,
+    meta: {
+      transition: () => ({
+          path: '/mapping/edit/'+id
+      })
+    }
+  }
+}
+
+export function getMapInfo(id) {
+  return  {
+    types: [types.GETMAPINFO, types.GETMAPINFOSUCCESS, types.GETMAPINFOFAIL],
+    payload: {
+      response: api.getMapping(id).then(response => response),
+      id
+    },
+    meta: {
+      transition: () => ({
+        onSuccess: (response) =>({
+          func: () => {
+            return redirectEdit(id);
+          }
+        }),
+        onFail: (response) =>({
+          func: () => {
+            return messageActions.showmessages('Unable to get selected mapping info.', 'error');
+          }
+        })
+      })
+    }
+  };
+}
+
+ 
 export function startFileupload(file) {
   return {
     type: types.HANDLECSVUPLOAD,
@@ -30,26 +80,30 @@ export function nextview() {
 }
 
 export function saveMappedData(data) {
-  if(data.id) {
-    return updateMappedData(data);
+  if(data.params.id) {
+    return updateMappedData(data.csv, data.params.id);
   } else {
-    return createMappedData(data);
+    return createMappedData(data.csv);
   }
 }
 
 function createMappedData(data) {
-  return {
-    types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
-    payload: {
-      response: api.saveMappedData(data).then(response => response)
-    }
-  };
+  if(data.mapping.mappingName){
+    return {
+      types: [types.SAVEMAPPEDDATA, types.SAVEMAPPEDDATASUCCESS, types.SAVEMAPPEDDATAERROR],
+      payload: {
+        response: api.saveMappedData(data).then(response => response)
+      }
+    };
+  }else {
+    return messageActions.showmessages('Please enter the mapping name', 'error');
+  }
 }
-function updateMappedData(data) {
+function updateMappedData(data,id) {
   return {
     types: [types.UPDATEMAPPING, types.UPDATEMAPPINGSUCCESS, types.UPDATEMAPPINGFAIL],
     payload: {
-      response: api.updateMapping(data).then(response => response),
+      response: api.updateMapping(data, id).then(response => response),
       data
     },
     meta: {
@@ -238,25 +292,6 @@ export function _uploadFile(file) {
     payload: {
       response: api.uploadCSV(file).then(response => response),
       file
-    },
-    meta: {
-      transition: () => ({
-        onPending: () => ({
-          func: () => {
-            return messageActions.showmessages('uploading file to server..', 'info');
-          }
-        }),
-        onSuccess: (response) =>({
-          func: () => {
-            return nextview();
-          }
-        }),
-        onFail: (response) =>({
-          func: () => {
-            return messageActions.showmessages('Failed to upload file', 'error');
-          }
-        })
-      })
     }
   };
 }

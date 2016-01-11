@@ -51,7 +51,6 @@ class MappingTable extends Component {
 		              {value: 'transformations', label: 'Transformation'},
 		              {value: 'table', label: 'Property name'},
 		              {value: 'field', label: 'Property description'},
-		              {value: 'defaultValue', label: 'Default value'},
 		              {value: 'index', label: 'Index'},
 		              {value: 'action', label: 'Actions'}
 		              // 'instance',
