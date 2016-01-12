@@ -715,7 +715,7 @@ exports.create =  function(req,res){
     mappingName : req.body.mappingName
   }).then(function(result){*/
   models.mapping.create({
-    attributeId: '2',
+    attributeId: req.body.upload.fileName,
     tenantId: '2',
     fileName: req.body.upload.fileName,
     mappingInfo: req.body.mapping.mappingData,
