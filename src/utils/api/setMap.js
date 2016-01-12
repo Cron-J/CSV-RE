@@ -9,7 +9,7 @@ const utils = {
   */
   getMappingList: () => {
     return request({
-      url: 'http://localhost:4000/api/csv/getMappingList',
+      url: SERVER_ADDR + 'api/csv/getMappingList',
       method: 'GET',
       json: true
     });

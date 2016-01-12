@@ -1,19 +1,16 @@
-import { compose, createStore, applyMiddleware } from 'redux';
+import { compose, createStore } from 'redux';
+import asyncMiddleware from 'redux-async-transitions';
 import { devTools } from 'redux-devtools';
 import rootReducer from 'reducers';
-import reduxasynctransitions from 'redux-async-transitions';
 
 let createStoreWithMiddleware;
 
-
 export default function configureStore (initialState, history) {
-  if (DEBUG) {
-    createStoreWithMiddleware = compose(reduxasynctransitions(history),
+  if (__DEBUG__) {
+    createStoreWithMiddleware = compose(asyncMiddleware(history),
                                 devTools())(createStore);
-    // createStoreWithMiddleware = applyMiddleware(asyncMiddleware
-    // )(createStore);
   } else {
-    createStoreWithMiddleware = compose(reduxasynctransitions(history))(createStore);
+    createStoreWithMiddleware = compose(asyncMiddleware(history))(createStore);
   }
   const store = createStoreWithMiddleware(rootReducer, initialState);
   if (module.hot) {

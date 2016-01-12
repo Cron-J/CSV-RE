@@ -13,7 +13,7 @@ const utils = {
   */
   searchAttributeSection: (searchAttributes) => {
     return request({
-      url: 'http://localhost:4000/api/attributeSections/search',
+      url: SERVER_ADDR + 'api/attributeSections/search',
       method: 'POST',
       body: searchAttributes,
       json: true
@@ -26,7 +26,7 @@ const utils = {
    */
   deleteAttributeSection: (id) => {
     return request({
-      url: 'http://localhost:4000/api/attributeSections/' + id,
+      url: SERVER_ADDR + 'api/attributeSections/' + id,
       method: 'DELETE'
     });
   }

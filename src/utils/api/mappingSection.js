@@ -9,7 +9,7 @@ const utils = {
   */
   getAttributeList: () => {
     return request({
-      url: 'http://localhost:4000/api/csv/',
+      url: SERVER_ADDR + 'api/csv/',
       method: 'GET',
       json: true
     });
@@ -34,7 +34,7 @@ const utils = {
   
   getMapping: (id) => {
     return request({
-      url: 'http://localhost:4000/api/csv/getMapping/' + id,
+      url: SERVER_ADDR + 'api/csv/getMapping/' + id,
       method: 'GET',
       json: true
     });
@@ -42,7 +42,7 @@ const utils = {
 
   updateMapping: (data) => {
     return request({
-      url: 'http://localhost:4000/api/csv/updateMapping/' + data.id + '/' + data.tenantId,
+      url: SERVER_ADDR + 'api/csv/updateMapping/' + data.id + '/' + data.tenantId,
       method: 'PUT',
       json: true,
       body: data
@@ -51,7 +51,7 @@ const utils = {
 
   synonymsList: () => {
     return request({
-      url: 'http://localhost:4000/api/csv/getSynonyms',
+      url: SERVER_ADDR + 'api/csv/getSynonyms',
       method: 'GET',
       json: true
     })
