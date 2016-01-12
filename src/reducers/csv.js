@@ -57,11 +57,12 @@ const initialState = {
     mappingData: [],
     mappedColumn: [],
     mappedProperty: [],
-    requiredProperty: [],
+    requiredProperty: []
   },
   synonymsList: [],
   importer: {},
   currentview: 'upload',
+  autoMap:false,
   order: ['upload', 'preview', 'mapping', 'import']
 };
 
@@ -287,7 +288,9 @@ function getChildTableAndIndex (tablename) {
 
 function mapData(mapping){
   mapping.mappedColumn.push(mapping.currentColumn);
-  mapping.mappedProperty.push(mapping.currentProperty);
+  let obj = {};
+  obj[mapping.selectedTable] = mapping.currentProperty;
+  mapping.mappedProperty.push(obj);
   let index = getChildTableAndIndex(mapping.selectedTable);
   let currentTable = mapping.selectedTable.split('(');
   mapping.mappingData.push({
@@ -344,6 +347,7 @@ function attributeMapping(mapping) {
     "table": 'attributeValues',
     "isRequired": true
   };
+  mapping.mappedColumn.push(mapping.currentColumn);
   mapping.mappingData.push(mapField1);
   mapping.mappingData.push(mapField2);
   return mapping;
@@ -356,6 +360,10 @@ function autoMapping(currentState) {
         for(let indx in synonymsList[index].synonyms){
           let column =  currentState.mapping.columns[i].value;
           if(synonymsList[index].synonyms[indx] === column.toLowerCase()){
+            let obj = {};
+            obj[synonymsList[index].tableName] = index;
+            currentState.mapping.mappedProperty.push(obj);
+            currentState.mapping.mappedColumn.push(column);
             currentState.mapping.mappingData.push({
               "userFieldName": column,
               "transformations": [],
@@ -371,6 +379,7 @@ function autoMapping(currentState) {
       }
       break;
     }
+    
   return currentState.mapping;
 }
 
@@ -696,6 +705,7 @@ export default createReducer(initialState, {
   },
   [types.HANDLEAUTOMAPPING] (state, action) {
     const mapping = autoMapping(state);
+    state.autoMap = true;
     return {
       ...state,
       mapping

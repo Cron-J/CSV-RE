@@ -138,11 +138,11 @@ class Home extends React.Component {
     this.setState({});
   }
   close = (e) => {
-    this.actions.loadTables();
-    if(e.target.value == 'true'){
-      this.actions.autoMapping()
-    }
     this.show = false;
+    this.actions.loadTables();
+    if(e.target.value == 'true' && this.props.csv.autoMap == false){
+      this.actions.autoMapping();
+    }
   }
   renderView = () => {
     switch(this.props.csv.currentview) {

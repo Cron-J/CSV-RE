@@ -97,12 +97,17 @@ class MappingView extends Component {
   renderPropertyHighlight = () => {
     let object = {};
     const mappedProperty = this.props.data.map.mappedProperty;
-    _.each(this.props.data.map.mappedProperty, function(val, index){
-      object[val] = {color: '#3c763d'};
-    });
+    const selectedTable = this.props.data.map.selectedTable
     _.each(this.props.data.map.requiredProperty, function(val, index){
       if (!mappedProperty[val]) {
         object[val] = {color: '#31708f'};
+      }
+    });
+    _.each(this.props.data.map.mappedProperty, function(val, index){
+      for(let i in val){
+        if(selectedTable == i){
+          object[val[i]] = {color: '#3c763d'};
+        }
       }
     });
     return object;
